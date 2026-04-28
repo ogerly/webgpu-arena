@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/os-arena/', // Wichtig für GitHub Pages Deployment
   plugins: [
     vue(),
     VitePWA({
