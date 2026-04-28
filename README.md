@@ -16,6 +16,10 @@ Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Standard
 - **TinyLlama** (1.1B Parameter)
 - **Gemma** (2B Parameter)
 
+
+
+<img width="1532" height="1256" alt="image" src="https://github.com/user-attachments/assets/fc7e5f75-3a10-4786-8e7d-729a2968940c" />
+
 ## 🛠️ Lokales Setup für Entwickler
 
 Da die App als reine Frontend-Applikation läuft, benötigst du kein Backend:
