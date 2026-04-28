@@ -9,6 +9,9 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024 // 10 MB Limit für große JS-Dateien wie WebLLM
+      },
       manifest: {
         name: 'OS-Arena',
         short_name: 'OS-Arena',
