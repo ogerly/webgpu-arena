@@ -1,0 +1,100 @@
+<template>
+  <div class="view-container">
+    <header class="view-header">
+      <h2>Einstellungen</h2>
+      <p>System und WebGPU Konfiguration</p>
+    </header>
+
+    <div class="settings-list glass-panel">
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>WebGPU Status</h4>
+          <p class="status-text" :class="{ error: state.gpuError }">
+            {{ state.gpuError ? 'Fehler / Deaktiviert' : 'Aktiviert & Bereit' }}
+          </p>
+        </div>
+      </div>
+      
+      <div class="setting-item" v-if="state.gpuError">
+        <div class="gpu-help">
+          <strong>So löst du das Problem:</strong>
+          <ul>
+            <li>Nutze die neueste Version von Chrome oder Edge.</li>
+            <li>Tippe <code>chrome://flags/#enable-unsafe-webgpu</code> in die Adresszeile und aktiviere es.</li>
+            <li>Starte den Browser danach neu.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { state } from '../../state.js';
+</script>
+
+<style scoped>
+.view-container {
+  padding: 1.5rem;
+  padding-bottom: 80px;
+}
+
+.view-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.view-header h2 {
+  font-size: 2.5rem;
+  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.view-header p {
+  color: var(--text-secondary);
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.setting-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-info h4 {
+  font-size: 1.1rem;
+  margin-bottom: 0.2rem;
+}
+
+.status-text {
+  color: #00f2fe;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.status-text.error {
+  color: #ff4757;
+}
+
+.gpu-help {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.gpu-help ul {
+  margin-top: 0.5rem;
+  padding-left: 1.5rem;
+}
+</style>
