@@ -46,22 +46,27 @@
         <p><strong>Quellcode:</strong> <a href="https://github.com/DEVmatrose/os-arena" target="_blank">OS-Arena Repository</a></p>
       </div>
       
-      <div class="donation-box">
-        <h4>Support & Spenden ☕</h4>
-        <p class="donation-text">
-          Damit die Entwicklung werbe- und kostenfrei bleibt, freue ich mich über Krypto-Spenden.
-        </p>
-        
-        <div class="crypto-list">
-          <div class="crypto-item" v-for="(address, name) in cryptoAddresses" :key="name">
-            <span class="crypto-name">{{ name }}:</span>
-            <div class="crypto-address-wrapper">
-              <input type="text" readonly :value="address" class="crypto-input" />
-              <button class="btn-copy" @click="copyToClipboard(address)" title="Kopieren">📋</button>
+      <details class="donation-box">
+        <summary class="donation-summary">
+          <h4>Support & Spenden ☕</h4>
+          <span class="chevron">▼</span>
+        </summary>
+        <div class="donation-content">
+          <p class="donation-text">
+            Damit die Entwicklung werbe- und kostenfrei bleibt, freue ich mich über Krypto-Spenden.
+          </p>
+          
+          <div class="crypto-list">
+            <div class="crypto-item" v-for="(address, name) in cryptoAddresses" :key="name">
+              <span class="crypto-name">{{ name }}:</span>
+              <div class="crypto-address-wrapper">
+                <input type="text" readonly :value="address" class="crypto-input" />
+                <button class="btn-copy" @click="copyToClipboard(address)" title="Kopieren">📋</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
   </div>
 </template>
@@ -231,14 +236,43 @@ const copyToClipboard = async (text) => {
 .donation-box {
   background: rgba(0,0,0,0.3);
   border-radius: 12px;
-  padding: 1.5rem;
   border: 1px solid rgba(255,255,255,0.05);
 }
 
-.donation-box h4 {
+.donation-summary {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+.donation-summary::-webkit-details-marker {
+  display: none;
+}
+
+.donation-summary h4 {
   font-size: 1.2rem;
   color: #00f2fe;
-  margin-bottom: 0.5rem;
+  margin: 0;
+}
+
+.chevron {
+  font-size: 1rem;
+  color: #00f2fe;
+  transition: transform 0.3s ease;
+}
+
+details[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.donation-content {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 0.5rem;
+  padding-top: 1rem;
 }
 
 .donation-text {
