@@ -1,0 +1,107 @@
+## Review-Ergebnis
+
+Ich habe den Prototyp hart geprüft und daraus ein Workpaper erstellt:
+
+[WP-002-REVIEW-os-arena-webgpu-prototyp.md herunterladen](sandbox:/mnt/data/WP-002-REVIEW-os-arena-webgpu-prototyp.md)
+
+## Kurzfazit
+
+Der Ansatz ist **sinnvoll und technisch realistisch**: lokale kleine Modelle im Browser, WebGPU, einfache Arena, private Nutzung, keine Cloud-Inferenz. Das passt sehr gut zu deinem Ziel: **KI für normale Nutzer zugänglich machen, ohne Konzernbindung und ohne Installationshölle**.
+
+Aber der aktuelle Stand ist noch **Prototyp**, nicht produktreif. Die wichtigsten harten Punkte:
+
+### 1. „Für immer verfügbar“ ist nicht sauber
+
+Im Code steht bei gecachten Modellen sinngemäß „Für immer verfügbar“. Das ist technisch zu stark. Browser-Cache/IndexedDB kann gelöscht werden. Besser:
+
+> Lokal zwischengespeichert
+
+Im Konzept steht bereits, dass Modelle im Browser-Cache gespeichert werden . Das muss aber ehrlicher formuliert werden.
+
+### 2. WebGPU reicht nicht allein
+
+`navigator.gpu` ist nur ein grober Check. Der aktuelle Code prüft nur, ob WebGPU grundsätzlich vorhanden ist . Es fehlt mindestens:
+
+```js
+const adapter = await navigator.gpu?.requestAdapter()
+```
+
+Denn WebGPU vorhanden heißt nicht automatisch: Modell läuft stabil.
+
+### 3. Kritischer Vote-Bug
+
+In `ChatView.vue` wird beim Voting über `state.selectedModelA` und `state.selectedModelB` bewertet. Wenn der Nutzer nach einer Antwort die Modelle wechselt und dann einen alten Battle bewertet, bekommt das falsche Modell Punkte.
+
+Fix: Modell-IDs direkt im Chat-Eintrag speichern und beim Vote diese IDs verwenden.
+
+### 4. `v-html` ist unnötig riskant
+
+Die Modellantworten werden mit `v-html` ausgegeben. Für lokale Antworten wirkt das erstmal harmlos, ist aber mit Blick auf spätere gespeicherte/verlinkte/externe Inhalte ein XSS-Risiko. Besser erstmal plain rendern:
+
+```vue
+<div class="model-content">{{ msg.modelA.content }}</div>
+```
+
+Markdown später nur mit Sanitizing.
+
+### 5. Modellliste muss kuratiert werden
+
+Die hochgeladene Liste mischt Chatmodelle, WebGPU-Spaces, WebCPU-Demos, Audio, Vision, TTS, Datasets und doppelte Einträge . Das darf nicht alles in eine normale Chat-Arena.
+
+Ich würde trennen in:
+
+| Bereich           | In normale Arena? |
+| ----------------- | ----------------: |
+| Text-Chat-Modelle |                ja |
+| Mini-Reasoning    |                ja |
+| Deutschtest       |                ja |
+| Audio/STT         |     eigenes Modul |
+| TTS               |     eigenes Modul |
+| Vision            |     eigenes Modul |
+| Datasets          |              nein |
+| Experimente       | separater Bereich |
+
+### 6. WebLLM-Architektur passt, aber sollte sauber genutzt werden
+
+WebLLM ist genau für browserbasierte lokale LLM-Inferenz mit WebGPU gebaut und unterstützt OpenAI-kompatible Chat-APIs, Streaming, JSON-Mode und Model Records über `prebuiltAppConfig.model_list` ([GitHub][1]). Die aktuelle Doku beschreibt `CreateMLCEngine()` und auch `engine.reload()` als saubere Wege zum Laden/Wechseln von Modellen ([webllm.mlc.ai][2]). Für eure Arena heißt das: Modellregistry, Engine-Lifecycle und Streaming sollten jetzt sauber getrennt werden.
+
+## Wichtigste Arbeitsliste aus dem Workpaper
+
+### P0
+
+* `v-html` entfernen oder sanitizen.
+* Vote-Bug beheben.
+* „Für immer verfügbar“ ersetzen.
+* WebGPU-Check robuster machen.
+* Download/Cache und RAM-/GPU-Laden trennen.
+* Modellliste aus `state.js` in `modelRegistry.js` auslagern.
+* Modell-Metadaten ergänzen: Backend, Sprache, Lizenz, Kategorie, Größe, Status.
+
+### P1
+
+* Streaming einbauen.
+* Antwortzeit messen.
+* Tokens/sec messen.
+* Bewertung differenzieren: Geschwindigkeit, Deutsch, Logik, Struktur, Nützlichkeit.
+* Ergebnisse lokal persistieren.
+* Chatverlauf lokal speichern/löschen können.
+
+### P2
+
+* PWA sauber umsetzen.
+* Service Worker ergänzen.
+* Offline-App-Shell.
+* Modell-Cache löschen können.
+* Einsteiger-/Expertenmodus trennen.
+* Export/Import lokaler Arena-Ergebnisse.
+
+## Meine klare Einschätzung
+
+Das Projekt hat Substanz. Der eigentliche Wert ist nicht nur „Modelle im Browser starten“, sondern:
+
+> Nutzer sehen auf ihrem eigenen Gerät, welches kleine Open-Source-Modell wirklich brauchbar ist.
+
+Das ist als Produktidee stark, weil es **Bildung, Privatsphäre, Open Source und echten Praxistest** verbindet. Der nächste sinnvolle Schritt ist nicht, noch mehr Modelle reinzuwerfen, sondern erst die **Modellregistry + Bewertungslogik + ehrliche UX** zu stabilisieren.
+
+[1]: https://github.com/mlc-ai/web-llm "GitHub - mlc-ai/web-llm: High-performance In-browser LLM Inference Engine · GitHub"
+[2]: https://webllm.mlc.ai/docs/user/basic_usage.html "Basic Usage — web-llm 0.2.83 documentation"

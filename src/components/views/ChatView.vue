@@ -1,5 +1,25 @@
 <template>
   <div class="chat-container">
+    <div class="chat-header glass-panel">
+      <div class="model-select-compact">
+        <label>Modell A (Blau)</label>
+        <select v-model="state.selectedModelA" :disabled="state.loading">
+          <option v-for="m in state.availableModels" :key="'ca-'+m.id" :value="m.id">
+            {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
+          </option>
+        </select>
+      </div>
+      <div class="vs-badge-small">VS</div>
+      <div class="model-select-compact">
+        <label>Modell B (Lila)</label>
+        <select v-model="state.selectedModelB" :disabled="state.loading">
+          <option v-for="m in state.availableModels" :key="'cb-'+m.id" :value="m.id">
+            {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <div class="chat-history" ref="chatHistoryRef">
       <div v-if="state.chatHistory.length === 0" class="empty-state">
         <p>Stelle eine Frage, um den Vergleich zu starten!</p>
@@ -158,6 +178,54 @@ const vote = (index, winner) => {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 80px); /* Leave space for bottom nav */
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 16px 16px;
+  border-top: none;
+  background: rgba(15, 23, 42, 0.9);
+  z-index: 10;
+}
+
+.model-select-compact {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 45%;
+}
+
+.model-select-compact label {
+  font-size: 0.65rem;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.model-select-compact select {
+  width: 100%;
+  padding: 0.4rem;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  font-size: 0.8rem;
+  appearance: none; /* remove default arrow for compact look */
+}
+
+.model-select-compact select:disabled {
+  opacity: 0.5;
+}
+
+.vs-badge-small {
+  font-weight: 900;
+  color: rgba(255,255,255,0.2);
+  font-style: italic;
+  font-size: 1rem;
 }
 
 .chat-history {

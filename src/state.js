@@ -15,6 +15,9 @@ export const state = reactive({
   loading: false,
   loadingStatus: '',
   loadingProgress: 0,
+  globalLoading: false,
+  globalLoadingStatus: '',
+  globalLoadingProgress: 0,
 });
 
 const loadedEngines = {};
@@ -38,10 +41,14 @@ export async function downloadModel(model) {
 
   model.loading = true;
   model.progress = 0;
+  state.globalLoading = true;
+  state.globalLoadingStatus = `Lade Modell: ${model.name}...`;
   
   const initProgressCallback = (progress) => {
     if (progress.progress) {
       model.progress = Math.round(progress.progress * 100);
+      state.globalLoadingProgress = model.progress;
+      state.globalLoadingStatus = progress.text || `Lade Modell: ${model.name}...`;
     }
   };
   
@@ -55,6 +62,7 @@ export async function downloadModel(model) {
     state.gpuError = "Fehler beim Download: " + err.message;
   } finally {
     model.loading = false;
+    state.globalLoading = false;
   }
 }
 
@@ -63,19 +71,27 @@ export async function getOrInitEngine(modelId) {
   
   state.loadingStatus = `Bereite ${modelId} vor...`;
   state.loadingProgress = 0;
+  state.globalLoading = true;
+  state.globalLoadingStatus = `Lade in den Arbeitsspeicher: ${modelId}...`;
   
   const initProgressCallback = (progress) => {
     state.loadingStatus = progress.text;
+    state.globalLoadingStatus = progress.text;
     if (progress.progress) {
       state.loadingProgress = Math.round(progress.progress * 100);
+      state.globalLoadingProgress = state.loadingProgress;
     }
   };
   
-  const engine = await CreateMLCEngine(modelId, { initProgressCallback });
-  loadedEngines[modelId] = engine;
-  
-  const modelInfo = state.availableModels.find(m => m.id === modelId);
-  if (modelInfo) modelInfo.cached = true;
-  
-  return engine;
+  try {
+    const engine = await CreateMLCEngine(modelId, { initProgressCallback });
+    loadedEngines[modelId] = engine;
+    
+    const modelInfo = state.availableModels.find(m => m.id === modelId);
+    if (modelInfo) modelInfo.cached = true;
+    
+    return engine;
+  } finally {
+    state.globalLoading = false;
+  }
 }

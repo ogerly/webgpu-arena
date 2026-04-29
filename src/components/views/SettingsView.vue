@@ -25,12 +25,27 @@
           </ul>
         </div>
       </div>
+
+      <div class="setting-item">
+        <div class="setting-info">
+          <h4>Speicherort der Modelle</h4>
+          <p class="status-text">Browser Cache (IndexedDB)</p>
+          <p class="description">Die KIs werden sicher im lokalen Cache des Browsers abgelegt.</p>
+          <button class="btn btn-secondary mt-2" @click="openFolder">
+            📁 Ordner öffnen
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { state } from '../../state.js';
+
+const openFolder = () => {
+  alert("Da OS-Arena im Browser läuft, werden die Modelle in der IndexedDB deines Browsers gespeichert.\n\nDu findest sie in den Entwicklertools (F12) unter:\nApplication -> Storage -> IndexedDB -> webllm");
+};
 </script>
 
 <style scoped>
@@ -96,5 +111,29 @@ import { state } from '../../state.js';
 .gpu-help ul {
   margin-top: 0.5rem;
   padding-left: 1.5rem;
+}
+
+.description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 </style>
