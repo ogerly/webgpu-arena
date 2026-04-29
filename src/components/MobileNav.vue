@@ -1,44 +1,37 @@
 <template>
   <nav class="mobile-nav glass-panel">
-    <button class="nav-item" :class="{ active: currentTab === 'home' }" @click="$emit('update:tab', 'home')">
+    <router-link to="/" class="nav-item" exact-active-class="active">
       <span class="icon">🏠</span>
       <span class="label">Home</span>
-    </button>
-    <button class="nav-item" :class="{ active: currentTab === 'models' }" @click="$emit('update:tab', 'models')">
+    </router-link>
+    <router-link to="/models" class="nav-item" active-class="active">
       <span class="icon">🧠</span>
       <span class="label">Modelle</span>
-    </button>
-    <button class="nav-item" :class="{ active: currentTab === 'arena' }" @click="$emit('update:tab', 'arena')">
+    </router-link>
+    <router-link to="/arena" class="nav-item" active-class="active">
       <span class="icon">🏟️</span>
       <span class="label">Arena</span>
-    </button>
-    <button class="nav-item" :class="{ active: currentTab === 'chat' }" @click="$emit('update:tab', 'chat')">
+    </router-link>
+    <router-link to="/chat" class="nav-item" active-class="active">
       <span class="icon">💬</span>
       <span class="label">Chat</span>
-    </button>
-    <button class="nav-item" :class="{ active: currentTab === 'leaderboard' }" @click="$emit('update:tab', 'leaderboard')">
+    </router-link>
+    <router-link to="/leaderboard" class="nav-item" active-class="active">
       <span class="icon">🏆</span>
       <span class="label">Rangliste</span>
-    </button>
-    <button class="nav-item" :class="{ active: currentTab === 'profile' }" @click="$emit('update:tab', 'profile')">
+    </router-link>
+    <router-link to="/profile" class="nav-item" active-class="active">
       <span class="icon">👤</span>
       <span class="label">Profil</span>
-    </button>
-    <button class="nav-item" :class="{ active: currentTab === 'settings' }" @click="$emit('update:tab', 'settings')">
+    </router-link>
+    <router-link to="/settings" class="nav-item" active-class="active">
       <span class="icon">⚙️</span>
       <span class="label">Settings</span>
-    </button>
+    </router-link>
   </nav>
 </template>
 
 <script setup>
-defineProps({
-  currentTab: {
-    type: String,
-    required: true
-  }
-});
-defineEmits(['update:tab']);
 </script>
 
 <style scoped>
@@ -77,6 +70,7 @@ defineEmits(['update:tab']);
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 12px;
+  text-decoration: none;
 }
 
 .nav-item.active {

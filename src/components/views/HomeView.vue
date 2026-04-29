@@ -8,8 +8,8 @@
         Erlebe Open-Source-Modelle direkt in deinem Browser. 100% lokal, absolut privat und offline-fähig.
       </p>
       <div class="hero-actions">
-        <button class="btn btn-primary" @click="$emit('navigate', 'arena')">⚔️ Zur Arena</button>
-        <button class="btn btn-secondary" @click="$emit('navigate', 'models')">💾 Modelle laden</button>
+        <button class="btn btn-primary" @click="$router.push('/arena')">⚔️ Zur Arena</button>
+        <button class="btn btn-secondary" @click="$router.push('/models')">💾 Modelle laden</button>
       </div>
     </header>
 

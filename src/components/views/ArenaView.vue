@@ -26,7 +26,7 @@
         </select>
       </div>
 
-      <button class="btn btn-primary start-btn" @click="$emit('start-battle')">
+      <button class="btn btn-primary start-btn" @click="$router.push('/chat')">
         ⚔️ In die Arena (Chat)
       </button>
     </div>
@@ -35,7 +35,6 @@
 
 <script setup>
 import { state } from '../../state.js';
-defineEmits(['start-battle']);
 </script>
 
 <style scoped>
