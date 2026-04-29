@@ -13,12 +13,12 @@
     <!-- Main Content Area -->
     <main class="main-content">
       <keep-alive>
-        <component :is="currentViewComponent" @start-battle="currentTab = 'chat'" />
+        <component :is="currentViewComponent" @start-battle="currentTab = 'chat'" @navigate="t => currentTab = t" />
       </keep-alive>
     </main>
 
     <!-- Mobile Bottom Navigation -->
-    <MobileNav v-model:tab="currentTab" />
+    <MobileNav :currentTab="currentTab" @update:tab="currentTab = $event" />
   </div>
 </template>
 
@@ -28,6 +28,7 @@ import { checkCacheStatus, state } from './state.js';
 
 // Components
 import MobileNav from './components/MobileNav.vue';
+import HomeView from './components/views/HomeView.vue';
 import ModelsView from './components/views/ModelsView.vue';
 import ArenaView from './components/views/ArenaView.vue';
 import ChatView from './components/views/ChatView.vue';
@@ -35,9 +36,10 @@ import LeaderboardView from './components/views/LeaderboardView.vue';
 import ProfileView from './components/views/ProfileView.vue';
 import SettingsView from './components/views/SettingsView.vue';
 
-const currentTab = ref('arena');
+const currentTab = ref('home');
 
 const views = {
+  home: HomeView,
   models: ModelsView,
   arena: ArenaView,
   chat: ChatView,

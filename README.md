@@ -4,10 +4,11 @@
 
 ## ✨ Features
 - **Direkter Modell-Vergleich**: Wähle zwei KIs und lass sie dieselbe Frage beantworten. Stimme ab, wer besser ist!
-- **WebGPU-Powered**: Die KI läuft dank `@mlc-ai/web-llm` extrem performant direkt über deine lokale Grafikkarte.
-- **Offline First**: Einmal heruntergeladene Modelle bleiben sicher in deinem Browser-Cache gespeichert. Du kannst die Arena danach jederzeit komplett ohne Internetverbindung nutzen.
+- **WebGPU-Powered**: Die KI läuft dank `@mlc-ai/web-llm` extrem performant direkt über deine lokale Grafikkarte. (Robuster Hardware-Check integriert).
+- **Offline fähig**: Einmal heruntergeladene Modelle werden lokal im Cache (IndexedDB) deines Browsers zwischengespeichert. So kannst du die Arena – solange der Cache nicht geleert wird – auch ohne Internetverbindung nutzen.
+- **Mobile-First Design**: Moderne, reaktionsschnelle Benutzeroberfläche (Glassmorphism), die auf jedem Endgerät optimal funktioniert.
 - **PWA-Ready**: Installiere die OS-Arena als eigenständige App direkt auf deinen Desktop oder dein Smartphone.
-- **Privacy First**: Deine Prompts, Daten und Chats verlassen niemals dein Endgerät.
+- **Privacy First & Sicher**: Deine Prompts, Daten und Chats verlassen niemals dein Endgerät. Strikte Sanitization schützt vor XSS-Angriffen.
 
 ## 🚀 Integrierte Modelle
 Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Standardmäßig integriert sind kompakte und pfeilschnelle KIs:

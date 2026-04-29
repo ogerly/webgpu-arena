@@ -1,5 +1,9 @@
 <template>
   <nav class="mobile-nav glass-panel">
+    <button class="nav-item" :class="{ active: currentTab === 'home' }" @click="$emit('update:tab', 'home')">
+      <span class="icon">🏠</span>
+      <span class="label">Home</span>
+    </button>
     <button class="nav-item" :class="{ active: currentTab === 'models' }" @click="$emit('update:tab', 'models')">
       <span class="icon">🧠</span>
       <span class="label">Modelle</span>

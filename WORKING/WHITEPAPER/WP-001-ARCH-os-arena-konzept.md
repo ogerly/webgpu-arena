@@ -18,6 +18,6 @@ Wir nutzen moderne Web-Technologien, um die Modelle direkt über deinen Browser 
 
 **Zusätzliche smarte Funktionen:**
 - **Kompakte und schnelle KIs**: Wir setzen auf kleine Modelle (bis zu 2 Milliarden Parameter, wie Llama 3.2 oder Qwen 2). Das bedeutet, sie laden schnell und laufen auch auf normalen Computern reibungslos.
-- **Dein lokaler Modell-Ordner**: In einer übersichtlichen Seitenleiste (Sidebar) hast du jederzeit den Überblick über alle Modelle und siehst auf einen Blick, welche bereits lokal bei dir liegen und welche noch in der Cloud sind.
-- **Einmal laden, immer nutzen (Offline)**: Wenn du ein KI-Modell einmal geladen hast, wird es sicher **in deinem Browser ("Cache Storage") gespeichert**. Du verbrauchst danach keine unnötigen Daten mehr für erneute Downloads und die Modelle stehen dir auch komplett ohne Internetverbindung zur Verfügung.
+- **Zentrale Modell-Auswahl**: Alle verfügbaren KIs werden in einer übersichtlichen Registry verwaltet. Die Auswahl erfolgt direkt in der Chat-Arena oder im Modell-Ordner, wo du siehst, welche Modelle lokal bereitstehen.
+- **Lokal zwischengespeichert (Offline-Fähigkeit)**: Wenn du ein KI-Modell einmal geladen hast, wird es lokal **in der Datenbank deines Browsers (IndexedDB / Cache Storage) abgelegt**. Das spart Bandbreite bei späteren Aufrufen und ermöglicht eine Nutzung bereits gelieferter Modelle ohne aktive Internetverbindung. Beachte: Der Browser kann diesen Cache löschen.
 - **Direkt als App installierbar**: Die OS-Arena funktioniert als "Progressive Web App" (PWA). Du kannst sie mit einem Klick auf deinem Startbildschirm speichern und wie eine echte App nutzen – ganz ohne App-Store-Zwang.

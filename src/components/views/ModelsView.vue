@@ -30,7 +30,7 @@
             </div>
           </template>
           <template v-else>
-            <span class="ready-text">✓ Für immer verfügbar</span>
+            <span class="ready-text">✓ Lokal zwischengespeichert</span>
           </template>
         </div>
       </div>

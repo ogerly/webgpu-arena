@@ -38,7 +38,7 @@
               <span class="model-badge">A</span>
               <span class="model-name-display">{{ msg.modelA.name }}</span>
             </div>
-            <div class="model-content" v-html="msg.modelA.content || (msg.modelA.generating ? 'Lade...' : '')"></div>
+            <div class="model-content">{{ msg.modelA.content || (msg.modelA.generating ? 'Lade...' : '') }}</div>
             <div v-if="!msg.winner && msg.modelA.content && !msg.modelA.generating" class="vote-actions">
               <button class="btn btn-vote" @click="vote(index, 'A')">🏆 Besser</button>
             </div>
@@ -50,7 +50,7 @@
               <span class="model-badge">B</span>
               <span class="model-name-display">{{ msg.modelB.name }}</span>
             </div>
-            <div class="model-content" v-html="msg.modelB.content || (msg.modelB.generating ? 'Lade...' : '')"></div>
+            <div class="model-content">{{ msg.modelB.content || (msg.modelB.generating ? 'Lade...' : '') }}</div>
             <div v-if="!msg.winner && msg.modelB.content && !msg.modelB.generating" class="vote-actions">
               <button class="btn btn-vote" @click="vote(index, 'B')">🏆 Besser</button>
             </div>
@@ -111,8 +111,8 @@ const submitPrompt = async () => {
   
   const currentMsg = {
     user: userText,
-    modelA: { name: modelAObj.name, content: '', generating: true },
-    modelB: { name: modelBObj.name, content: '', generating: true },
+    modelA: { id: state.selectedModelA, name: modelAObj.name, content: '', generating: true },
+    modelB: { id: state.selectedModelB, name: modelBObj.name, content: '', generating: true },
     winner: null
   };
   
@@ -160,15 +160,17 @@ const vote = (index, winner) => {
   msg.winner = winner;
   
   // Update Elo/Score
-  const modelA = state.availableModels.find(m => m.id === state.selectedModelA);
-  const modelB = state.availableModels.find(m => m.id === state.selectedModelB);
+  const modelA = state.availableModels.find(m => m.id === msg.modelA.id);
+  const modelB = state.availableModels.find(m => m.id === msg.modelB.id);
   
-  if (winner === 'A') {
-    modelA.score += 15;
-    modelB.score -= 10;
-  } else {
-    modelB.score += 15;
-    modelA.score -= 10;
+  if (modelA && modelB) {
+    if (winner === 'A') {
+      modelA.score += 15;
+      modelB.score -= 10;
+    } else {
+      modelB.score += 15;
+      modelA.score -= 10;
+    }
   }
 };
 </script>
