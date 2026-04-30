@@ -7,7 +7,7 @@ Erstellung von optimierten Texten für verschiedene Social‑Media‑Plattformen
 
 ## 🔗 Basis‑Links
 - **Live App:** https://ogerly.github.io/os-arena/
-- **GitHub Repo:** https://github.com/DEVmatrose/os-arena
+- **GitHub Repo:** https://github.com/ogerly/os-arena
 
 ---
 

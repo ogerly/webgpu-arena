@@ -32,7 +32,7 @@ Da die App als reine Frontend-Applikation läuft, benötigst du kein Backend:
 
 ```bash
 # 1. Repository klonen
-git clone https://github.com/DEVmatrose/os-arena.git
+git clone https://github.com/ogerly/os-arena.git
 cd os-arena
 
 # 2. Abhängigkeiten installieren
@@ -56,7 +56,7 @@ Damit die KI im Browser läuft, wird Folgendes benötigt:
 Dieses Projekt ist Open Source. Fühle dich frei, die Arena zu forken, Pull Requests zu erstellen oder eigene Modelle (`q4f16_1-MLC`) hinzuzufügen!
 
 ## 🧠 AAMS - Agent Artifact Management System
-Die Entwicklung der OS-Arena folgt dem **[AAMS-Prinzip](https://github.com/DEVmatrose/AAMS)**. Dies stellt sicher, dass die Zusammenarbeit zwischen Mensch und KI strukturiert, dokumentiert und jederzeit nachvollziehbar bleibt.
+Die Entwicklung der OS-Arena folgt dem **[AAMS-Prinzip](https://github.com/ogerly/AAMS)**. Dies stellt sicher, dass die Zusammenarbeit zwischen Mensch und KI strukturiert, dokumentiert und jederzeit nachvollziehbar bleibt.
 
 ![AAMS Workflow](./docs/img/aams-workflow.png)
 

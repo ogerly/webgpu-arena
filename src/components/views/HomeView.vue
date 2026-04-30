@@ -102,9 +102,9 @@
     <section class="support-section glass-panel">
       <h3>Über das Projekt</h3>
       <div class="dev-info">
-        <p><strong>Entwickler:</strong> @ogerly (Firma: DEVmatrose)</p>
-        <p><strong>GitHub:</strong> <a href="https://github.com/DEVmatrose" target="_blank">DEVmatrose</a></p>
-        <p><strong>Quellcode:</strong> <a href="https://github.com/DEVmatrose/os-arena" target="_blank">OS-Arena Repository</a></p>
+        <p><strong>Entwickler:</strong> @ogerly</p>
+        <p><strong>GitHub:</strong> <a href="https://github.com/ogerly" target="_blank">ogerly</a></p>
+        <p><strong>Quellcode:</strong> <a href="https://github.com/ogerly/os-arena" target="_blank">OS-Arena Repository</a></p>
       </div>
 
       <div class="project-disclaimer">

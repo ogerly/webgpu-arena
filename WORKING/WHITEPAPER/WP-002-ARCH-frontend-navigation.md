@@ -35,7 +35,7 @@ Dies schafft eine subtile Tiefenwirkung und lässt den Inhalt über dem Hintergr
 Die App verfügt über eine Startseite, die als primäre Landing-Page dient. Sie klärt neue Nutzer direkt über den Charakter des Projekts (Offenes Testlabor) auf und kommuniziert transparent die Kernwerte:
 - 100% Kostenlos und Offline-fähig (IndexedDB Caching).
 - Keine Accounts, keine APIs, totale Privatsphäre.
-- Direkte Integration der Entwickler-Credits (@ogerly / DEVmatrose) und Spendenmöglichkeiten zur Finanzierung der Weiterentwicklung.
+- Direkte Integration der Entwickler-Credits (@ogerly) und Spendenmöglichkeiten zur Finanzierung der Weiterentwicklung.
   - Die Spendenbox wurde extrem platzsparend und ressourcenschonend mittels des nativen HTML5 `<details>`-Elements als Accordion umgesetzt.
 
 ## 3. System-Monitoring & Globales Feedback

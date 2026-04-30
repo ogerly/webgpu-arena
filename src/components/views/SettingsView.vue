@@ -40,7 +40,7 @@
           <div class="setting-info">
             <h4>App Information</h4>
             <p class="description">OS-Arena Version: <span class="version-tag">v{{ appVersion }}</span></p>
-            <p class="description">Entwickelt von @ogerly (DEVmatrose)</p>
+            <p class="description">Entwickelt von @ogerly</p>
           </div>
         </div>
       </div>
