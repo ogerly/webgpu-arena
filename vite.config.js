@@ -4,13 +4,13 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/os-arena/', // Wichtig für GitHub Pages Deployment
+  base: '/os-arena/',
   plugins: [
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024 // 10 MB Limit für große JS-Dateien wie WebLLM
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
       },
       manifest: {
         name: 'OS-Arena',

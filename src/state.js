@@ -14,21 +14,55 @@ export const state = reactive({
   globalLoading: false,
   globalLoadingStatus: '',
   globalLoadingProgress: 0,
+  // neue Props für System-Info
+  gpuInfo: null,                      // {supported: bool, adapterInfo: string}
+  ramInfo: null,                      // {totalMB: number, usedMB: number}
 });
 
 const loadedEngines = {};
 
 export async function checkCacheStatus() {
+  // RAM Info (falls unterstützt)
+  if (performance.memory) {
+    state.ramInfo = {
+      totalMB: Math.round(performance.memory.jsHeapSizeLimit / (1024 * 1024)),
+      usedMB: Math.round(performance.memory.usedJSHeapSize / (1024 * 1024))
+    };
+  }
+
   if (!navigator.gpu) {
     state.gpuError = "Dein Browser unterstützt kein WebGPU.";
+    state.gpuInfo = { supported: false, adapterInfo: "WebGPU nicht unterstützt" };
   } else {
     try {
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) {
         state.gpuError = "WebGPU-Adapter konnte nicht initialisiert werden.";
+        state.gpuInfo = { supported: false, adapterInfo: "Kein Adapter gefunden" };
+      } else {
+        // Erfolgreich initialisiert
+        state.gpuError = null;
+        let gpuName = "Unbekannte GPU";
+        
+        try {
+          if (typeof adapter.requestAdapterInfo === 'function') {
+            const info = await adapter.requestAdapterInfo();
+            gpuName = info.description || info.vendor || gpuName;
+          } else if (adapter.info) {
+            gpuName = adapter.info.description || adapter.info.vendor || gpuName;
+          }
+        } catch (e) {
+          console.warn("Konnte GPU-Details nicht abrufen:", e);
+        }
+
+        state.gpuInfo = { 
+          supported: true, 
+          adapterInfo: gpuName
+        };
       }
     } catch (err) {
       state.gpuError = "Fehler bei WebGPU-Adapter-Anfrage: " + err.message;
+      state.gpuInfo = { supported: false, adapterInfo: err.message };
     }
   }
 
