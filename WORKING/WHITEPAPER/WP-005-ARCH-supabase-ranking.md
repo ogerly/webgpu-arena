@@ -109,4 +109,29 @@ Die App nutzt den Supabase Client nur für:
 Die API-Keys (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) werden in der `.env` verwaltet und zur Build-Zeit injiziert.
 
 ---
+
+## 6. API & Rate Limiting (Gatekeeper)
+
+Um Missbrauch und Spam zu verhindern, implementiert die Edge Function `submit-ranking` eine strikte API-Kontrolle.
+
+### 6.1 Identitäts-Schutz
+- Die `install_id` des Clients wird niemals im Klartext gespeichert.
+- Die Edge Function verwendet einen serverseitigen **SALT** (Umgebungsvariable), um die ID zu hashen: `SHA256(install_id + SALT)`.
+- Dies verhindert das Tracking von Nutzern über verschiedene Datenbanken hinweg, erlaubt aber eine Deduplizierung.
+
+### 6.2 Rate Limiting (SQL-basiert)
+Bevor ein Datensatz akzeptiert wird, führt die Edge Function eine Prüfung in der Datenbank aus:
+```sql
+SELECT count(*) FROM benchmark_results 
+WHERE install_id_hash = $1 
+AND created_at > now() - interval '1 hour';
+```
+- **Limit**: Maximal 10 Uploads pro Stunde pro Gerät.
+- **Vorteil**: Verhindert, dass ein einzelner Client die Durchschnittswerte durch massenhafte Uploads verfälscht.
+
+### 6.3 CORS & Herkunft
+- Die API antwortet nur auf Anfragen von definierten Domains (z.B. `ogerly.github.io` und `localhost`).
+- Anfragen von fremden Skripten oder anderen Webseiten werden auf Browser-Ebene blockiert.
+
+---
 *Dieses Dokument wird bei jeder Änderung an der Backend-Infrastruktur aktualisiert.*
