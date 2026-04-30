@@ -20,13 +20,14 @@ Datenschutz bei KI ist oft ein Versprechen, das in der Cloud endet. Mit der **OS
 
 Dank modernster **WebGPU**‑Technologie laufen Modelle wie Llama 3.2 oder Qwen 2 direkt auf DEINER Hardware. Kein API‑Key, kein Account, keine Datenübertragung an externe Server.
 
-🚀 **Highlights:**
+🚀 **Highlights in v1.1.0:**
 - **Absolute Privacy:** Prompts verlassen niemals dein Gerät.
+- **Single‑Chat & Arena:** Wähle zwischen fokussiertem Einzelchat oder dem klassischen KI‑Zweikampf.
+- **System‑Transparenz:** Echtzeit‑Monitoring von WebGPU‑Status und RAM‑Verbrauch.
 - **Offline‑First:** Einmal geladen, funktioniert die KI auch ohne Internet.
-- **Arena‑Mode:** Vergleiche zwei lokale Modelle direkt im Zweikampf.
 - **Open Source:** Gebaut für die Community, von der Community.
 
-Probiert es direkt aus und erlebt, wie schnell lokales Web‑LLM heute sein kann!
+Probiert es direkt aus und erlebt v1.1.0 live!
 
 **Hashtags:**
 #AI #WebGPU #OpenSource #LocalAI #Privacy #LLM #WebDevelopment #VueJS #OSArena
@@ -36,15 +37,16 @@ Probiert es direkt aus und erlebt, wie schnell lokales Web‑LLM heute sein kann
 ## 🐦 Twitter / X (Short & Viral)
 
 **Text:**
+🚀 v1.1.0 OUT NOW! 
 Stoppt den Cloud-Zwang! 🛑 KI-Modelle wie Llama 3.2 & Qwen 2 laufen jetzt 100% lokal in DEINEM Browser.
 
-🏟️ Willkommen in der OS-Arena:
-✅ Kein Account
-✅ Kein API-Key
+🏟️ OS-Arena Highlights:
+✅ Single-Chat & Arena Mode
+✅ Echtzeit System-Monitoring
 ✅ 100% Privacy via WebGPU
 ✅ Offline-fähig
 
-Jetzt live testen: https://ogerly.github.io/os-arena/
+Jetzt v1.1.0 live testen: https://ogerly.github.io/os-arena/
 
 #LocalAI #WebGPU #OpenSource #Llama3 #PrivacyFirst
 
