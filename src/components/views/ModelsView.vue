@@ -33,6 +33,21 @@
           <p class="model-description">
             {{ model.description || 'Ein leistungsstarkes Sprachmodell optimiert für lokale Ausführung.' }}
           </p>
+          
+          <div class="model-traits" v-if="model.strengths || model.weaknesses">
+            <div class="trait-group strengths" v-if="model.strengths">
+              <span class="trait-label">Stärken:</span>
+              <ul>
+                <li v-for="s in model.strengths" :key="s">{{ s }}</li>
+              </ul>
+            </div>
+            <div class="trait-group weaknesses" v-if="model.weaknesses">
+              <span class="trait-label">Schwächen:</span>
+              <ul>
+                <li v-for="w in model.weaknesses" :key="w">{{ w }}</li>
+              </ul>
+            </div>
+          </div>
         </div>
         
         <div class="card-actions">
@@ -196,8 +211,58 @@ import { state, downloadModel } from '../../state.js';
 
 .model-description {
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: #fff;
   line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.model-traits {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trait-group {
+  font-size: 0.8rem;
+}
+
+.trait-label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+.strengths .trait-label {
+  color: #00f2fe;
+}
+
+.weaknesses .trait-label {
+  color: #ff9f1c;
+}
+
+.trait-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.trait-group li {
+  position: relative;
+  padding-left: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 0.2rem;
+}
+
+.trait-group li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: inherit;
+  opacity: 0.5;
 }
 
 .card-actions {

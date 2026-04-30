@@ -8,11 +8,11 @@ export const modelRegistry = [
     progress: 0, 
     score: 1200,
     backend: 'webgpu',
-    language: 'Multilingual',
-    license: 'Llama 3.2',
     category: 'Text-Chat-Modelle',
     status: 'active',
-    description: 'Solider Allrounder von Meta. Gute Balance zwischen Speed und Wissen. Ideal für allgemeine Aufgaben.'
+    description: 'Solider Allrounder von Meta. Gute Balance zwischen Speed und Wissen.',
+    strengths: ['Vielseitig einsetzbar', 'Hohe Kontext-Stabilität', 'Starke Community'],
+    weaknesses: ['Teilweise wortreich', 'Logik schwächer als SmolLM2']
   },
   { 
     id: 'Qwen2-1.5B-Instruct-q4f16_1-MLC', 
@@ -27,7 +27,9 @@ export const modelRegistry = [
     license: 'Apache 2.0',
     category: 'Text-Chat-Modelle',
     status: 'active',
-    description: 'Stark in Mehrsprachigkeit und strukturierten Anweisungen. Sehr effizient.'
+    description: 'Effizientes Modell von Alibaba, spezialisiert auf Instruktionen.',
+    strengths: ['Stark in Mehrsprachigkeit', 'Exzellente Befolgung von Anweisungen', 'Sehr kompakt'],
+    weaknesses: ['Begrenztes Weltwissen']
   },
   { 
     id: 'TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC', 
@@ -42,7 +44,9 @@ export const modelRegistry = [
     license: 'MIT',
     category: 'Mini-Reasoning',
     status: 'active',
-    description: 'Extrem schnell und ressourcensparend. Gut für einfachste Aufgaben und schwache Hardware.'
+    description: 'Der Geschwindigkeits-König für einfachste Interaktionen.',
+    strengths: ['Extrem schnell', 'Minimaler RAM-Bedarf', 'Stabil auf Mobile'],
+    weaknesses: ['Schwache Logik', 'Neigt zu Halluzinationen']
   },
   { 
     id: 'Gemma-2B-it-q4f16_1-MLC', 
@@ -57,7 +61,9 @@ export const modelRegistry = [
     license: 'Gemma',
     category: 'Text-Chat-Modelle',
     status: 'active',
-    description: 'Googles Kraftpaket im 2B-Bereich. Überlegene Logik und Textqualität, benötigt aber mehr RAM.'
+    description: 'Googles Premium-Modell für hohe Textqualität und Logik.',
+    strengths: ['Überlegene Reasoning-Fähigkeit', 'Hohe sprachliche Nuancen', 'Sehr präzise'],
+    weaknesses: ['Höchster RAM-Bedarf im Portfolio', 'Langsamerer Output']
   },
   { 
     id: 'SmolLM2-1.7B-Instruct-q4f16_1-MLC', 
@@ -72,7 +78,9 @@ export const modelRegistry = [
     license: 'Apache 2.0',
     category: 'Text-Chat-Modelle',
     status: 'active',
-    description: 'Herausragend in Logik und STEM-Aufgaben durch hochwertige Trainingsdaten. Primär Englisch.'
+    description: 'Spezialisiert auf Logik und STEM durch kuratierte Trainingsdaten.',
+    strengths: ['Exzellent in Mathe & Logik', 'Sehr hohe Faktentreue', 'Präzise Antworten'],
+    weaknesses: ['Fokus auf Englisch']
   },
   { 
     id: 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC', 
@@ -87,6 +95,8 @@ export const modelRegistry = [
     license: 'Apache 2.0',
     category: 'Mini-Reasoning',
     status: 'active',
-    description: 'Das "Effizienz-Wunder". Läuft fast überall, ideal für einfache Befehle und Chat-Bots.'
+    description: 'Das Effizienz-Wunder für einfachste Aufgaben.',
+    strengths: ['Läuft fast überall', 'Schnellste Reaktion', 'Gute Mehrsprachigkeit'],
+    weaknesses: ['Wenig Weltwissen', 'Einfache Logik']
   }
 ];
