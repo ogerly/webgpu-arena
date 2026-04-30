@@ -101,7 +101,7 @@ flowchart TD
 - [x] Settings‑View einbinden und Layout‑Anpassungen vornehmen.
 - [x] Styling‑Token in Design‑System aufnehmen.
 - [x] WebGPU Fix: Fallback für `requestAdapterInfo` (Brave/Chrome Kompatibilität).
-- [ ] Refactor Download-Bereich (ModelsView).
+- [x] Refactor Download-Bereich (ModelsView).
 - [ ] Tests & Dokumentation ergänzen.
 
 > **Hinweis:** Alle UI‑Entscheidungen folgen dem bestehenden Premium‑Design‑System des Projekts (Glass‑Panel, dunkle Hintergründe, klare Typografie mit Google‑Font *Inter*).
