@@ -18,8 +18,8 @@ Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Standard
 - **Gemma** (2B Parameter)
 
 
+<img width="1190" height="805" alt="image" src="https://github.com/user-attachments/assets/a0dedcb0-cfe0-4284-b6c8-8af8edd0983c" />
 
-<img width="1532" height="1256" alt="image" src="https://github.com/user-attachments/assets/fc7e5f75-3a10-4786-8e7d-729a2968940c" />
 
 ## 🛠️ Lokales Setup für Entwickler
 
