@@ -24,12 +24,24 @@ Die Konstante `__APP_VERSION__` kann in jeder Vue-Komponente verwendet werden. S
 - **Settings/Profil**: Detaillierte Versionsinfo inkl. Build-Status.
 - **Footer/Sidebar**: Dezente Anzeige für technisches Feedback.
 
-## 3. Release-Zyklus (Workflow)
+## 3. Release-Rhythmen & Zyklen
 
-1. **Entwicklung**: Features werden in Workpapern dokumentiert und umgesetzt.
-2. **Version Bump**: Vor einem größeren Release wird die Version in `package.json` erhöht (z.B. `npm version patch`).
-3. **Changelog**: Die Datei `CHANGELOG.md` wird mit den Verbesserungen des aktuellen Schritts aktualisiert.
-4. **GitHub Release**: Ein Tag wird gepusht, der automatisch das Deployment auf GitHub Pages auslöst.
+Um eine hohe Stabilität bei gleichzeitigem Fortschritt zu gewährleisten, definieren wir folgende Rhythmen:
+
+### 3.1 Patch-Releases (x.x.Y) - "As needed"
+- **Inhalt**: Bugfixes, kleine CSS-Korrekturen, Tippfehler, Sicherheitsupdates.
+- **Frequenz**: Sofort nach Behebung und Test eines Problems. Kann mehrfach täglich vorkommen.
+- **Ziel**: Fehlerfreie Nutzung des aktuellen Feature-Sets.
+
+### 3.2 Minor-Releases (x.Y.0) - "Weekly / Bi-Weekly"
+- **Inhalt**: Neue Funktionen (z.B. neue Chat-Modi, zusätzliche System-Metriken), neue Modelle in der Registry, größere Refactorings.
+- **Frequenz**: Typischerweise wöchentlich oder alle zwei Wochen nach Abschluss eines Workpapers.
+- **Ziel**: Kontinuierliche Erweiterung des Funktionsumfangs der Arena.
+
+### 3.3 Major-Releases (X.0.0) - "Milestones"
+- **Inhalt**: Grundlegende Architekturänderungen (z.B. Wechsel des Frameworks), komplettes Re-Design der UI, Einführung bahnbrechender neuer Technologien (z.B. Multimodalität).
+- **Frequenz**: Selten (alle 3-6 Monate), markiert signifikante Meilensteine des Projekts.
+- **Ziel**: Evolutionäre Sprünge in der Vision der OS-Arena.
 
 ## 4. Changelog-Struktur
 Der Changelog orientiert sich an den Workpapern und bündelt die technischen Verbesserungen:
