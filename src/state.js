@@ -183,11 +183,30 @@ export function updateModelScore(modelId, newScore) {
   }
 }
 
+// Chat Persistence
+export function saveHistory() {
+  localStorage.setItem('os-arena-chat-history', JSON.stringify(state.chatHistory));
+  localStorage.setItem('os-arena-arena-history', JSON.stringify(state.arenaHistory));
+}
+
+export function loadHistory() {
+  try {
+    const chat = localStorage.getItem('os-arena-chat-history');
+    if (chat) state.chatHistory = JSON.parse(chat);
+    
+    const arena = localStorage.getItem('os-arena-arena-history');
+    if (arena) state.arenaHistory = JSON.parse(arena);
+  } catch (e) {
+    console.warn("Fehler beim Laden der Historie:", e);
+  }
+}
+
 // Initialer Check & Score-Load
 export async function initAppState() {
   console.log("🛠️ Initialisiere OS-Arena State...");
   try {
     loadScores();
+    loadHistory();
     await checkCacheStatus();
     console.log("✅ State erfolgreich initialisiert.");
   } catch (err) {

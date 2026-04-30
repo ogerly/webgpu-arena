@@ -4,29 +4,25 @@
       <span class="icon">🏠</span>
       <span class="label">Home</span>
     </router-link>
-    <router-link to="/models" class="nav-item" active-class="active">
-      <span class="icon">🧠</span>
-      <span class="label">Modelle</span>
-    </router-link>
     <router-link to="/arena" class="nav-item" active-class="active">
-      <span class="icon">🏟️</span>
+      <span class="icon">⚔️</span>
       <span class="label">Arena</span>
     </router-link>
     <router-link to="/chat" class="nav-item" active-class="active">
       <span class="icon">💬</span>
-      <span class="label">Chat</span>
+      <span class="label">Einzel-Chat</span>
     </router-link>
     <router-link to="/leaderboard" class="nav-item" active-class="active">
       <span class="icon">🏆</span>
-      <span class="label">Rangliste</span>
+      <span class="label">Ranking</span>
     </router-link>
-    <router-link to="/profile" class="nav-item" active-class="active">
-      <span class="icon">👤</span>
-      <span class="label">Profil</span>
+    <router-link to="/models" class="nav-item" active-class="active">
+      <span class="icon">💾</span>
+      <span class="label">Bibliothek</span>
     </router-link>
     <router-link to="/settings" class="nav-item" active-class="active">
       <span class="icon">⚙️</span>
-      <span class="label">Settings</span>
+      <span class="label">Setup</span>
     </router-link>
   </nav>
 </template>

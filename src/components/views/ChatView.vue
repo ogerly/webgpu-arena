@@ -1,77 +1,90 @@
 <template>
   <div class="chat-container">
-    <!-- Header with Single Model Selection -->
+    <!-- Modern Header -->
     <header class="chat-header glass-panel">
-      <div class="model-selector-group">
-        <div class="model-selector">
-          <label>Aktives Modell</label>
-          <select v-model="state.selectedModelChat" :disabled="state.loading">
+      <div class="model-info-top">
+        <div class="active-label">Aktives Modell</div>
+        <div class="selector-wrapper">
+          <select v-model="state.selectedModelChat" :disabled="state.loading" class="modern-select">
             <option v-for="m in state.availableModels" :key="m.id" :value="m.id">
               {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
             </option>
           </select>
-        </div>
-        
-        <div v-if="selectedModel" class="model-status-info">
-          <span v-if="selectedModel.cached" class="badge badge-local">Lokal</span>
-          <span v-else class="badge badge-cloud">Cloud</span>
-          <button v-if="!selectedModel.cached" class="btn-download-mini" @click="downloadModel(selectedModel)" :disabled="state.loading || selectedModel.loading">
-            {{ selectedModel.loading ? '...' : 'Laden' }}
-          </button>
+          <div v-if="selectedModel" class="status-badges">
+            <span v-if="selectedModel.cached" class="badge-dot" title="Lokal geladen"></span>
+            <button v-if="!selectedModel.cached" class="btn-download-action" @click="downloadModel(selectedModel)" :disabled="state.loading || selectedModel.loading">
+              {{ selectedModel.loading ? 'Lädt...' : 'Modell laden' }}
+            </button>
+          </div>
         </div>
       </div>
-
-      <button class="btn-clear" @click="clearChat" :disabled="state.loading || state.chatHistory.length === 0">
-        🗑️ Verlauf leeren
+      
+      <button class="btn-icon-clear" @click="clearChat" title="Chat löschen" :disabled="state.loading || state.chatHistory.length === 0">
+        🗑️
       </button>
     </header>
 
-    <!-- Chat History -->
+    <!-- Enhanced Chat Scroll Area -->
     <div class="chat-scroll-area" ref="chatHistoryRef">
-      <div v-if="state.chatHistory.length === 0" class="welcome-state">
-        <div class="bot-icon">🤖</div>
-        <h2>Bereit für deine Fragen</h2>
-        <p>Wähle ein Modell aus und starte ein privates Gespräch.</p>
+      <div v-if="state.chatHistory.length === 0" class="welcome-container">
+        <div class="welcome-hero">
+          <div class="welcome-icon">💬</div>
+          <h1>Einzel-Chat</h1>
+          <p>Nutze die volle Power von <strong>{{ selectedModel?.name }}</strong> für deine Fragen. 100% lokal und privat.</p>
+        </div>
+        <div class="suggestions">
+          <div v-for="s in suggestions" :key="s" class="suggestion-chip" @click="applySuggestion(s)">
+            {{ s }}
+          </div>
+        </div>
       </div>
 
-      <div v-for="(msg, index) in state.chatHistory" :key="index" :class="['message-row', msg.role]">
-        <div class="avatar-cell">
-          <span v-if="msg.role === 'user'">👤</span>
-          <span v-else>🤖</span>
-        </div>
-        <div class="message-content glass-panel">
-          <div class="role-label">{{ msg.role === 'user' ? 'Du' : 'KI' }}</div>
-          <div class="text">{{ msg.content }}</div>
-          <div v-if="msg.generating" class="typing-indicator">
-            <span></span><span></span><span></span>
+      <div v-for="(msg, index) in state.chatHistory" :key="index" :class="['message-bubble-row', msg.role]">
+        <div class="bubble-wrapper">
+          <div class="bubble-header">
+            <span class="bubble-role">{{ msg.role === 'user' ? 'Du' : selectedModel?.name }}</span>
+          </div>
+          <div class="bubble-content" :class="{ 'generating': msg.generating }">
+            <div class="message-text" v-html="formatMessage(msg.content)"></div>
+            <div v-if="msg.generating" class="typing-loader">
+              <span></span><span></span><span></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Input Area -->
-    <footer class="input-section">
-      <div v-if="state.loading" class="status-bar">
-        <div class="mini-spinner"></div>
-        <span>{{ state.loadingStatus }}</span>
+    <!-- Modern Input Section -->
+    <footer class="input-container">
+      <div v-if="state.loading" class="loading-status-bar">
+        <span class="pulse-dot"></span>
+        {{ state.loadingStatus }}
       </div>
-      <ChatInput 
-        v-model="prompt" 
-        placeholder="Schreibe eine Nachricht..." 
-        :disabled="state.loading"
-        @submit="submitPrompt"
-      />
+      <div class="input-wrapper glass-panel">
+        <ChatInput 
+          v-model="prompt" 
+          placeholder="Frag mich etwas..." 
+          :disabled="state.loading"
+          @submit="submitPrompt"
+        />
+      </div>
     </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue';
-import { state, getOrInitEngine, downloadModel } from '../../state.js';
+import { ref, computed, nextTick, onMounted } from 'vue';
+import { state, getOrInitEngine, downloadModel, saveHistory } from '../../state.js';
 import ChatInput from '../chat/ChatInput.vue';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
+const suggestions = [
+  "Erkläre mir Quantenphysik für Anfänger.",
+  "Schreibe ein kurzes Gedicht über das Meer.",
+  "Wie optimiere ich meinen JavaScript Code?",
+  "Was sind die Vorteile von lokalem LLM?"
+];
 
 const selectedModel = computed(() => {
   return state.availableModels.find(m => m.id === state.selectedModelChat);
@@ -80,15 +93,32 @@ const selectedModel = computed(() => {
 const scrollToBottom = () => {
   nextTick(() => {
     if (chatHistoryRef.value) {
-      chatHistoryRef.value.scrollTop = chatHistoryRef.value.scrollHeight;
+      chatHistoryRef.value.scrollTo({
+        top: chatHistoryRef.value.scrollHeight,
+        behavior: 'smooth'
+      });
     }
   });
+};
+
+const applySuggestion = (text) => {
+  prompt.value = text;
 };
 
 const clearChat = () => {
   if (confirm("Möchtest du den aktuellen Chat-Verlauf wirklich löschen?")) {
     state.chatHistory = [];
+    saveHistory();
   }
+};
+
+const formatMessage = (text) => {
+  if (!text) return "";
+  // Einfaches Markdown-ähnliches Parsing (Code-Blöcke & Zeilenumbrüche)
+  let formatted = text
+    .replace(/```([\s\S]*?)```/g, '<pre class="code-block"><code>$1</code></pre>')
+    .replace(/\n/g, '<br>');
+  return formatted;
 };
 
 const submitPrompt = async () => {
@@ -97,10 +127,9 @@ const submitPrompt = async () => {
   const userText = prompt.value;
   prompt.value = '';
   
-  // Add user message
   state.chatHistory.push({ role: 'user', content: userText });
+  saveHistory();
   
-  // Add placeholder for assistant
   state.chatHistory.push({ role: 'assistant', content: '', generating: true });
   const msgIndex = state.chatHistory.length - 1;
   
@@ -109,19 +138,20 @@ const submitPrompt = async () => {
   
   try {
     const engine = await getOrInitEngine(state.selectedModelChat);
-    state.loadingStatus = "KI denkt nach...";
+    state.loadingStatus = "KI berechnet Antwort...";
     
-    const reply = await engine.chat.completions.create({
-      messages: state.chatHistory.filter(m => !m.generating).map(m => ({ 
-        role: m.role, 
-        content: m.content 
-      }))
-    });
+    // API-konformer Context (nur Textnachrichten)
+    const messages = state.chatHistory
+      .filter(m => !m.generating)
+      .map(m => ({ role: m.role, content: m.content }));
+
+    const reply = await engine.chat.completions.create({ messages });
     
     state.chatHistory[msgIndex].content = reply.choices[0].message.content;
+    saveHistory();
   } catch (err) {
     console.error("Chat Fehler:", err);
-    state.chatHistory[msgIndex].content = "Entschuldigung, es gab einen Fehler bei der Inferenz: " + err.message;
+    state.chatHistory[msgIndex].content = "⚠️ Fehler: " + err.message;
   } finally {
     state.chatHistory[msgIndex].generating = false;
     state.loading = false;
@@ -129,238 +159,285 @@ const submitPrompt = async () => {
     scrollToBottom();
   }
 };
+
+onMounted(() => {
+  scrollToBottom();
+});
 </script>
 
 <style scoped>
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 70px);
-  background: var(--bg-color);
+  height: calc(100vh - 80px);
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
 }
 
 .chat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.25rem;
-  border-radius: 0 0 20px 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 0 0 24px 24px;
+  background: rgba(15, 23, 42, 0.9);
   border-top: none;
-  background: rgba(15, 23, 42, 0.8);
-  z-index: 10;
+  z-index: 100;
+  margin: 0 1rem;
 }
 
-.model-selector-group {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.model-selector {
+.model-info-top {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
 }
 
-.model-status-info {
+.active-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  font-weight: 800;
+}
+
+.selector-wrapper {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.8rem;
+  gap: 0.8rem;
 }
 
-.badge {
-  padding: 0.2rem 0.6rem;
-  border-radius: 8px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  text-transform: uppercase;
+.modern-select {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+  padding-left: 0;
 }
 
-.badge-local {
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  background: #00f2fe;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00f2fe;
+}
+
+.btn-download-action {
   background: rgba(0, 242, 254, 0.1);
   color: #00f2fe;
-  border: 1px solid rgba(0, 242, 254, 0.2);
-}
-
-.badge-cloud {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.btn-download-mini {
-  background: #00f2fe;
-  color: #000;
-  border: none;
-  border-radius: 6px;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.65rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.btn-download-mini:hover {
-  transform: scale(1.05);
-}
-
-.btn-download-mini:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.model-selector label {
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  border-radius: 8px;
+  padding: 0.3rem 0.8rem;
   font-size: 0.7rem;
   font-weight: 700;
-  text-transform: uppercase;
-  color: #4facfe;
-}
-
-.model-selector select {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-radius: 8px;
-  padding: 0.4rem 0.6rem;
-  font-size: 0.85rem;
-  outline: none;
-}
-
-.btn-clear {
-  background: rgba(255, 71, 87, 0.1);
-  border: 1px solid rgba(255, 71, 87, 0.2);
-  color: #ff4757;
-  padding: 0.5rem 0.8rem;
-  border-radius: 10px;
-  font-size: 0.8rem;
-  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.btn-clear:hover:not(:disabled) {
+.btn-icon-clear {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-icon-clear:hover:not(:disabled) {
   background: rgba(255, 71, 87, 0.2);
-}
-
-.btn-clear:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
 }
 
 .chat-scroll-area {
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem;
+  padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
-.welcome-state {
+.welcome-container {
   margin: auto;
-  text-align: center;
-  max-width: 300px;
-}
-
-.bot-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-}
-
-.welcome-state h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.welcome-state p {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.message-row {
   display: flex;
-  gap: 1rem;
-  max-width: 85%;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2rem;
 }
 
-.message-row.user {
-  align-self: flex-end;
-  flex-direction: row-reverse;
+.welcome-hero h1 {
+  font-size: 2.5rem;
+  margin: 1rem 0;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.avatar-cell {
-  font-size: 1.5rem;
-  padding-top: 0.5rem;
+.welcome-hero p {
+  color: var(--text-secondary);
+  max-width: 400px;
+  line-height: 1.6;
 }
 
-.message-content {
-  padding: 1rem 1.25rem;
-  border-radius: 18px;
-  position: relative;
+.welcome-icon {
+  font-size: 4rem;
 }
 
-.message-row.user .message-content {
-  background: rgba(79, 172, 254, 0.15);
-  border-color: rgba(79, 172, 254, 0.3);
-  border-bottom-right-radius: 4px;
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+  max-width: 500px;
 }
 
-.message-row.assistant .message-content {
+.suggestion-chip {
   background: rgba(255, 255, 255, 0.05);
-  border-bottom-left-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.6rem 1.2rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.role-label {
+.suggestion-chip:hover {
+  background: rgba(0, 242, 254, 0.1);
+  border-color: rgba(0, 242, 254, 0.3);
+  transform: translateY(-2px);
+}
+
+.message-bubble-row {
+  display: flex;
+  width: 100%;
+}
+
+.message-bubble-row.user {
+  justify-content: flex-end;
+}
+
+.bubble-wrapper {
+  max-width: 85%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bubble-header {
   font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
-  margin-bottom: 0.4rem;
-  opacity: 0.5;
+  color: var(--text-secondary);
+  margin-left: 1rem;
 }
 
-.text {
-  font-size: 1rem;
-  line-height: 1.5;
-  white-space: pre-wrap;
+.user .bubble-header {
+  margin-left: 0;
+  margin-right: 1rem;
+  text-align: right;
 }
 
-.typing-indicator {
-  display: flex;
-  gap: 4px;
-  margin-top: 0.5rem;
+.bubble-content {
+  padding: 1.2rem 1.5rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  line-height: 1.6;
+  font-size: 1.05rem;
 }
 
-.typing-indicator span {
-  width: 6px;
-  height: 6px;
-  background: #4facfe;
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out;
+.user .bubble-content {
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.15), rgba(0, 242, 254, 0.05));
+  border-color: rgba(0, 242, 254, 0.2);
+  border-bottom-right-radius: 4px;
 }
 
-.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes bounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
+.assistant .bubble-content {
+  border-bottom-left-radius: 4px;
+  background: rgba(30, 41, 59, 0.4);
 }
 
-.input-section {
+.code-block {
+  background: #020617;
   padding: 1rem;
-  margin-top: auto;
+  border-radius: 12px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.status-bar {
+.input-container {
+  padding: 1.5rem;
+  padding-bottom: 2rem;
+  background: linear-gradient(to top, var(--bg-color) 80%, transparent);
+}
+
+.input-wrapper {
+  max-width: 100%;
+  border-radius: 20px;
+}
+
+.loading-status-bar {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.5rem;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
   margin-left: 1rem;
   font-size: 0.8rem;
-  color: #4facfe;
-  font-weight: 600;
+  font-weight: 700;
+  color: #00f2fe;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: #00f2fe;
+  border-radius: 50%;
+  animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
+}
+
+.typing-loader {
+  display: flex;
+  gap: 5px;
+  margin-top: 1rem;
+}
+
+.typing-loader span {
+  width: 8px;
+  height: 8px;
+  background: #00f2fe;
+  border-radius: 50%;
+  animation: loader-bounce 1.4s infinite ease-in-out;
+}
+
+.typing-loader span:nth-child(1) { animation-delay: -0.32s; }
+.typing-loader span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes loader-bounce {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .chat-container {
+    height: calc(100vh - 140px);
+    margin: 0;
+  }
+  .chat-header {
+    margin: 0;
+    border-radius: 0;
+  }
 }
 </style>
