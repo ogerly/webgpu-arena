@@ -2,12 +2,11 @@
   --bg-color: #0f172a;
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(15, 23, 42, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
   --accent-color: #00f2fe;
   --primary-gradient: linear-gradient(90deg, #4facfe, #00f2fe);
   --accent-gradient: linear-gradient(90deg, #ff9f1c, #ff4e50);
-  --glass-bg: rgba(0, 0, 0, 0.45);
 }
 
 * {
@@ -30,11 +29,26 @@ body {
 
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.aams-showcase {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 1rem;
+}
+
+.aams-img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .btn {

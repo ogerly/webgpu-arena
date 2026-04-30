@@ -47,12 +47,6 @@ onMounted(() => {
   height: 100vh;
 }
 
-.main-content {
-  flex: 1;
-  overflow-y: auto;
-  height: 100vh;
-}
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

@@ -117,6 +117,10 @@
         </p>
       </div>
       
+      <div class="aams-showcase">
+        <img src="/img/aams-workflow.png" alt="AAMS Workflow" class="aams-img" />
+      </div>
+
       <details class="donation-box">
         <summary class="donation-summary">
           <h4>Support & Spenden ☕</h4>

@@ -51,7 +51,7 @@
   border-right: none;
   overflow-x: auto;
   gap: 0.5rem;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.4);
 }
 
 .mobile-nav::-webkit-scrollbar {
