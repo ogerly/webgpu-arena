@@ -3,9 +3,10 @@ import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: '/os-arena/',
-  plugins: [
+export default defineConfig(({ mode }) => {
+  return {
+    base: mode === 'production' ? '/os-arena/' : '/',
+    plugins: [
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -34,4 +35,5 @@ export default defineConfig({
       }
     })
   ],
+  }
 })
