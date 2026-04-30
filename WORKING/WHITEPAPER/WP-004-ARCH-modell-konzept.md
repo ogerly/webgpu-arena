@@ -71,4 +71,35 @@ Die Qualität der Modelle wird durch den **Arena-Blind-Test** ermittelt:
 - **Datenhoheit**: Rankings werden lokal gespeichert, können aber optional für eine globale Leaderboard-Synchronisation (Zukunftsprojekt) geteilt werden.
 
 ---
+
+## 6. Modell-Portfolio & Charakteristik
+
+Die folgende Liste stellt die aktuell integrierten Modelle und ihre spezifischen Einsatzgebiete dar:
+
+### 6.1 Llama 3.2 (1B) - Meta
+- **Stärken**: Sehr gut unterstützt, hohe Kontext-Stabilität (128k), solider Allrounder für Zusammenfassungen und Q&A.
+- **Schwächen**: Teilweise geschwätzig, wird in Logik-Benchmarks von SmolLM2 übertroffen.
+- **Einsatz**: Standard-Chat, einfache Textverarbeitung.
+
+### 6.2 Gemma (2B) - Google
+- **Stärken**: Höchste Antwortqualität im 2B-Bereich, überlegene Nuancen in der Sprache, starke Logik.
+- **Schwächen**: Höchster RAM-Bedarf im Portfolio, etwas langsamer in der Generierung.
+- **Einsatz**: Anspruchsvolle logische Aufgaben, kreatives Schreiben.
+
+### 6.3 SmolLM2 (1.7B) - HuggingFace
+- **Stärken**: Extrem starke Performance in Logik und Mathematik durch hochwertige Trainingsdaten. Sehr präzise.
+- **Schwächen**: Fokus auf Englisch, weniger sprachliche Breite als Qwen oder Llama.
+- **Einsatz**: Reasoning-Aufgaben, Code-Verständnis, STEM-Themen.
+
+### 6.4 Qwen 2 / 2.5 (0.5B - 1.5B) - Alibaba
+- **Stärken**: Unübertroffene Effizienz. Das 0.5B Modell läuft auf fast jedem Gerät flüssig. Exzellente Mehrsprachigkeit (29+ Sprachen).
+- **Schwächen**: Geringeres Weltwissen durch kleine Parameterzahl, neigt bei komplexen Logikketten zu Fehlern.
+- **Einsatz**: Multilinguale Chats, einfache Anweisungen, Mobile-Usage.
+
+### 6.5 TinyLlama (1.1B) - Community
+- **Stärken**: Pure Geschwindigkeit. Basiert auf der bewährten Llama-2 Architektur. Sehr stabil.
+- **Schwächen**: Geringere Genauigkeit bei komplexen Prompts, neigt eher zu Halluzinationen als neuere Modelle.
+- **Einsatz**: Schnelles Prototyping, einfachste Interaktionen.
+
+---
 *Dieses Dokument dient als Source of Truth für alle Modell-Integrationen in der OS-Arena.*

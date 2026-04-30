@@ -11,7 +11,8 @@ export const modelRegistry = [
     language: 'Multilingual',
     license: 'Llama 3.2',
     category: 'Text-Chat-Modelle',
-    status: 'active'
+    status: 'active',
+    description: 'Solider Allrounder von Meta. Gute Balance zwischen Speed und Wissen. Ideal für allgemeine Aufgaben.'
   },
   { 
     id: 'Qwen2-1.5B-Instruct-q4f16_1-MLC', 
@@ -25,7 +26,8 @@ export const modelRegistry = [
     language: 'Multilingual',
     license: 'Apache 2.0',
     category: 'Text-Chat-Modelle',
-    status: 'active'
+    status: 'active',
+    description: 'Stark in Mehrsprachigkeit und strukturierten Anweisungen. Sehr effizient.'
   },
   { 
     id: 'TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC', 
@@ -39,7 +41,8 @@ export const modelRegistry = [
     language: 'English',
     license: 'MIT',
     category: 'Mini-Reasoning',
-    status: 'active'
+    status: 'active',
+    description: 'Extrem schnell und ressourcensparend. Gut für einfachste Aufgaben und schwache Hardware.'
   },
   { 
     id: 'Gemma-2B-it-q4f16_1-MLC', 
@@ -53,6 +56,37 @@ export const modelRegistry = [
     language: 'Multilingual',
     license: 'Gemma',
     category: 'Text-Chat-Modelle',
-    status: 'active'
+    status: 'active',
+    description: 'Googles Kraftpaket im 2B-Bereich. Überlegene Logik und Textqualität, benötigt aber mehr RAM.'
+  },
+  { 
+    id: 'SmolLM2-1.7B-Instruct-q4f16_1-MLC', 
+    name: 'SmolLM2', 
+    size: '1.7B Param', 
+    cached: false, 
+    loading: false, 
+    progress: 0, 
+    score: 1100,
+    backend: 'webgpu',
+    language: 'English',
+    license: 'Apache 2.0',
+    category: 'Text-Chat-Modelle',
+    status: 'active',
+    description: 'Herausragend in Logik und STEM-Aufgaben durch hochwertige Trainingsdaten. Primär Englisch.'
+  },
+  { 
+    id: 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC', 
+    name: 'Qwen 2.5 Tiny', 
+    size: '0.5B Param', 
+    cached: false, 
+    loading: false, 
+    progress: 0, 
+    score: 1050,
+    backend: 'webgpu',
+    language: 'Multilingual',
+    license: 'Apache 2.0',
+    category: 'Mini-Reasoning',
+    status: 'active',
+    description: 'Das "Effizienz-Wunder". Läuft fast überall, ideal für einfache Befehle und Chat-Bots.'
   }
 ];
