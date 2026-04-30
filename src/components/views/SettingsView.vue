@@ -34,6 +34,8 @@
               📁 Ordner öffnen
             </button>
           </div>
+        </div>
+
         <div class="setting-item">
           <div class="setting-info">
             <h4>App Information</h4>
