@@ -829,20 +829,20 @@ Stattdessen:
 ```md
 # TODO: OS Arena Ranking
 
-- [ ] Repo-Struktur analysieren
-- [ ] aktuelle Ranking-Komponenten finden
-- [ ] Benchmark-Datenobjekt dokumentieren
-- [ ] lokale Ranking-Speicherung absichern
-- [ ] `rankingTypes.ts` erstellen
-- [ ] `localRanking.ts` erstellen oder bereinigen
-- [ ] `installId.ts` erstellen
-- [ ] `RankingConsent.vue` erstellen
-- [ ] `globalRanking.ts` erstellen
-- [ ] Supabase Migration für `benchmark_results` erstellen
-- [ ] Supabase View `leaderboard_public` erstellen
-- [ ] Edge Function `submit-ranking` erstellen
-- [ ] Payload-Validierung implementieren
-- [ ] direkte DB-Inserts blockieren
+- [x] Repo-Struktur analysieren
+- [x] aktuelle Ranking-Komponenten finden
+- [x] Benchmark-Datenobjekt dokumentieren
+- [x] lokale Ranking-Speicherung absichern
+- [x] `rankingTypes.ts` erstellen
+- [x] `localRanking.ts` erstellen oder bereinigen
+- [x] `installId.ts` erstellen
+- [x] `RankingConsent.vue` erstellen
+- [x] `globalRanking.ts` erstellen
+- [x] Supabase Migration für `benchmark_results` erstellen
+- [x] Supabase View `leaderboard_public` erstellen
+- [x] Edge Function `submit-ranking` erstellen
+- [x] Payload-Validierung implementieren
+- [x] direkte DB-Inserts blockieren
 - [ ] Global-Ranking-Tab einbauen
 - [ ] Offline-/Fehlerzustände darstellen
 - [ ] README aktualisieren

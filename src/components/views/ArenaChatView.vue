@@ -53,6 +53,15 @@
             <div v-if="msg.modelA.stats && !msg.modelA.generating" class="performance-stats">
               <span class="stat-item">{{ msg.modelA.stats.tps }} tok/s</span>
               <span class="stat-item">{{ msg.modelA.stats.duration }}s</span>
+              <button 
+                v-if="consentGranted && !msg.modelA.uploaded" 
+                class="btn-mini-upload" 
+                @click="handleGlobalUpload(msg, 'A')"
+                :disabled="msg.modelA.uploading"
+              >
+                {{ msg.modelA.uploading ? '...' : '🌍 Global' }}
+              </button>
+              <span v-if="msg.modelA.uploaded" class="stat-uploaded">✅</span>
             </div>
           </div>
 
@@ -75,6 +84,15 @@
             <div v-if="msg.modelB.stats && !msg.modelB.generating" class="performance-stats">
               <span class="stat-item">{{ msg.modelB.stats.tps }} tok/s</span>
               <span class="stat-item">{{ msg.modelB.stats.duration }}s</span>
+              <button 
+                v-if="consentGranted && !msg.modelB.uploaded" 
+                class="btn-mini-upload" 
+                @click="handleGlobalUpload(msg, 'B')"
+                :disabled="msg.modelB.uploading"
+              >
+                {{ msg.modelB.uploading ? '...' : '🌍 Global' }}
+              </button>
+              <span v-if="msg.modelB.uploaded" class="stat-uploaded">✅</span>
             </div>
           </div>
         </div>
@@ -103,6 +121,8 @@
         </button>
       </div>
     </div>
+
+    <RankingConsent @accept="onConsentAccept" />
   </div>
 </template>
 
@@ -112,13 +132,40 @@ import { state, getOrInitEngine, downloadModel, updateModelScore } from '../../s
 import { calcEloWin, calcEloDraw } from '../../elo.js';
 import { promptCategories } from '../../arena-prompts.js';
 import { saveLocalBenchmark } from '../../services/ranking/localRanking.js';
+import { submitToGlobalRanking } from '../../services/ranking/globalRanking.js';
+import RankingConsent from '../ranking/RankingConsent.vue';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
 const isBlind = ref(true); // Namen standardmäßig ausblenden
+const consentGranted = ref(localStorage.getItem('os_arena_ranking_consent') === 'granted');
 
 const modelA = computed(() => state.availableModels.find(m => m.id === state.selectedModelA));
 const modelB = computed(() => state.availableModels.find(m => m.id === state.selectedModelB));
+
+const onConsentAccept = () => {
+  consentGranted.value = true;
+};
+
+const handleGlobalUpload = async (msg, modelType) => {
+  const modelData = modelType === 'A' ? msg.modelA : msg.modelB;
+  if (!modelData.stats || modelData.uploading) return;
+
+  modelData.uploading = true;
+  const result = await submitToGlobalRanking({
+    modelId: modelData.id,
+    modelName: modelData.name,
+    tokensPerSecond: parseFloat(modelData.stats.tps),
+    totalTimeMs: Math.round(parseFloat(modelData.stats.duration) * 1000)
+  });
+
+  if (!result.error) {
+    modelData.uploaded = true;
+  } else {
+    alert("Upload fehlgeschlagen: " + result.error);
+  }
+  modelData.uploading = false;
+};
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -497,6 +544,32 @@ const vote = (index, winner) => {
   color: var(--text-secondary);
   font-weight: 500;
   letter-spacing: 0.02em;
+}
+
+.btn-mini-upload {
+  background: rgba(0, 242, 254, 0.1);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: #00f2fe;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-mini-upload:hover {
+  background: rgba(0, 242, 254, 0.2);
+  transform: scale(1.05);
+}
+
+.btn-mini-upload:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stat-uploaded {
+  font-size: 0.7rem;
+  color: #00f2fe;
 }
 
 .spinner {

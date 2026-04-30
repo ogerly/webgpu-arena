@@ -22,3 +22,17 @@ Wir nutzen moderne Web-Technologien, um die Modelle direkt über deinen Browser 
 - **Lokal zwischengespeichert (Offline-Fähigkeit)**: Wenn du ein KI-Modell einmal geladen hast, wird es lokal **in der Datenbank deines Browsers (IndexedDB / Cache Storage) abgelegt**. Das spart Bandbreite bei späteren Aufrufen und ermöglicht eine Nutzung bereits gelieferter Modelle ohne aktive Internetverbindung. Beachte: Der Browser kann diesen Cache löschen.
 - **Direkt als App installierbar**: Die OS-Arena funktioniert als "Progressive Web App" (PWA). Du kannst sie mit einem Klick auf deinem Startbildschirm speichern und wie eine echte App nutzen – ganz ohne App-Store-Zwang.
 - **Transparentes System-Monitoring**: Über ein Technik-Panel in den Einstellungen hast du jederzeit volle Transparenz über deine Hardware. Du siehst den WebGPU-Status deiner Grafikkarte, die RAM-Auslastung deines Browsers und den Fortschritt laufender Modell-Downloads in Echtzeit.
+
+---
+
+## Qualitätssicherung & Testing (Automatisierte Validierung)
+
+Um sicherzustellen, dass die OS-Arena stabil bleibt und mathematische Berechnungen (wie das ELO-Ranking) präzise sind, nutzen wir automatisierte Unit-Tests.
+
+- **Framework**: Vitest (speziell für moderne Web-Projekte).
+- **Abgedeckte Bereiche**:
+  - **ELO-Ranking**: Korrekte Punktevergabe nach Siegen oder Remis.
+  - **Daten-Persistenz**: Sicherer Umgang mit dem lokalen Benchmark-Speicher.
+  - **Datenschutz (Consent)**: Überprüfung, dass Daten nur bei ausdrücklicher Zustimmung gesendet werden.
+
+Diese Tests garantieren, dass die Kern-Logik der App auch bei Updates fehlerfrei bleibt.

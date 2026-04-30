@@ -134,4 +134,15 @@ AND created_at > now() - interval '1 hour';
 - Anfragen von fremden Skripten oder anderen Webseiten werden auf Browser-Ebene blockiert.
 
 ---
+
+## 7. Automatisierte Qualitätssicherung
+
+Das Ranking-System wird durch automatisierte Unit-Tests (`tests/ranking.test.js`) abgesichert, um Fehlfunktionen und Datenschutz-Verletzungen zu verhindern.
+
+### 7.1 Test-Szenarien
+- **Consent-Validierung**: Verifikation, dass der Global-Service bei fehlender Zustimmung (`denied`) den API-Aufruf strikt verweigert.
+- **Payload-Integrität**: Sicherstellung, dass nur die im Schema definierten Metadaten (TPS, Modell-ID, etc.) für den Upload vorbereitet werden.
+- **Local Storage Management**: Test der korrekten Speicherung und Limitierung (max. 50 Einträge) der lokalen Benchmarks.
+
+---
 *Dieses Dokument wird bei jeder Änderung an der Backend-Infrastruktur aktualisiert.*
