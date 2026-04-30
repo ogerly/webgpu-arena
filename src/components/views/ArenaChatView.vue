@@ -37,17 +37,18 @@
           <!-- Model A Card -->
           <div class="model-card glass-panel" :class="{'winner': msg.winner === 'A', 'loser': msg.winner === 'B', 'revealed': msg.winner}">
             <div class="model-header model-a-header">
-              <span class="model-badge">A</span>
-              <span class="model-name-display">{{ msg.winner ? msg.modelA.name : 'Unbekanntes Modell' }}</span>
+              <div class="model-header-left">
+                <span class="model-badge">A</span>
+                <span class="model-name-display">{{ msg.winner ? msg.modelA.name : 'Modell A' }}</span>
+              </div>
+              <div v-if="msg.winner && msg.eloChange" class="reveal-info">
+                <span class="elo-delta">{{ msg.winner === 'A' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
+              </div>
             </div>
             <div class="model-content">{{ msg.modelA.content || (msg.modelA.generating ? 'Denkt nach...' : '') }}</div>
             
             <div v-if="!msg.winner && msg.modelA.content && !msg.modelA.generating && !msg.modelB.generating" class="vote-actions">
               <button class="btn btn-vote" @click="vote(index, 'A')">🏆 A war besser</button>
-            </div>
-            
-            <div v-if="msg.winner" class="reveal-info">
-              <span class="elo-delta" v-if="msg.eloChange">{{ msg.winner === 'A' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
             </div>
             
             <div v-if="msg.modelA.stats && !msg.modelA.generating" class="performance-stats">
@@ -68,17 +69,18 @@
           <!-- Model B Card -->
           <div class="model-card glass-panel" :class="{'winner': msg.winner === 'B', 'loser': msg.winner === 'A', 'revealed': msg.winner}">
             <div class="model-header model-b-header">
-              <span class="model-badge">B</span>
-              <span class="model-name-display">{{ msg.winner ? msg.modelB.name : 'Unbekanntes Modell' }}</span>
+              <div class="model-header-left">
+                <span class="model-badge">B</span>
+                <span class="model-name-display">{{ msg.winner ? msg.modelB.name : 'Modell B' }}</span>
+              </div>
+              <div v-if="msg.winner && msg.eloChange" class="reveal-info">
+                <span class="elo-delta">{{ msg.winner === 'B' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
+              </div>
             </div>
             <div class="model-content">{{ msg.modelB.content || (msg.modelB.generating ? 'Denkt nach...' : '') }}</div>
             
             <div v-if="!msg.winner && msg.modelB.content && !msg.modelB.generating && !msg.modelA.generating" class="vote-actions">
               <button class="btn btn-vote" @click="vote(index, 'B')">🏆 B war besser</button>
-            </div>
-
-            <div v-if="msg.winner" class="reveal-info">
-              <span class="elo-delta" v-if="msg.eloChange">{{ msg.winner === 'B' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
             </div>
 
             <div v-if="msg.modelB.stats && !msg.modelB.generating" class="performance-stats">
@@ -434,50 +436,64 @@ const vote = (index, winner) => {
 }
 
 .models-response-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
 @media (min-width: 768px) {
   .models-response-container {
-    flex-direction: row;
-  }
-  .model-card {
-    flex: 1;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
 .model-card {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  transition: all 0.3s ease;
+  padding: 1.2rem;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  height: 100%;
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
 }
 
-.model-card.loser {
-  opacity: 0.6;
+.model-card.revealed {
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .model-card.winner {
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
-  border-color: #00f2fe;
+  background: rgba(0, 242, 254, 0.05);
+  border-color: rgba(0, 242, 254, 0.4);
+  box-shadow: 0 0 30px rgba(0, 242, 254, 0.1);
+}
+
+.model-card.loser {
+  opacity: 0.5;
+  filter: grayscale(0.5);
 }
 
 .model-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--glass-border);
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.model-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
 }
 
 .model-badge {
-  padding: 0.2rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: bold;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
 }
 
 .model-a-header .model-badge {
@@ -491,15 +507,18 @@ const vote = (index, winner) => {
 }
 
 .model-name-display {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
 }
 
 .model-content {
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
   color: var(--text-primary);
   white-space: pre-wrap;
+  flex: 1; /* Schiebt den Footer nach unten */
+  margin-bottom: 1.5rem;
 }
 
 .vote-actions {
@@ -508,11 +527,21 @@ const vote = (index, winner) => {
 
 .btn-vote {
   width: 100%;
-  padding: 0.6rem;
-  background: rgba(255, 255, 255, 0.1);
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-vote:hover {
+  background: var(--primary-gradient);
+  color: #000;
+  border-color: transparent;
+  transform: translateY(-2px);
 }
 
 .input-area {
@@ -530,13 +559,25 @@ const vote = (index, winner) => {
   color: #4facfe;
 }
 
+.elo-delta {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #00f2fe;
+  background: rgba(0, 242, 254, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+}
+
 .performance-stats {
   margin-top: auto;
-  padding-top: 0.8rem;
+  padding-top: 1rem;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 0.8rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .stat-item {
@@ -550,16 +591,18 @@ const vote = (index, winner) => {
   background: rgba(0, 242, 254, 0.1);
   border: 1px solid rgba(0, 242, 254, 0.3);
   color: #00f2fe;
-  font-size: 0.6rem;
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .btn-mini-upload:hover {
   background: rgba(0, 242, 254, 0.2);
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 
 .btn-mini-upload:disabled {
@@ -568,8 +611,17 @@ const vote = (index, winner) => {
 }
 
 .stat-uploaded {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: #00f2fe;
+}
+
+.message-group {
+  animation: messageSlideIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes messageSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .spinner {
