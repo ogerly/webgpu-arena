@@ -49,6 +49,11 @@
             <div v-if="msg.winner" class="reveal-info">
               <span class="elo-delta" v-if="msg.eloChange">{{ msg.winner === 'A' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
             </div>
+            
+            <div v-if="msg.modelA.stats && !msg.modelA.generating" class="performance-stats">
+              <span class="stat-item">{{ msg.modelA.stats.tps }} tok/s</span>
+              <span class="stat-item">{{ msg.modelA.stats.duration }}s</span>
+            </div>
           </div>
 
           <!-- Model B Card -->
@@ -65,6 +70,11 @@
 
             <div v-if="msg.winner" class="reveal-info">
               <span class="elo-delta" v-if="msg.eloChange">{{ msg.winner === 'B' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
+            </div>
+
+            <div v-if="msg.modelB.stats && !msg.modelB.generating" class="performance-stats">
+              <span class="stat-item">{{ msg.modelB.stats.tps }} tok/s</span>
+              <span class="stat-item">{{ msg.modelB.stats.duration }}s</span>
             </div>
           </div>
         </div>
@@ -101,6 +111,7 @@ import { ref, computed, nextTick } from 'vue';
 import { state, getOrInitEngine, downloadModel, updateModelScore } from '../../state.js';
 import { calcEloWin, calcEloDraw } from '../../elo.js';
 import { promptCategories } from '../../arena-prompts.js';
+import { saveLocalBenchmark } from '../../services/ranking/localRanking.js';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
@@ -145,20 +156,57 @@ const submitPrompt = async () => {
     const engineA = await getOrInitEngine(state.selectedModelA);
     const engineB = await getOrInitEngine(state.selectedModelB);
 
+    // Messung für Modell A
     state.loadingStatus = "Modell A antwortet...";
+    const startA = performance.now();
     const replyA = await engineA.chat.completions.create({
       messages: [{ role: "user", content: userText }]
     });
-    state.arenaHistory[msgIndex].modelA.content = replyA.choices[0].message.content;
+    const endA = performance.now();
+    const durationA = (endA - startA) / 1000; // Sekunden
+    const textA = replyA.choices[0].message.content;
+    const tokensA = Math.ceil(textA.length / 3); // Schätzung: 3 Zeichen pro Token
+    const tpsA = (tokensA / durationA).toFixed(2);
+
+    state.arenaHistory[msgIndex].modelA.content = textA;
     state.arenaHistory[msgIndex].modelA.generating = false;
+    state.arenaHistory[msgIndex].modelA.stats = { tps: tpsA, duration: durationA.toFixed(2) };
+    
+    // Lokal speichern (anonymisiert)
+    saveLocalBenchmark({
+      modelId: state.selectedModelA,
+      modelName: modelA.value.name,
+      tokensPerSecond: parseFloat(tpsA),
+      totalTimeMs: Math.round(endA - startA),
+      timestamp: new Date().toISOString()
+    });
+
     scrollToBottom();
 
+    // Messung für Modell B
     state.loadingStatus = "Modell B antwortet...";
+    const startB = performance.now();
     const replyB = await engineB.chat.completions.create({
       messages: [{ role: "user", content: userText }]
     });
-    state.arenaHistory[msgIndex].modelB.content = replyB.choices[0].message.content;
+    const endB = performance.now();
+    const durationB = (endB - startB) / 1000;
+    const textB = replyB.choices[0].message.content;
+    const tokensB = Math.ceil(textB.length / 3);
+    const tpsB = (tokensB / durationB).toFixed(2);
+
+    state.arenaHistory[msgIndex].modelB.content = textB;
     state.arenaHistory[msgIndex].modelB.generating = false;
+    state.arenaHistory[msgIndex].modelB.stats = { tps: tpsB, duration: durationB.toFixed(2) };
+
+    saveLocalBenchmark({
+      modelId: state.selectedModelB,
+      modelName: modelB.value.name,
+      tokensPerSecond: parseFloat(tpsB),
+      totalTimeMs: Math.round(endB - startB),
+      timestamp: new Date().toISOString()
+    });
+
     scrollToBottom();
     
   } catch(err) {
@@ -433,6 +481,22 @@ const vote = (index, winner) => {
   padding: 0.5rem;
   font-size: 0.85rem;
   color: #4facfe;
+}
+
+.performance-stats {
+  margin-top: auto;
+  padding-top: 0.8rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.stat-item {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .spinner {
