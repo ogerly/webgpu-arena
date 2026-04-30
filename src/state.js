@@ -136,3 +136,33 @@ export async function getOrInitEngine(modelId) {
     state.globalLoading = false;
   }
 }
+
+// Score Management
+export function loadScores() {
+  const saved = localStorage.getItem('os-arena-scores');
+  if (saved) {
+    const scores = JSON.parse(saved);
+    state.availableModels.forEach(m => {
+      if (scores[m.id]) m.score = scores[m.id];
+    });
+  }
+}
+
+export function saveScores() {
+  const scores = {};
+  state.availableModels.forEach(m => {
+    scores[m.id] = m.score;
+  });
+  localStorage.setItem('os-arena-scores', JSON.stringify(scores));
+}
+
+export function updateModelScore(modelId, newScore) {
+  const model = state.availableModels.find(m => m.id === modelId);
+  if (model) {
+    model.score = newScore;
+    saveScores();
+  }
+}
+
+// Init
+loadScores();

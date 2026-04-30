@@ -12,11 +12,13 @@
 - **Privacy First & Sicher**: Deine Prompts, Daten und Chats verlassen niemals dein Endgerät. Strikte Sanitization schützt vor XSS-Angriffen.
 
 ## 🚀 Integrierte Modelle
-Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Standardmäßig integriert sind kompakte und pfeilschnelle KIs:
-- **Llama 3.2** (1B Parameter)
-- **Qwen 2** (1.5B Parameter)
-- **TinyLlama** (1.1B Parameter)
-- **Gemma** (2B Parameter)
+Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Wir fokussieren uns auf das **2B-Limit**, um flüssige Performance auf Standard-Hardware zu garantieren:
+
+- **Llama 3.2 (1B)**: Der vielseitige Allrounder von Meta. Stark in Zusammenfassungen und allgemeinem Chat.
+- **Gemma (2B)**: Googles Kraftpaket. Überlegene Reasoning-Fähigkeit und Textqualität (höherer RAM-Bedarf).
+- **SmolLM2 (1.7B)**: Der Logik-Spezialist. Extrem stark in Mathe, Code und STEM-Aufgaben.
+- **Qwen 2.5 (0.5B - 1.5B)**: Das Effizienz-Wunder von Alibaba. Exzellente Mehrsprachigkeit und extrem schnell.
+- **TinyLlama (1.1B)**: Der Geschwindigkeits-König. Ideal für einfachste Interaktionen und schwache Hardware.
 
 
 <img width="1190" height="805" alt="image" src="https://github.com/user-attachments/assets/a0dedcb0-cfe0-4284-b6c8-8af8edd0983c" />

@@ -41,7 +41,32 @@
       </div>
     </section>
 
-    <!-- Manifest Section -->
+    <!-- Model Showcase -->
+    <section class="models-showcase">
+      <h3>Unterstützte Modelle</h3>
+      <div class="models-mini-grid">
+        <div class="model-mini-card">
+          <span class="m-icon">🦙</span>
+          <h4>Llama 3.2</h4>
+          <p>Der Allrounder</p>
+        </div>
+        <div class="model-mini-card">
+          <span class="m-icon">💎</span>
+          <h4>Gemma</h4>
+          <p>Logik-Profi</p>
+        </div>
+        <div class="model-mini-card">
+          <span class="m-icon">🐉</span>
+          <h4>Qwen 2.5</h4>
+          <p>Effizienz-Wunder</p>
+        </div>
+        <div class="model-mini-card">
+          <span class="m-icon">🔬</span>
+          <h4>SmolLM2</h4>
+          <p>STEM-Experte</p>
+        </div>
+      </div>
+    </section>
     <section class="manifest-section glass-panel">
       <h3>Das Manifest</h3>
       <div class="manifest-content">
@@ -294,6 +319,67 @@ const copyToClipboard = async (text) => {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+
+.models-showcase {
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
+}
+
+.models-showcase h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.models-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.model-mini-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem 1rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.model-mini-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-5px);
+  border-color: rgba(79, 172, 254, 0.3);
+}
+
+.m-icon {
+  font-size: 2rem;
+  margin-bottom: 0.2rem;
+}
+
+.model-mini-card h4 {
+  font-size: 0.9rem;
+  margin: 0;
+  color: #fff;
+}
+
+.model-mini-card p {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .models-mini-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .manifest-section {

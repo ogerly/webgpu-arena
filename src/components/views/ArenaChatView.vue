@@ -1,46 +1,30 @@
 <template>
   <div class="chat-container">
     <div class="chat-header glass-panel">
-      <div class="model-select-group">
-        <div class="model-select-compact">
-          <label>Modell A (Blau)</label>
-          <select v-model="state.selectedModelA" :disabled="state.loading">
-            <option v-for="m in state.availableModels" :key="'ca-'+m.id" :value="m.id">
-              {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
-            </option>
-          </select>
-        </div>
-        <div v-if="modelA" class="model-meta">
-          <span :class="['mini-badge', modelA.cached ? 'local' : 'cloud']">{{ modelA.cached ? 'LOKAL' : 'CLOUD' }}</span>
-          <button v-if="!modelA.cached" class="mini-dl-btn" @click="downloadModel(modelA)" :disabled="modelA.loading">
-            {{ modelA.loading ? '...' : 'Laden' }}
-          </button>
-        </div>
+      <!-- Kategorie-Wähler -->
+      <div class="category-selector">
+        <label>Prompt-Vorlage</label>
+        <select @change="applyTemplate($event.target.value)">
+          <option value="">-- Eigene Eingabe --</option>
+          <optgroup v-for="cat in promptCategories" :key="cat.id" :label="cat.label">
+            <option v-for="(p, i) in cat.prompts" :key="i" :value="p">{{ p }}</option>
+          </optgroup>
+        </select>
       </div>
 
-      <div class="vs-badge-small">VS</div>
-
-      <div class="model-select-group">
-        <div class="model-select-compact">
-          <label>Modell B (Lila)</label>
-          <select v-model="state.selectedModelB" :disabled="state.loading">
-            <option v-for="m in state.availableModels" :key="'cb-'+m.id" :value="m.id">
-              {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
-            </option>
-          </select>
-        </div>
-        <div v-if="modelB" class="model-meta">
-          <span :class="['mini-badge', modelB.cached ? 'local' : 'cloud']">{{ modelB.cached ? 'LOKAL' : 'CLOUD' }}</span>
-          <button v-if="!modelB.cached" class="mini-dl-btn" @click="downloadModel(modelB)" :disabled="modelB.loading">
-            {{ modelB.loading ? '...' : 'Laden' }}
-          </button>
-        </div>
+      <div class="model-selection-status" v-if="!isBlind">
+        <span class="badge">{{ modelA?.name }}</span>
+        <span class="vs">VS</span>
+        <span class="badge">{{ modelB?.name }}</span>
+      </div>
+      <div v-else class="blind-notice">
+        🕵️ Blind-Test Aktiv (Namen ausgeblendet)
       </div>
     </div>
 
     <div class="chat-history" ref="chatHistoryRef">
       <div v-if="state.arenaHistory.length === 0" class="empty-state">
-        <p>Stelle eine Frage, um den Vergleich zu starten!</p>
+        <p>Stelle eine Frage, um den Vergleich zu starten! Die Namen der Modelle bleiben bis zur Wertung geheim.</p>
       </div>
       
       <div v-for="(msg, index) in state.arenaHistory" :key="index" class="message-group">
@@ -50,29 +34,43 @@
         </div>
         
         <div class="models-response-container">
-          <!-- Model A -->
-          <div class="model-card glass-panel" :class="{'winner': msg.winner === 'A', 'loser': msg.winner === 'B'}">
+          <!-- Model A Card -->
+          <div class="model-card glass-panel" :class="{'winner': msg.winner === 'A', 'loser': msg.winner === 'B', 'revealed': msg.winner}">
             <div class="model-header model-a-header">
               <span class="model-badge">A</span>
-              <span class="model-name-display">{{ msg.modelA.name }}</span>
+              <span class="model-name-display">{{ msg.winner ? msg.modelA.name : 'Unbekanntes Modell' }}</span>
             </div>
-            <div class="model-content">{{ msg.modelA.content || (msg.modelA.generating ? 'Lade...' : '') }}</div>
-            <div v-if="!msg.winner && msg.modelA.content && !msg.modelA.generating" class="vote-actions">
-              <button class="btn btn-vote" @click="vote(index, 'A')">🏆 Besser</button>
+            <div class="model-content">{{ msg.modelA.content || (msg.modelA.generating ? 'Denkt nach...' : '') }}</div>
+            
+            <div v-if="!msg.winner && msg.modelA.content && !msg.modelA.generating && !msg.modelB.generating" class="vote-actions">
+              <button class="btn btn-vote" @click="vote(index, 'A')">🏆 A war besser</button>
+            </div>
+            
+            <div v-if="msg.winner" class="reveal-info">
+              <span class="elo-delta" v-if="msg.eloChange">{{ msg.winner === 'A' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
             </div>
           </div>
 
-          <!-- Model B -->
-          <div class="model-card glass-panel" :class="{'winner': msg.winner === 'B', 'loser': msg.winner === 'A'}">
+          <!-- Model B Card -->
+          <div class="model-card glass-panel" :class="{'winner': msg.winner === 'B', 'loser': msg.winner === 'A', 'revealed': msg.winner}">
             <div class="model-header model-b-header">
               <span class="model-badge">B</span>
-              <span class="model-name-display">{{ msg.modelB.name }}</span>
+              <span class="model-name-display">{{ msg.winner ? msg.modelB.name : 'Unbekanntes Modell' }}</span>
             </div>
-            <div class="model-content">{{ msg.modelB.content || (msg.modelB.generating ? 'Lade...' : '') }}</div>
-            <div v-if="!msg.winner && msg.modelB.content && !msg.modelB.generating" class="vote-actions">
-              <button class="btn btn-vote" @click="vote(index, 'B')">🏆 Besser</button>
+            <div class="model-content">{{ msg.modelB.content || (msg.modelB.generating ? 'Denkt nach...' : '') }}</div>
+            
+            <div v-if="!msg.winner && msg.modelB.content && !msg.modelB.generating && !msg.modelA.generating" class="vote-actions">
+              <button class="btn btn-vote" @click="vote(index, 'B')">🏆 B war besser</button>
+            </div>
+
+            <div v-if="msg.winner" class="reveal-info">
+              <span class="elo-delta" v-if="msg.eloChange">{{ msg.winner === 'B' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
             </div>
           </div>
+        </div>
+        
+        <div v-if="!msg.winner && msg.modelA.content && msg.modelB.content && !msg.modelA.generating && !msg.modelB.generating" class="draw-action">
+          <button class="btn btn-secondary btn-sm" @click="vote(index, 'draw')">🤝 Unentschieden</button>
         </div>
       </div>
     </div>
@@ -100,10 +98,13 @@
 
 <script setup>
 import { ref, computed, nextTick } from 'vue';
-import { state, getOrInitEngine, downloadModel } from '../../state.js';
+import { state, getOrInitEngine, downloadModel, updateModelScore } from '../../state.js';
+import { calcEloWin, calcEloDraw } from '../../elo.js';
+import { promptCategories } from '../../arena-prompts.js';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
+const isBlind = ref(true); // Namen standardmäßig ausblenden
 
 const modelA = computed(() => state.availableModels.find(m => m.id === state.selectedModelA));
 const modelB = computed(() => state.availableModels.find(m => m.id === state.selectedModelB));
@@ -116,25 +117,22 @@ const scrollToBottom = () => {
   });
 };
 
+const applyTemplate = (val) => {
+  if (val) prompt.value = val;
+};
+
 const submitPrompt = async () => {
   if (!prompt.value.trim() || state.loading) return;
-  
-  if (state.selectedModelA === state.selectedModelB) {
-    alert("Bitte wähle zwei unterschiedliche Modelle im Arena Setup.");
-    return;
-  }
   
   const userText = prompt.value;
   prompt.value = '';
   
-  const modelAObj = state.availableModels.find(m => m.id === state.selectedModelA);
-  const modelBObj = state.availableModels.find(m => m.id === state.selectedModelB);
-  
   const currentMsg = {
     user: userText,
-    modelA: { id: state.selectedModelA, name: modelAObj.name, content: '', generating: true },
-    modelB: { id: state.selectedModelB, name: modelBObj.name, content: '', generating: true },
-    winner: null
+    modelA: { id: state.selectedModelA, name: modelA.value.name, content: '', generating: true },
+    modelB: { id: state.selectedModelB, name: modelB.value.name, content: '', generating: true },
+    winner: null,
+    eloChange: 0
   };
   
   state.arenaHistory.push(currentMsg);
@@ -147,8 +145,7 @@ const submitPrompt = async () => {
     const engineA = await getOrInitEngine(state.selectedModelA);
     const engineB = await getOrInitEngine(state.selectedModelB);
 
-    state.loadingStatus = "Generiere Antworten...";
-    
+    state.loadingStatus = "Modell A antwortet...";
     const replyA = await engineA.chat.completions.create({
       messages: [{ role: "user", content: userText }]
     });
@@ -156,6 +153,7 @@ const submitPrompt = async () => {
     state.arenaHistory[msgIndex].modelA.generating = false;
     scrollToBottom();
 
+    state.loadingStatus = "Modell B antwortet...";
     const replyB = await engineB.chat.completions.create({
       messages: [{ role: "user", content: userText }]
     });
@@ -165,10 +163,8 @@ const submitPrompt = async () => {
     
   } catch(err) {
     console.error("Generierungsfehler:", err);
-    state.arenaHistory[msgIndex].modelA.content = "Fehler bei der Generierung.";
-    state.arenaHistory[msgIndex].modelA.generating = false;
-    state.arenaHistory[msgIndex].modelB.content = "Fehler bei der Generierung.";
-    state.arenaHistory[msgIndex].modelB.generating = false;
+    state.arenaHistory[msgIndex].modelA.content = "Fehler!";
+    state.arenaHistory[msgIndex].modelB.content = "Fehler!";
   } finally {
     state.loading = false;
     state.loadingStatus = '';
@@ -177,20 +173,33 @@ const submitPrompt = async () => {
 
 const vote = (index, winner) => {
   const msg = state.arenaHistory[index];
-  msg.winner = winner;
+  if (msg.winner) return; // Bereits gewertet
+
+  const mA = state.availableModels.find(m => m.id === msg.modelA.id);
+  const mB = state.availableModels.find(m => m.id === msg.modelB.id);
   
-  const modelA = state.availableModels.find(m => m.id === msg.modelA.id);
-  const modelB = state.availableModels.find(m => m.id === msg.modelB.id);
-  
-  if (modelA && modelB) {
-    if (winner === 'A') {
-      modelA.score += 15;
-      modelB.score -= 10;
-    } else {
-      modelB.score += 15;
-      modelA.score -= 10;
-    }
+  if (!mA || !mB) return;
+
+  let eloRes;
+  if (winner === 'A') {
+    eloRes = calcEloWin(mA.score, mB.score);
+    updateModelScore(mA.id, eloRes.winner);
+    updateModelScore(mB.id, eloRes.loser);
+    msg.eloChange = eloRes.change;
+  } else if (winner === 'B') {
+    eloRes = calcEloWin(mB.score, mA.score);
+    updateModelScore(mB.id, eloRes.winner);
+    updateModelScore(mA.id, eloRes.loser);
+    msg.eloChange = eloRes.change;
+  } else {
+    eloRes = calcEloDraw(mA.score, mB.score);
+    updateModelScore(mA.id, eloRes.a);
+    updateModelScore(mB.id, eloRes.b);
+    msg.eloChange = eloRes.change;
   }
+
+  msg.winner = winner;
+  isBlind.value = false; // Nach der ersten Wertung Transparenz
 };
 </script>
 
@@ -420,29 +429,23 @@ const vote = (index, winner) => {
 .loading-status {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  color: #00f2fe;
-  font-size: 0.8rem;
+  gap: 0.8rem;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  color: #4facfe;
 }
 
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(0, 242, 254, 0.3);
-  border-top-color: #00f2fe;
+  border: 2px solid rgba(79, 172, 254, 0.3);
+  border-top-color: #4facfe;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-
-.input-wrapper {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
 }
 
 textarea {
