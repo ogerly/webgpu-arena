@@ -38,7 +38,7 @@ serve(async (req) => {
     }
 
     // 2. Anonymisierung (Hash mit Salt)
-    const salt = Deno.env.get('RANKING_SALT') ?? 'default_salt_please_change'
+    const salt = Deno.env.get('SALT') ?? Deno.env.get('RANKING_SALT') ?? 'default_salt'
     const encoder = new TextEncoder()
     const data = encoder.encode(install_id + salt)
     const hashBuffer = await crypto.subtle.digest('SHA-256', data)

@@ -66,3 +66,18 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* Global Select & Option Styles for Dark Mode */
+select {
+  background-color: #1e293b; /* Slate 800 */
+  color: white;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+option {
+  background-color: #0f172a; /* Slate 900 */
+  color: white;
+  padding: 8px;
+}

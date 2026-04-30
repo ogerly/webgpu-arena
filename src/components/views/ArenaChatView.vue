@@ -1,36 +1,58 @@
 <template>
   <div class="chat-container">
     <div class="chat-header glass-panel">
-      <!-- Kategorie-Wähler -->
-      <div class="category-selector">
-        <label>Prompt-Vorlage</label>
-        <select @change="applyTemplate($event.target.value)">
-          <option value="">-- Eigene Eingabe --</option>
-          <optgroup v-for="cat in promptCategories" :key="cat.id" :label="cat.label">
-            <option v-for="(p, i) in cat.prompts" :key="i" :value="p">{{ p }}</option>
-          </optgroup>
-        </select>
-      </div>
+      <div class="header-main">
+        <div class="header-left">
+          <div class="arena-selector-group">
+            <div class="model-select-wrapper a">
+              <span class="label">A</span>
+              <select v-model="state.selectedModelA">
+                <option v-for="m in state.availableModels" :key="'a-'+m.id" :value="m.id">
+                  {{ m.name }}
+                </option>
+              </select>
+            </div>
+            <div class="vs-mini">VS</div>
+            <div class="model-select-wrapper b">
+              <span class="label">B</span>
+              <select v-model="state.selectedModelB">
+                <option v-for="m in state.availableModels" :key="'b-'+m.id" :value="m.id">
+                  {{ m.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-      <div class="model-selection-status" v-if="!isBlind">
-        <span class="badge">{{ modelA?.name }}</span>
-        <span class="vs">VS</span>
-        <span class="badge">{{ modelB?.name }}</span>
-      </div>
-      <div v-else class="blind-notice">
-        🕵️ Blind-Test Aktiv (Namen ausgeblendet)
+        <div class="header-right">
+          <div class="category-selector">
+            <select @change="applyTemplate($event.target.value)">
+              <option value="">-- Prompt Vorlage --</option>
+              <optgroup v-for="cat in promptCategories" :key="cat.id" :label="cat.label">
+                <option v-for="(p, i) in cat.prompts" :key="i" :value="p">{{ p }}</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="blind-toggle" @click="isBlind = !isBlind" :class="{ active: isBlind }">
+            <span class="icon">{{ isBlind ? '🔒' : '👁️' }}</span>
+            <span class="text">Blind Test</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="chat-history" ref="chatHistoryRef">
-      <div v-if="state.arenaHistory.length === 0" class="empty-state">
+      <div v-if="state.arenaHistory.length === 0" class="empty-state animate-in">
+        <div class="empty-icon">⚔️</div>
+        <h3>Bereit für das Duell?</h3>
         <p>Stelle eine Frage, um den Vergleich zu starten! Die Namen der Modelle bleiben bis zur Wertung geheim.</p>
       </div>
       
       <div v-for="(msg, index) in state.arenaHistory" :key="index" class="message-group">
         <div class="user-message">
-          <span class="avatar">👤</span>
           <div class="bubble">{{ msg.user }}</div>
+          <span class="avatar">👤</span>
         </div>
         
         <div class="models-response-container">
@@ -39,11 +61,17 @@
             <div class="model-header model-a-header">
               <div class="model-header-left">
                 <span class="model-badge">A</span>
-                <span class="model-name-display">{{ msg.winner ? msg.modelA.name : 'Modell A' }}</span>
+                <span class="model-name-display">{{ (!isBlind || msg.winner) ? msg.modelA.name : 'Modell A' }}</span>
+                <span v-if="(!isBlind || msg.winner) && msg.modelA.badge" class="type-badge-mini" :class="msg.modelA.badge.toLowerCase()">{{ msg.modelA.badge }}</span>
               </div>
               <div v-if="msg.winner && msg.eloChange" class="reveal-info">
                 <span class="elo-delta">{{ msg.winner === 'A' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
               </div>
+            </div>
+
+            <!-- Traits Display -->
+            <div v-if="!isBlind || msg.winner" class="model-traits-mini">
+              <span v-for="s in msg.modelA.strengths?.slice(0, 2)" :key="s" class="trait-mini strength">{{ s }}</span>
             </div>
             <div class="model-content">{{ msg.modelA.content || (msg.modelA.generating ? 'Denkt nach...' : '') }}</div>
             
@@ -71,11 +99,17 @@
             <div class="model-header model-b-header">
               <div class="model-header-left">
                 <span class="model-badge">B</span>
-                <span class="model-name-display">{{ msg.winner ? msg.modelB.name : 'Modell B' }}</span>
+                <span class="model-name-display">{{ (!isBlind || msg.winner) ? msg.modelB.name : 'Modell B' }}</span>
+                <span v-if="(!isBlind || msg.winner) && msg.modelB.badge" class="type-badge-mini" :class="msg.modelB.badge.toLowerCase()">{{ msg.modelB.badge }}</span>
               </div>
               <div v-if="msg.winner && msg.eloChange" class="reveal-info">
                 <span class="elo-delta">{{ msg.winner === 'B' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
               </div>
+            </div>
+
+            <!-- Traits Display -->
+            <div v-if="!isBlind || msg.winner" class="model-traits-mini">
+              <span v-for="s in msg.modelB.strengths?.slice(0, 2)" :key="s" class="trait-mini strength">{{ s }}</span>
             </div>
             <div class="model-content">{{ msg.modelB.content || (msg.modelB.generating ? 'Denkt nach...' : '') }}</div>
             
@@ -105,23 +139,17 @@
       </div>
     </div>
 
-    <div class="input-area glass-panel">
+    <div class="input-area">
       <div v-if="state.loading" class="loading-status">
         <div class="spinner"></div>
         <span class="loading-text">{{ state.loadingStatus }}</span>
       </div>
-      <div class="input-wrapper">
-        <textarea 
-          v-model="prompt" 
-          placeholder="Stelle eine Frage an beide KIs..." 
-          @keydown.enter.prevent="submitPrompt"
-          :disabled="state.loading"
-          rows="1"
-        ></textarea>
-        <button class="btn btn-send" @click="submitPrompt" :disabled="state.loading || !prompt.trim()">
-          ➤
-        </button>
-      </div>
+      <StandardChatInput 
+        v-model="prompt" 
+        placeholder="Stelle eine Frage an beide KIs..." 
+        :disabled="state.loading"
+        @submit="submitPrompt"
+      />
     </div>
 
     <RankingConsent @accept="onConsentAccept" />
@@ -136,6 +164,7 @@ import { promptCategories } from '../../arena-prompts.js';
 import { saveLocalBenchmark } from '../../services/ranking/localRanking.js';
 import { submitToGlobalRanking } from '../../services/ranking/globalRanking.js';
 import RankingConsent from '../ranking/RankingConsent.vue';
+import StandardChatInput from '../chat/ChatInput.vue';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
@@ -153,20 +182,30 @@ const handleGlobalUpload = async (msg, modelType) => {
   const modelData = modelType === 'A' ? msg.modelA : msg.modelB;
   if (!modelData.stats || modelData.uploading) return;
 
-  modelData.uploading = true;
-  const result = await submitToGlobalRanking({
-    modelId: modelData.id,
-    modelName: modelData.name,
-    tokensPerSecond: parseFloat(modelData.stats.tps),
-    totalTimeMs: Math.round(parseFloat(modelData.stats.duration) * 1000)
-  });
+  console.log("Starte Global Upload für:", modelData.name);
+  console.log("Consent Status:", localStorage.getItem('os_arena_ranking_consent'));
 
-  if (!result.error) {
-    modelData.uploaded = true;
-  } else {
-    alert("Upload fehlgeschlagen: " + result.error);
+  modelData.uploading = true;
+  try {
+    const result = await submitToGlobalRanking({
+      modelId: modelData.id,
+      modelName: modelData.name,
+      tokensPerSecond: parseFloat(modelData.stats.tps),
+      totalTimeMs: Math.round(parseFloat(modelData.stats.duration) * 1000)
+    });
+
+    if (!result.error) {
+      console.log("Upload erfolgreich!", result.data);
+      modelData.uploaded = true;
+    } else {
+      console.error("Upload fehlgeschlagen:", result.error);
+      alert("Upload fehlgeschlagen: " + result.error);
+    }
+  } catch (err) {
+    console.error("Unerwarteter Upload-Fehler:", err);
+  } finally {
+    modelData.uploading = false;
   }
-  modelData.uploading = false;
 };
 
 const scrollToBottom = () => {
@@ -212,16 +251,15 @@ const submitPrompt = async () => {
       messages: [{ role: "user", content: userText }]
     });
     const endA = performance.now();
-    const durationA = (endA - startA) / 1000; // Sekunden
+    const durationA = (endA - startA) / 1000;
     const textA = replyA.choices[0].message.content;
-    const tokensA = Math.ceil(textA.length / 3); // Schätzung: 3 Zeichen pro Token
+    const tokensA = Math.ceil(textA.length / 3);
     const tpsA = (tokensA / durationA).toFixed(2);
 
     state.arenaHistory[msgIndex].modelA.content = textA;
     state.arenaHistory[msgIndex].modelA.generating = false;
     state.arenaHistory[msgIndex].modelA.stats = { tps: tpsA, duration: durationA.toFixed(2) };
     
-    // Lokal speichern (anonymisiert)
     saveLocalBenchmark({
       modelId: state.selectedModelA,
       modelName: modelA.value.name,
@@ -270,7 +308,7 @@ const submitPrompt = async () => {
 
 const vote = (index, winner) => {
   const msg = state.arenaHistory[index];
-  if (msg.winner) return; // Bereits gewertet
+  if (msg.winner) return;
 
   const mA = state.availableModels.find(m => m.id === msg.modelA.id);
   const mB = state.availableModels.find(m => m.id === msg.modelB.id);
@@ -296,7 +334,7 @@ const vote = (index, winner) => {
   }
 
   msg.winner = winner;
-  isBlind.value = false; // Nach der ersten Wertung Transparenz
+  isBlind.value = false;
 };
 </script>
 
@@ -305,134 +343,179 @@ const vote = (index, winner) => {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 80px);
-}
-
-.model-select-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-.model-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  margin-top: 0.8rem;
-}
-
-.mini-badge {
-  font-size: 0.55rem;
-  font-weight: 900;
-  padding: 0.1rem 0.3rem;
-  border-radius: 4px;
-}
-
-.mini-badge.local {
-  background: rgba(0, 242, 254, 0.1);
-  color: #00f2fe;
-}
-
-.mini-badge.cloud {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
-}
-
-.mini-dl-btn {
-  background: #00f2fe;
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.55rem;
-  font-weight: 900;
-  padding: 0.1rem 0.3rem;
-  cursor: pointer;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .chat-header {
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 16px;
+}
+
+.header-main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
-  border-radius: 0 0 16px 16px;
-  border-top: none;
-  background: rgba(15, 23, 42, 0.9);
-  z-index: 10;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.model-select-compact {
+.arena-selector-group {
   display: flex;
-  flex-direction: column;
-  flex: 1;
-  max-width: 45%;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
 }
 
-.model-select-compact label {
-  font-size: 0.65rem;
-  font-weight: bold;
-  margin-bottom: 0.2rem;
-  text-transform: uppercase;
+.model-select-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.model-select-wrapper .label {
+  font-size: 0.7rem;
+  font-weight: 800;
   color: var(--text-secondary);
 }
 
-.model-select-compact select {
-  width: 100%;
-  padding: 0.4rem;
-  border-radius: 8px;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid var(--glass-border);
+.model-select-wrapper select {
+  background: #1e293b;
+  border: none;
   color: #fff;
-  font-size: 0.8rem;
-  appearance: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
 }
 
-.vs-badge-small {
+.vs-mini {
+  font-size: 0.6rem;
   font-weight: 900;
-  color: rgba(255,255,255,0.2);
-  font-style: italic;
-  font-size: 1rem;
+  opacity: 0.3;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.category-selector select {
+  background: #1e293b;
+  border: 1px solid var(--glass-border);
+  color: #fff;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.blind-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.blind-toggle.active {
+  background: rgba(0, 242, 254, 0.1);
+  border-color: rgba(0, 242, 254, 0.3);
+  color: #00f2fe;
+}
+
+.blind-toggle .text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.type-badge-mini {
+  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.type-badge-mini.reasoning { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+.type-badge-mini.speed { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.type-badge-mini.balanced { background: rgba(20, 184, 166, 0.2); color: #14b8a6; }
+.type-badge-mini.negative { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+.type-badge-mini.negative { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+.model-traits-mini {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0 1rem;
+}
+
+.trait-mini {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.trait-mini.strength {
+  color: #00f2fe;
+  border-color: rgba(0, 242, 254, 0.2);
 }
 
 .chat-history {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
-  padding-bottom: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-}
-
-.empty-state {
-  text-align: center;
-  color: var(--text-secondary);
-  padding: 4rem 1rem;
-  font-style: italic;
+  gap: 2.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
 
 .user-message {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 1rem;
   justify-content: flex-end;
 }
 
 .avatar {
   font-size: 1.5rem;
-  order: 2;
+  margin-top: 0.5rem;
 }
 
 .bubble {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 0.8rem 1.2rem;
-  border-radius: 20px 20px 0 20px;
+  background: rgba(79, 172, 254, 0.15);
+  padding: 0.8rem 1.5rem;
+  border-radius: 20px 20px 4px 20px;
   color: white;
-  font-size: 1rem;
-  line-height: 1.4;
-  max-width: 85%;
-  box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
-  order: 1;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  max-width: 80%;
+  border: 1px solid rgba(79, 172, 254, 0.3);
 }
 
 .models-response-container {
@@ -450,7 +533,7 @@ const vote = (index, winner) => {
 .model-card {
   display: flex;
   flex-direction: column;
-  padding: 1.2rem;
+  padding: 1.5rem;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   height: 100%;
   border: 1px solid var(--glass-border);
@@ -477,7 +560,7 @@ const vote = (index, winner) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
   padding-bottom: 0.8rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -493,7 +576,6 @@ const vote = (index, winner) => {
   border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 800;
-  letter-spacing: 0.05em;
 }
 
 .model-a-header .model-badge {
@@ -507,9 +589,18 @@ const vote = (index, winner) => {
 }
 
 .model-name-display {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #fff;
+}
+
+.elo-delta {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #00f2fe;
+  background: rgba(0, 242, 254, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
 }
 
 .model-content {
@@ -517,7 +608,7 @@ const vote = (index, winner) => {
   line-height: 1.6;
   color: var(--text-primary);
   white-space: pre-wrap;
-  flex: 1; /* Schiebt den Footer nach unten */
+  flex: 1;
   margin-bottom: 1.5rem;
 }
 
@@ -532,7 +623,7 @@ const vote = (index, winner) => {
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -544,29 +635,9 @@ const vote = (index, winner) => {
   transform: translateY(-2px);
 }
 
-.input-area {
-  padding: 1rem;
-  border-radius: 20px 20px 0 0;
-  background: rgba(15, 23, 42, 0.9);
-}
-
-.loading-status {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.5rem;
-  font-size: 0.85rem;
-  color: #4facfe;
-}
-
-.elo-delta {
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #00f2fe;
-  background: rgba(0, 242, 254, 0.1);
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
-  letter-spacing: 0.05em;
+.draw-action {
+  text-align: center;
+  margin-top: 1rem;
 }
 
 .performance-stats {
@@ -584,7 +655,6 @@ const vote = (index, winner) => {
   font-size: 0.7rem;
   color: var(--text-secondary);
   font-weight: 500;
-  letter-spacing: 0.02em;
 }
 
 .btn-mini-upload {
@@ -600,19 +670,52 @@ const vote = (index, winner) => {
   text-transform: uppercase;
 }
 
-.btn-mini-upload:hover {
-  background: rgba(0, 242, 254, 0.2);
-  transform: translateY(-1px);
+.input-area {
+  margin-top: 1.5rem;
+  position: relative;
 }
 
-.btn-mini-upload:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.loading-status {
+  position: absolute;
+  top: -45px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
-.stat-uploaded {
-  font-size: 0.8rem;
-  color: #00f2fe;
+.loading-text {
+  font-size: 0.85rem;
+  color: #4facfe;
+  font-weight: 600;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 242, 254, 0.2);
+  border-top-color: #00f2fe;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .message-group {
@@ -622,44 +725,5 @@ const vote = (index, winner) => {
 @keyframes messageSlideIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(79, 172, 254, 0.3);
-  border-top-color: #4facfe;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-textarea {
-  flex: 1;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 0.8rem 1rem;
-  color: white;
-  font-family: inherit;
-  font-size: 1rem;
-  resize: none;
-  max-height: 100px;
-}
-
-.btn-send {
-  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-  color: #000;
-  border: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2rem;
 }
 </style>

@@ -8,17 +8,19 @@
 - **Offline fähig**: Einmal heruntergeladene Modelle werden lokal im Cache (IndexedDB) deines Browsers zwischengespeichert. So kannst du die Arena – solange der Cache nicht geleert wird – auch ohne Internetverbindung nutzen.
 - **Mobile-First Design**: Moderne, reaktionsschnelle Benutzeroberfläche (Glassmorphism), die auf jedem Endgerät optimal funktioniert.
 - **PWA-Ready**: Installiere die OS-Arena als eigenständige App direkt auf deinen Desktop oder dein Smartphone.
-- **System-Monitoring & Transparenz**: Echtzeit-Anzeige von WebGPU-Status, Browser-RAM-Verbrauch und detailliertem Download-Fortschritt in den Einstellungen.
-- **Privacy First & Sicher**: Deine Prompts, Daten und Chats verlassen niemals dein Endgerät. Strikte Sanitization schützt vor XSS-Angriffen.
+- **Privacy First & "No-Key" Security**: Deine Prompts verlassen niemals dein Gerät. Unsere Architektur verzichtet auf API-Keys im Frontend. Kommunikation erfolgt sicher und anonym über gesicherte Gatekeeper.
+- **Globales Performance-Ranking**: Vergleiche deine WebGPU-Leistung optional und anonym mit der weltweiten Community.
+- **System-Monitoring & Transparenz**: Echtzeit-Anzeige von WebGPU-Status, Browser-RAM-Verbrauch und detailliertem Download-Fortschritt.
 
 ## 🚀 Integrierte Modelle
-Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Wir fokussieren uns auf das **2B-Limit**, um flüssige Performance auf Standard-Hardware zu garantieren:
+Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Wir setzen auf das **3B-Limit**, um den idealen Mix aus Qualität und Speed zu bieten:
 
-- **Llama 3.2 (1B)**: Der vielseitige Allrounder von Meta. Stark in Zusammenfassungen und allgemeinem Chat.
-- **Gemma (2B)**: Googles Kraftpaket. Überlegene Reasoning-Fähigkeit und Textqualität (höherer RAM-Bedarf).
+- **Llama 3.2 3B**: Der Champion. Erstaunliche Intelligenz für ein lokales Browser-Modell.
+- **Gemma 2 2B**: Googles Präzisions-König. Überlegene Reasoning-Fähigkeit und Textqualität.
 - **SmolLM2 (1.7B)**: Der Logik-Spezialist. Extrem stark in Mathe, Code und STEM-Aufgaben.
-- **Qwen 2.5 (0.5B - 1.5B)**: Das Effizienz-Wunder von Alibaba. Exzellente Mehrsprachigkeit und extrem schnell.
-- **TinyLlama (1.1B)**: Der Geschwindigkeits-König. Ideal für einfachste Interaktionen und schwache Hardware.
+- **Llama 3.2 1B**: Der vielseitige Allrounder für schnellere Chats.
+- **Qwen 2.5 (0.5B - 1.5B)**: Das Effizienz-Wunder von Alibaba. Exzellente Mehrsprachigkeit.
+- **TinyLlama (1.1B)**: Unser "Negativ-Beispiel" für Speed-Tests (schnell, aber schwache Logik).
 
 
 <img width="1190" height="805" alt="image" src="https://github.com/user-attachments/assets/a0dedcb0-cfe0-4284-b6c8-8af8edd0983c" />

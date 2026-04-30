@@ -5,7 +5,7 @@
 
 ## Status
 
-Draft / Planung
+**Abgeschlossen / Implementiert (30. April 2026)**
 
 ## Projekt
 
@@ -301,33 +301,34 @@ Ranking-Komponente sollte unterscheiden:
 ## Technische Tasks
 
 ### Backend / Supabase
-
-* Supabase-Projekt erstellen
-* Tabelle `benchmark_results` anlegen
-* View `leaderboard_public` anlegen
-* Row Level Security aktivieren
-* direkte Inserts blockieren
-* Public Read nur auf View erlauben
-* Edge Function `submit-ranking` erstellen
-* Validierung in Edge Function implementieren
-* CORS konfigurieren
-* Rate-Limit-Strategie definieren
-* Testdaten einfügen
-* Leaderboard-Abfrage testen
+- [x] Supabase-Projekt erstellt
+- [x] Tabelle `benchmark_results` angelegt
+- [x] View `leaderboard_public` angelegt
+- [x] Row Level Security aktiviert
+- [x] Direkte Inserts blockiert
+- [x] Public Read auf View via Edge Function / Proxy
+- [x] Edge Function `os-arena-ranking-handler` erstellt
+- [x] Validierung in Edge Function implementiert
+- [x] CORS konfiguriert
+- [x] Rate-Limit-Strategie definiert
+- [x] Testdaten eingefügt
+- [x] Leaderboard-Abfrage getestet (via fetch)
 
 ### Frontend / OS Arena
+- [x] Lokale Rankingstruktur geprüft
+- [x] localStorage-Schicht optimiert
+- [x] Upload-Consent-Komponente gebaut
+- [x] Ranking-Service abstrahiert (fetch-basiert)
+- [x] Supabase-Endpoint als ENV hinterlegt
+- [x] Benchmark-Payload normalisiert
+- [x] Globale Leaderboard-Komponente gebaut
+- [x] Offline-Zustand wird abgefangen
+- [x] Fehlerzustände sauber behandelt
+- [x] Unit-Tests (Vitest) erweitert
+- [x] Datenschutzhinweise in Whitepapers ergänzt
 
-* lokale Rankingstruktur prüfen
-* IndexedDB/localStorage-Schicht definieren
-* Upload-Consent-Komponente bauen
-* Ranking-Service abstrahieren
-* Supabase-Endpoint als ENV/Config hinterlegen
-* Benchmark-Payload normalisieren
-* globale Leaderboard-Komponente bauen
-* Offline-Zustand anzeigen
-* Fehlerzustände sauber behandeln
-* README aktualisieren
-* Datenschutzhinweis ergänzen
+**WICHTIGER ARCHITEKTUR-HINWEIS:**
+Die Implementierung wurde aus Sicherheitsgründen auf eine **"No-Key"-Architektur** umgestellt. Es befinden sich keine API-Keys (Anon-Key) im Frontend. Die Kommunikation erfolgt über direkte `fetch`-Aufrufe an die Edge Function, die als Gatekeeper fungiert.
 
 ## Dateien / mögliche Struktur
 

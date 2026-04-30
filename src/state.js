@@ -5,9 +5,9 @@ import { modelRegistry } from './modelRegistry.js';
 export const state = reactive({
   gpuError: null,
   availableModels: modelRegistry,
-  selectedModelA: 'Qwen2-1.5B-Instruct-q4f16_1-MLC',
+  selectedModelA: 'Llama-3.2-1B-Instruct-q4f16_1-MLC',
   selectedModelB: 'TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC',
-  selectedModelChat: 'Qwen2-1.5B-Instruct-q4f16_1-MLC',
+  selectedModelChat: 'Llama-3.2-1B-Instruct-q4f16_1-MLC',
   arenaHistory: [],
   chatHistory: [],
   loading: false,
@@ -78,15 +78,20 @@ export async function checkCacheStatus() {
 }
 
 export async function downloadModel(model) {
-  if (state.gpuError) return;
+  // Nur blockieren, wenn WebGPU grundsätzlich nicht geht
+  if (state.gpuInfo && !state.gpuInfo.supported) {
+    console.error("Download abgebrochen: WebGPU nicht unterstützt.");
+    return;
+  }
 
   model.loading = true;
   model.progress = 0;
+  model.error = null; // Reset vorheriger Fehler
   state.globalLoading = true;
   state.globalLoadingStatus = `Lade Modell: ${model.name}...`;
   
   const initProgressCallback = (progress) => {
-    if (progress.progress) {
+    if (progress.progress !== undefined) {
       model.progress = Math.round(progress.progress * 100);
       state.globalLoadingProgress = model.progress;
       state.globalLoadingStatus = progress.text || `Lade Modell: ${model.name}...`;
@@ -98,9 +103,12 @@ export async function downloadModel(model) {
     model.cached = true;
     model.progress = 100;
     loadedEngines[model.id] = engine;
+    console.log(`✅ ${model.name} erfolgreich geladen.`);
   } catch (err) {
-    console.error("Download Error:", err);
-    state.gpuError = "Fehler beim Download: " + err.message;
+    console.error(`❌ Download-Fehler für ${model.name}:`, err);
+    model.error = err.message;
+    // NICHT state.gpuError setzen, da dies den gesamten State blockiert!
+    alert(`Fehler beim Laden von ${model.name}: ${err.message}`);
   } finally {
     model.loading = false;
     state.globalLoading = false;
@@ -110,6 +118,7 @@ export async function downloadModel(model) {
 export async function getOrInitEngine(modelId) {
   if (loadedEngines[modelId]) return loadedEngines[modelId];
   
+  console.log(`🤖 Initialisiere MLC-Engine für: ${modelId}`);
   state.loadingStatus = `Bereite ${modelId} vor...`;
   state.loadingProgress = 0;
   state.globalLoading = true;
@@ -139,12 +148,19 @@ export async function getOrInitEngine(modelId) {
 
 // Score Management
 export function loadScores() {
-  const saved = localStorage.getItem('os-arena-scores');
-  if (saved) {
-    const scores = JSON.parse(saved);
-    state.availableModels.forEach(m => {
-      if (scores[m.id]) m.score = scores[m.id];
-    });
+  try {
+    const saved = localStorage.getItem('os-arena-scores');
+    if (saved) {
+      const scores = JSON.parse(saved);
+      state.availableModels.forEach(m => {
+        if (scores[m.id] !== undefined) {
+          m.score = scores[m.id];
+        }
+      });
+      console.log("Scores geladen:", scores);
+    }
+  } catch (e) {
+    console.warn("Fehler beim Laden der Scores:", e);
   }
 }
 
@@ -159,10 +175,25 @@ export function saveScores() {
 export function updateModelScore(modelId, newScore) {
   const model = state.availableModels.find(m => m.id === modelId);
   if (model) {
+    console.log(`ELO Update für ${modelId}: ${model.score} -> ${newScore}`);
     model.score = newScore;
     saveScores();
+  } else {
+    console.warn(`Modell ${modelId} nicht im State gefunden für Score-Update!`);
   }
 }
 
-// Init
-loadScores();
+// Initialer Check & Score-Load
+export async function initAppState() {
+  console.log("🛠️ Initialisiere OS-Arena State...");
+  try {
+    loadScores();
+    await checkCacheStatus();
+    console.log("✅ State erfolgreich initialisiert.");
+  } catch (err) {
+    console.error("❌ Fehler bei der State-Initialisierung:", err);
+  }
+}
+
+// Sofortiger Aufruf, aber als Task
+initAppState();

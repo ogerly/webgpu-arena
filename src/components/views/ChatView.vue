@@ -50,23 +50,17 @@
     </div>
 
     <!-- Input Area -->
-    <footer class="input-section glass-panel">
+    <footer class="input-section">
       <div v-if="state.loading" class="status-bar">
         <div class="mini-spinner"></div>
         <span>{{ state.loadingStatus }}</span>
       </div>
-      <div class="input-container">
-        <textarea 
-          v-model="prompt" 
-          placeholder="Schreibe eine Nachricht..." 
-          @keydown.enter.prevent="submitPrompt"
-          :disabled="state.loading"
-          rows="1"
-        ></textarea>
-        <button class="send-trigger" @click="submitPrompt" :disabled="state.loading || !prompt.trim()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-        </button>
-      </div>
+      <ChatInput 
+        v-model="prompt" 
+        placeholder="Schreibe eine Nachricht..." 
+        :disabled="state.loading"
+        @submit="submitPrompt"
+      />
     </footer>
   </div>
 </template>
@@ -74,6 +68,7 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue';
 import { state, getOrInitEngine, downloadModel } from '../../state.js';
+import ChatInput from '../chat/ChatInput.vue';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
@@ -354,80 +349,18 @@ const submitPrompt = async () => {
 }
 
 .input-section {
-  padding: 1.25rem;
-  border-radius: 24px 24px 0 0;
-  background: rgba(15, 23, 42, 0.95);
-  border-bottom: none;
+  padding: 1rem;
+  margin-top: auto;
 }
 
 .status-bar {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
   font-size: 0.8rem;
   color: #4facfe;
   font-weight: 600;
-}
-
-.mini-spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(79, 172, 254, 0.2);
-  border-top-color: #4facfe;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.input-container {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-end;
-}
-
-textarea {
-  flex: 1;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 0.75rem 1rem;
-  color: #fff;
-  font-family: inherit;
-  font-size: 1rem;
-  resize: none;
-  max-height: 150px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-textarea:focus {
-  border-color: #4facfe;
-}
-
-.send-trigger {
-  width: 48px;
-  height: 48px;
-  background: var(--primary-gradient);
-  border: none;
-  border-radius: 14px;
-  color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.2s, opacity 0.2s;
-}
-
-.send-trigger:hover:not(:disabled) {
-  transform: scale(1.05);
-}
-
-.send-trigger:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 </style>

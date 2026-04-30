@@ -1,16 +1,13 @@
 // globalRanking.js
-import { createClient } from '@supabase/supabase-js';
+// Umgestellt auf direkten fetch-Aufruf ohne Supabase-Client (Sicherheit)
 import { getOrCreateInstallId } from './installId.js';
+import { state } from '../../state.js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Client nur initialisieren, wenn Keys vorhanden sind
-const supabase = (supabaseUrl && supabaseAnonKey) ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 /**
  * Sendet ein Benchmark-Ergebnis an das globale Leaderboard.
- * @param {import('./rankingTypes').BenchmarkResult} result 
+ * @param {Object} result 
  */
 export async function submitToGlobalRanking(result) {
   const consent = localStorage.getItem('os_arena_ranking_consent');
@@ -18,9 +15,9 @@ export async function submitToGlobalRanking(result) {
     return { error: 'No consent given' };
   }
 
-  if (!supabase) {
-    console.warn("Supabase nicht konfiguriert.");
-    return { error: 'Supabase not configured' };
+  if (!supabaseUrl) {
+    console.warn("Supabase URL nicht konfiguriert.");
+    return { error: 'Supabase URL not configured' };
   }
 
   const payload = {
@@ -31,19 +28,33 @@ export async function submitToGlobalRanking(result) {
     total_time_ms: result.totalTimeMs,
     benchmark_version: '1.0.0',
     app_version: '1.1.0',
-    device_class: 'desktop', // Hier könnte man noch Logik zur Erkennung einbauen
+    device_class: 'desktop',
     browser: navigator.userAgent.split(' ').pop(),
     os: navigator.platform,
-    webgpu_supported: !!navigator.gpu
+    webgpu_supported: !!navigator.gpu,
+    webgpu_vendor: state.systemInfo?.gpuVendor || 'unknown',
+    webgpu_adapter: state.systemInfo?.gpuAdapter || 'unknown'
   };
 
   try {
-    // Aufruf der Edge Function (WICHTIG: Name muss exakt wie in Supabase sein)
-    const { data, error } = await supabase.functions.invoke('os-arena-ranking-handler', {
-      body: payload
+    console.log(`Sende POST an: ${supabaseUrl}/functions/v1/os-arena-ranking-handler`);
+    const response = await fetch(`${supabaseUrl}/functions/v1/os-arena-ranking-handler`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
     });
 
-    if (error) throw error;
+    console.log("Response Status:", response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("API Fehler Details:", errorData);
+      throw new Error(errorData.message || errorData.error || `HTTP Error ${response.status}`);
+    }
+
+    const data = await response.json();
     return { data };
   } catch (err) {
     console.error("Fehler beim Upload des Rankings:", err);
@@ -52,19 +63,25 @@ export async function submitToGlobalRanking(result) {
 }
 
 /**
- * Holt das globale Leaderboard aus der öffentlichen View.
+ * Holt das globale Leaderboard aus der öffentlichen View via REST API.
+ * Hinweis: Erfordert, dass die View ohne API-Key lesbar ist (Proxy oder Public Config).
  */
 export async function fetchGlobalLeaderboard() {
-  if (!supabase) return [];
+  if (!supabaseUrl) return [];
 
   try {
-    const { data, error } = await supabase
-      .from('leaderboard_public')
-      .select('*')
-      .order('avg_tps', { ascending: false });
+    const response = await fetch(`${supabaseUrl}/rest/v1/leaderboard_public?select=*&order=avg_tps.desc`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+        // Hinweis: Supabase REST API erfordert oft 'apikey', 
+        // wenn kein Key im Frontend sein darf, muss hier ein Proxy dazwischen.
+      }
+    });
 
-    if (error) throw error;
-    return data;
+    if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+    
+    return await response.json();
   } catch (err) {
     console.error("Fehler beim Abrufen des Leaderboards:", err);
     return [];

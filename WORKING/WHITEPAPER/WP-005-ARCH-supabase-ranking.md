@@ -100,34 +100,28 @@ Die Edge Function übernimmt die Rolle des Gatekeepers.
 
 ---
 
-## 5. Frontend-Integration
+## 5. Frontend-Integration (Sicherheits-Refactor)
 
-Die App nutzt den Supabase Client nur für:
-1. Den Aufruf der Edge Function (`supabase.functions.invoke('submit-ranking', ...)`).
-2. Den Abruf der aggregierten Daten aus der View `leaderboard_public`.
+Um maximale Sicherheit zu gewährleisten, wurde die Integration grundlegend überarbeitet:
+1. **Kein Supabase-Key**: Die App enthält **keine API-Keys** (Anon-Key) im Frontend-Code.
+2. **Direct Fetch**: Statt des Supabase-Clients nutzt die App die native `fetch` API.
+3. **Endpoint**: Anfragen gehen direkt an den Edge Function Endpunkt: `https://[PROJECT_ID].supabase.co/functions/v1/os-arena-ranking-handler`.
 
-Die API-Keys (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) werden in der `.env` verwaltet und zur Build-Zeit injiziert.
+### 5.1 Vorteil
+Selbst wenn der Quellcode der PWA analysiert wird, finden Angreifer keine Zugangsdaten. Die Edge Function übernimmt die volle Kontrolle über die Datenbank-Interaktion.
 
 ---
 
 ## 6. API & Rate Limiting (Gatekeeper)
 
-Um Missbrauch und Spam zu verhindern, implementiert die Edge Function `submit-ranking` eine strikte API-Kontrolle.
-
 ### 6.1 Identitäts-Schutz
 - Die `install_id` des Clients wird niemals im Klartext gespeichert.
 - Die Edge Function verwendet einen serverseitigen **SALT** (Umgebungsvariable), um die ID zu hashen: `SHA256(install_id + SALT)`.
-- Dies verhindert das Tracking von Nutzern über verschiedene Datenbanken hinweg, erlaubt aber eine Deduplizierung.
 
-### 6.2 Rate Limiting (SQL-basiert)
-Bevor ein Datensatz akzeptiert wird, führt die Edge Function eine Prüfung in der Datenbank aus:
-```sql
-SELECT count(*) FROM benchmark_results 
-WHERE install_id_hash = $1 
-AND created_at > now() - interval '1 hour';
-```
-- **Limit**: Maximal 10 Uploads pro Stunde pro Gerät.
-- **Vorteil**: Verhindert, dass ein einzelner Client die Durchschnittswerte durch massenhafte Uploads verfälscht.
+### 6.2 Zugriffskontrolle (CORS)
+- Da kein Key verwendet wird, stützt sich die Sicherheit auf **CORS-Policies**.
+- Die Edge Function akzeptiert nur Anfragen von validen Origins (Github Pages / Localhost).
+- Zusätzlich validiert die Funktion die Payload-Struktur und die Plausibilität der Daten.
 
 ### 6.3 CORS & Herkunft
 - Die API antwortet nur auf Anfragen von definierten Domains (z.B. `ogerly.github.io` und `localhost`).

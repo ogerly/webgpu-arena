@@ -76,12 +76,67 @@ describe('Install ID', () => {
   });
 });
 
-describe('Global Ranking Service (Mocked)', () => {
+describe('Global Ranking Service (Integration)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    vi.stubGlobal('fetch', vi.fn());
+    // Mock import.meta.env
+    vi.stubGlobal('import.meta', {
+      env: { VITE_SUPABASE_URL: 'https://test-project.supabase.co' }
+    });
+  });
+
   it('should not submit without consent', async () => {
     localStorage.setItem('os_arena_ranking_consent', 'denied');
     const { submitToGlobalRanking } = await import('../src/services/ranking/globalRanking.js');
     
     const res = await submitToGlobalRanking({ modelId: 'test' });
     expect(res.error).toBe('No consent given');
+  });
+
+  it('should call fetch with correct URL and payload', async () => {
+    localStorage.setItem('os_arena_ranking_consent', 'granted');
+    const { submitToGlobalRanking } = await import('../src/services/ranking/globalRanking.js');
+    
+    fetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ success: true })
+    });
+
+    const mockResult = {
+      modelId: 'test-id',
+      modelName: 'Test Model',
+      tokensPerSecond: 15.5,
+      totalTimeMs: 2000
+    };
+
+    const res = await submitToGlobalRanking(mockResult);
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://test-project.supabase.co/functions/v1/os-arena-ranking-handler',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ 'Content-Type': 'application/json' })
+      })
+    );
+
+    const callBody = JSON.parse(fetch.mock.calls[0][1].body);
+    expect(callBody.model_id).toBe('test-id');
+    expect(callBody.tokens_per_second).toBe(15.5);
+    expect(res.data.success).toBe(true);
+  });
+
+  it('should handle API errors gracefully', async () => {
+    localStorage.setItem('os_arena_ranking_consent', 'granted');
+    const { submitToGlobalRanking } = await import('../src/services/ranking/globalRanking.js');
+    
+    fetch.mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({ message: 'Internal Server Error' })
+    });
+
+    const res = await submitToGlobalRanking({ modelId: 'test' });
+    expect(res.error).toContain('Internal Server Error');
   });
 });

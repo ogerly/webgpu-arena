@@ -19,6 +19,7 @@
             <span class="model-name">{{ model.name }}</span>
             <div class="badge-group">
               <span class="size-badge">{{ model.size }}</span>
+              <span v-if="model.badge" class="type-badge" :class="model.badge.toLowerCase()">{{ model.badge }}</span>
               <span v-if="model.cached" class="status-pill cached">Lokal</span>
               <span v-else class="status-pill cloud">Cloud</span>
             </div>
@@ -193,6 +194,40 @@ import { state, downloadModel } from '../../state.js';
 .status-pill.cloud {
   background: rgba(255, 159, 28, 0.15);
   color: #ff9f1c;
+}
+
+.type-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.type-badge.reasoning {
+  background: rgba(168, 85, 247, 0.2);
+  color: #a855f7;
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.type-badge.speed {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.type-badge.balanced {
+  background: rgba(20, 184, 166, 0.2);
+  color: #14b8a6;
+  border-color: rgba(20, 184, 166, 0.3);
+}
+
+.type-badge.negative {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .model-icon {

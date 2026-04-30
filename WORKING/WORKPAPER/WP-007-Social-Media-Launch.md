@@ -22,10 +22,11 @@ Dank modernster **WebGPU**‑Technologie laufen Modelle wie Llama 3.2 oder Qwen 
 
 🚀 **Highlights in v1.1.0:**
 - **Absolute Privacy:** Prompts verlassen niemals dein Gerät.
-- **Single‑Chat & Arena:** Wähle zwischen fokussiertem Einzelchat oder dem klassischen KI‑Zweikampf.
-- **System‑Transparenz:** Echtzeit‑Monitoring von WebGPU‑Status und RAM‑Verbrauch.
-- **Offline‑First:** Einmal geladen, funktioniert die KI auch ohne Internet.
-- **Open Source:** Gebaut für die Community, von der Community.
+- **Global Leaderboard:** Vergleiche deine WebGPU-Performance mit der weltweiten Community (optional & anonym).
+- **ELO-Ranking:** Bewerte KI-Antworten und finde heraus, welches Modell lokal wirklich dominiert.
+- **Blind-Test Mode:** Teste Modelle objektiv, ohne vom Namen beeinflusst zu werden.
+- **System-Transparenz:** Echtzeit-Monitoring von WebGPU-Status und RAM-Verbrauch.
+- **Offline-First:** Einmal geladen, funktioniert die KI auch ohne Internet.
 
 Probiert es direkt aus und erlebt v1.1.0 live!
 
@@ -41,10 +42,11 @@ Probiert es direkt aus und erlebt v1.1.0 live!
 Stoppt den Cloud-Zwang! 🛑 KI-Modelle wie Llama 3.2 & Qwen 2 laufen jetzt 100% lokal in DEINEM Browser.
 
 🏟️ OS-Arena Highlights:
-✅ Single-Chat & Arena Mode
-✅ Echtzeit System-Monitoring
+✅ Arena Mode mit ELO-System
+✅ Globales Community-Ranking
 ✅ 100% Privacy via WebGPU
-✅ Offline-fähig
+✅ No-Key Sync: Sicher & Anonym
+✅ Offline-fähig & PWA
 
 Jetzt v1.1.0 live testen: https://ogerly.github.io/os-arena/
 
@@ -60,9 +62,9 @@ AI in deinem Browser – aber LOKAL! 💻✨
 Hast du dich je gefragt, ob deine KI-Prompts wirklich privat bleiben? In der **OS‑Arena** tun sie es! Wir nutzen die Power deiner Grafikkarte (WebGPU), um LLMs direkt bei dir laufen zu lassen.
 
 🔥 Das ist OS-Arena:
-🤖 Vergleiche Top-KIs wie Llama & Gemma.
-🔒 Nichts verlässt dein Gerät.
-🌍 Funktioniert sogar im Flugmodus (Offline-Cache!).
+🤖 Vergleiche Top-KIs & bilde dein eigenes ELO-Ranking.
+🌍 Werde Teil der globalen Benchmark-Community.
+🔒 100% Privacy: Nichts verlässt dein Gerät ohne Consent.
 ✨ Kostenlos & Open Source.
 
 Link in Bio! 🔗 (Oder hier: https://ogerly.github.io/os-arena/)

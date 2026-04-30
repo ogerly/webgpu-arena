@@ -1,7 +1,23 @@
-# WORKPAPER: WP-009 - Refactor Arena UI & UX
+# WORKPAPER: WP-009 - Refactor Arena UI
 
 ## Status
-In Planung / Implementierung
+**Aktiv - Phase 2 (Polishing)**
+
+## Meilensteine & Fortschritt
+
+### Phase 1: Komponenten-Zentralisierung (100% erledigt)
+- [x] **ChatInput.vue**: Erstellung einer universellen Eingabekomponente mit Glassmorphism-Design und Auto-Resize.
+- [x] **Migration**: Erfolgreiche Einbindung in `ArenaChatView.vue` und `ChatView.vue` (Redundanz entfernt).
+
+### Phase 2: Arena-Setup & Battle (80% erledigt)
+- [x] **ArenaView.vue**: Kompletter Overhaul des Setups. Modernes Karten-Grid mit VS-Divider.
+- [x] **ArenaChatView.vue**: Header-Refactoring (Prompt-Vorlagen, Blind-Test-Badge).
+- [x] **ELO-Feedback**: Visuelle Anzeige der ELO-Veränderungen in den Modell-Karten nach einem Vote.
+- [ ] **Animationen**: Übergang zwischen Setup und Battle weiter verfeinern.
+
+## Technische Details
+- **Design-System**: Konsequente Nutzung von CSS-Grid und Glassmorphism für maximale visuelle Wertigkeit.
+- **Responsiveness**: Alle neuen Komponenten wurden Mobile-First optimiert.
 
 ## Problemstellung
 Durch die Integration der Performance-Metriken (tok/s), der ELO-Winner-Anzeige und der globalen Upload-Buttons ist das Layout der `ArenaChatView.vue` instabil geworden. 
