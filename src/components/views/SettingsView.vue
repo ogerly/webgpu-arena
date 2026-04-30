@@ -34,6 +34,12 @@
               📁 Ordner öffnen
             </button>
           </div>
+        <div class="setting-item">
+          <div class="setting-info">
+            <h4>App Information</h4>
+            <p class="description">OS-Arena Version: <span class="version-tag">v{{ appVersion }}</span></p>
+            <p class="description">Entwickelt von @ogerly (DEVmatrose)</p>
+          </div>
         </div>
       </div>
     </div>
@@ -44,6 +50,8 @@
 import { state } from '../../state.js';
 import SystemInfoPanel from '../ui/SystemInfoPanel.vue';
 import LoadingStatusBar from '../ui/LoadingStatusBar.vue';
+
+const appVersion = __APP_VERSION__;
 
 const openFolder = () => {
   alert("Da OS-Arena im Browser läuft, werden die Modelle in der IndexedDB deines Browsers gespeichert.\n\nDu findest sie in den Entwicklertools (F12) unter:\nApplication -> Storage -> IndexedDB -> webllm");
@@ -148,5 +156,11 @@ const openFolder = () => {
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+.version-tag {
+  color: #00f2fe;
+  font-weight: 700;
+  font-family: monospace;
 }
 </style>
