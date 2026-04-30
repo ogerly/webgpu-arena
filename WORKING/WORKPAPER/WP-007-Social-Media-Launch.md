@@ -90,7 +90,7 @@ Feedback & Sterne auf GitHub sind immer willkommen! ⭐
 
 ## 🐙 GitHub (Announcement / Discussion)
 
-**Title:** Launching OS-Arena: A local-first LLM playground powered by WebGPU
+**Title:** Launching OS-Arena v1.2.0: A secure, local-first LLM playground powered by WebGPU
 
 **Text:**
 Hi everyone! I'm excited to share **OS-Arena**, a project I've been working on to bring Local AI to the masses without the need for complex installations.
@@ -98,11 +98,12 @@ Hi everyone! I'm excited to share **OS-Arena**, a project I've been working on t
 **What is it?**
 A Vue-based Single Page Application that uses `@mlc-ai/web-llm` to run LLMs directly in the browser. It features a side-by-side "Arena" comparison mode to test different models against each other.
 
-**Key Features:**
-- **Zero-Backend:** Purely static hosting (GitHub Pages ready).
+**Key Features in v1.2.0:**
+- **3B Model Limit:** Now supporting high-quality models like Llama 3.2 3B and Gemma 2 2B.
+- **No-Key Architecture:** Maximum security. No API keys in the frontend, all database sync is handled via secure, anonymous Edge Functions.
+- **Global Ranking:** Join the community benchmark and see how your hardware performs.
 - **WebGPU Acceleration:** High-performance inference.
 - **PWA:** Installable and offline-ready via IndexedDB caching.
-- **Privacy by Design:** No data collection, ever.
 
 I'd love for you to check it out, fork it, or contribute new model configurations!
 
@@ -114,3 +115,9 @@ I'd love for you to check it out, fork it, or contribute new model configuration
 1. **Bilder:** Verwende Screenshots der "Arena" oder des neuen "System-Panels", um die technische Tiefe zu zeigen.
 2. **Timing:** LinkedIn-Posts funktionieren am besten am Vormittag (Dienstag - Donnerstag).
 3. **Interaktion:** Antworte auf Kommentare, um den Algorithmus zu füttern!
+
+---
+
+## #️⃣ Hashtag-Pool (Kopier-Block)
+
+#AI #WebGPU #LocalAI #OpenSource #LLM #PrivacyFirst #NoCloud #DataPrivacy #SelfHosted #CyberSecurity #AIBenchmark #ELORanking #Llama3 #Gemma #Qwen #WebDev #VueJS #Vite #JavaScript #OSArena
