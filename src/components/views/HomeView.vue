@@ -81,6 +81,17 @@
         <p><strong>GitHub:</strong> <a href="https://github.com/DEVmatrose" target="_blank">DEVmatrose</a></p>
         <p><strong>Quellcode:</strong> <a href="https://github.com/DEVmatrose/os-arena" target="_blank">OS-Arena Repository</a></p>
       </div>
+
+      <div class="project-disclaimer">
+        <p>
+          <strong>Wichtiger Hinweis:</strong> Dies ist ein privates Projekt. Es besteht kein Anspruch auf Funktionalität oder Support. 
+          Die Nutzung erfolgt auf eigene Gefahr. Ich garantiere jedoch, dass bei Standardnutzung keine Daten dein Gerät verlassen – 
+          die OS-Arena ist konsequent auf Autonomie und Datenschutz ausgelegt.
+        </p>
+        <p>
+          Ich freue mich über Austausch, Bug-Reports, Feature-Ideen und inspirierende Gespräche! 💬
+        </p>
+      </div>
       
       <details class="donation-box">
         <summary class="donation-summary">
@@ -458,6 +469,21 @@ details[open] .chevron {
 }
 
 .btn-copy:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.project-disclaimer {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid rgba(79, 172, 254, 0.3);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.project-disclaimer strong {
+  color: #fff;
 }
 </style>

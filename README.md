@@ -60,4 +60,13 @@ Die Entwicklung der OS-Arena folgt dem **[AAMS-Prinzip](https://github.com/DEVma
 - **Workpapers**: Aktuelle Aufgaben und Implementierungsschritte.
 - **Archive**: Dokumentation abgeschlossener Meilensteine.
 
+## ⚖️ Disclaimer & Haftungsausschluss
+Dies ist ein **privates Projekt**. Die Nutzung der OS-Arena erfolgt auf eigene Gefahr und Verantwortung. 
+- **Keine Gewähr**: Es wird kein Anspruch auf Funktionalität, Support oder Datensicherheit erhoben.
+- **Datenschutz-Garantie**: Ich garantiere, dass bei Standardnutzung keine Daten dein Gerät verlassen. Die Anwendung ist konsequent auf lokale Autonomie ausgelegt.
+- **Verantwortung**: Jeder Nutzer ist für die Einhaltung lokaler Gesetze und die Verwendung der generierten Inhalte selbst verantwortlich.
+
+## 💬 Austausch & Feedback
+Ich freue mich über jede Form von Austausch! Ob Bug-Reports, Feature-Ideen oder einfach nur ein Gespräch über die Zukunft der lokalen KI – melde dich gerne über GitHub Issues oder direkt bei mir.
+
 *Gebaut mit 🤖 Support für maximale Entwickler-Effizienz.*
