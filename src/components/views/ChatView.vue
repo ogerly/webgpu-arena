@@ -1,82 +1,62 @@
 <template>
   <div class="chat-container">
-    <div class="chat-header glass-panel">
-      <div class="model-select-compact">
-        <label>Modell A (Blau)</label>
-        <select v-model="state.selectedModelA" :disabled="state.loading">
-          <option v-for="m in state.availableModels" :key="'ca-'+m.id" :value="m.id">
+    <!-- Header with Single Model Selection -->
+    <header class="chat-header glass-panel">
+      <div class="model-selector">
+        <label>Aktives Modell</label>
+        <select v-model="state.selectedModelChat" :disabled="state.loading">
+          <option v-for="m in state.availableModels" :key="m.id" :value="m.id">
             {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
           </option>
         </select>
       </div>
-      <div class="vs-badge-small">VS</div>
-      <div class="model-select-compact">
-        <label>Modell B (Lila)</label>
-        <select v-model="state.selectedModelB" :disabled="state.loading">
-          <option v-for="m in state.availableModels" :key="'cb-'+m.id" :value="m.id">
-            {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
-          </option>
-        </select>
-      </div>
-    </div>
+      <button class="btn-clear" @click="clearChat" :disabled="state.loading || state.chatHistory.length === 0">
+        🗑️ Verlauf leeren
+      </button>
+    </header>
 
-    <div class="chat-history" ref="chatHistoryRef">
-      <div v-if="state.chatHistory.length === 0" class="empty-state">
-        <p>Stelle eine Frage, um den Vergleich zu starten!</p>
+    <!-- Chat History -->
+    <div class="chat-scroll-area" ref="chatHistoryRef">
+      <div v-if="state.chatHistory.length === 0" class="welcome-state">
+        <div class="bot-icon">🤖</div>
+        <h2>Bereit für deine Fragen</h2>
+        <p>Wähle ein Modell aus und starte ein privates Gespräch.</p>
       </div>
-      
-      <div v-for="(msg, index) in state.chatHistory" :key="index" class="message-group">
-        <div class="user-message">
-          <span class="avatar">👤</span>
-          <div class="bubble">{{ msg.user }}</div>
+
+      <div v-for="(msg, index) in state.chatHistory" :key="index" :class="['message-row', msg.role]">
+        <div class="avatar-cell">
+          <span v-if="msg.role === 'user'">👤</span>
+          <span v-else>🤖</span>
         </div>
-        
-        <div class="models-response-container">
-          <!-- Model A -->
-          <div class="model-card glass-panel" :class="{'winner': msg.winner === 'A', 'loser': msg.winner === 'B'}">
-            <div class="model-header model-a-header">
-              <span class="model-badge">A</span>
-              <span class="model-name-display">{{ msg.modelA.name }}</span>
-            </div>
-            <div class="model-content">{{ msg.modelA.content || (msg.modelA.generating ? 'Lade...' : '') }}</div>
-            <div v-if="!msg.winner && msg.modelA.content && !msg.modelA.generating" class="vote-actions">
-              <button class="btn btn-vote" @click="vote(index, 'A')">🏆 Besser</button>
-            </div>
-          </div>
-
-          <!-- Model B -->
-          <div class="model-card glass-panel" :class="{'winner': msg.winner === 'B', 'loser': msg.winner === 'A'}">
-            <div class="model-header model-b-header">
-              <span class="model-badge">B</span>
-              <span class="model-name-display">{{ msg.modelB.name }}</span>
-            </div>
-            <div class="model-content">{{ msg.modelB.content || (msg.modelB.generating ? 'Lade...' : '') }}</div>
-            <div v-if="!msg.winner && msg.modelB.content && !msg.modelB.generating" class="vote-actions">
-              <button class="btn btn-vote" @click="vote(index, 'B')">🏆 Besser</button>
-            </div>
+        <div class="message-content glass-panel">
+          <div class="role-label">{{ msg.role === 'user' ? 'Du' : 'KI' }}</div>
+          <div class="text">{{ msg.content }}</div>
+          <div v-if="msg.generating" class="typing-indicator">
+            <span></span><span></span><span></span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="input-area glass-panel">
-      <div v-if="state.loading" class="loading-status">
-        <div class="spinner"></div>
-        <span class="loading-text">{{ state.loadingStatus }}</span>
+    <!-- Input Area -->
+    <footer class="input-section glass-panel">
+      <div v-if="state.loading" class="status-bar">
+        <div class="mini-spinner"></div>
+        <span>{{ state.loadingStatus }}</span>
       </div>
-      <div class="input-wrapper">
+      <div class="input-container">
         <textarea 
           v-model="prompt" 
-          placeholder="Stelle eine Frage an beide KIs..." 
+          placeholder="Schreibe eine Nachricht..." 
           @keydown.enter.prevent="submitPrompt"
           :disabled="state.loading"
           rows="1"
         ></textarea>
-        <button class="btn btn-send" @click="submitPrompt" :disabled="state.loading || !prompt.trim()">
-          ➤
+        <button class="send-trigger" @click="submitPrompt" :disabled="state.loading || !prompt.trim()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         </button>
       </div>
-    </div>
+    </footer>
   </div>
 </template>
 
@@ -95,82 +75,48 @@ const scrollToBottom = () => {
   });
 };
 
+const clearChat = () => {
+  if (confirm("Möchtest du den aktuellen Chat-Verlauf wirklich löschen?")) {
+    state.chatHistory = [];
+  }
+};
+
 const submitPrompt = async () => {
   if (!prompt.value.trim() || state.loading) return;
-  
-  if (state.selectedModelA === state.selectedModelB) {
-    alert("Bitte wähle zwei unterschiedliche Modelle im Arena Setup.");
-    return;
-  }
   
   const userText = prompt.value;
   prompt.value = '';
   
-  const modelAObj = state.availableModels.find(m => m.id === state.selectedModelA);
-  const modelBObj = state.availableModels.find(m => m.id === state.selectedModelB);
+  // Add user message
+  state.chatHistory.push({ role: 'user', content: userText });
   
-  const currentMsg = {
-    user: userText,
-    modelA: { id: state.selectedModelA, name: modelAObj.name, content: '', generating: true },
-    modelB: { id: state.selectedModelB, name: modelBObj.name, content: '', generating: true },
-    winner: null
-  };
-  
-  state.chatHistory.push(currentMsg);
+  // Add placeholder for assistant
+  state.chatHistory.push({ role: 'assistant', content: '', generating: true });
   const msgIndex = state.chatHistory.length - 1;
-  scrollToBottom();
   
+  scrollToBottom();
   state.loading = true;
   
   try {
-    const engineA = await getOrInitEngine(state.selectedModelA);
-    const engineB = await getOrInitEngine(state.selectedModelB);
-
-    state.loadingStatus = "Generiere Antworten...";
+    const engine = await getOrInitEngine(state.selectedModelChat);
+    state.loadingStatus = "KI denkt nach...";
     
-    // Sequentielle Generierung ist sicherer für Mobile WebGPU
-    const replyA = await engineA.chat.completions.create({
-      messages: [{ role: "user", content: userText }]
+    const reply = await engine.chat.completions.create({
+      messages: state.chatHistory.filter(m => !m.generating).map(m => ({ 
+        role: m.role, 
+        content: m.content 
+      }))
     });
-    state.chatHistory[msgIndex].modelA.content = replyA.choices[0].message.content;
-    state.chatHistory[msgIndex].modelA.generating = false;
-    scrollToBottom();
-
-    const replyB = await engineB.chat.completions.create({
-      messages: [{ role: "user", content: userText }]
-    });
-    state.chatHistory[msgIndex].modelB.content = replyB.choices[0].message.content;
-    state.chatHistory[msgIndex].modelB.generating = false;
-    scrollToBottom();
     
-  } catch(err) {
-    console.error("Generierungsfehler:", err);
-    state.chatHistory[msgIndex].modelA.content = "Fehler bei der Generierung.";
-    state.chatHistory[msgIndex].modelA.generating = false;
-    state.chatHistory[msgIndex].modelB.content = "Fehler bei der Generierung.";
-    state.chatHistory[msgIndex].modelB.generating = false;
+    state.chatHistory[msgIndex].content = reply.choices[0].message.content;
+  } catch (err) {
+    console.error("Chat Fehler:", err);
+    state.chatHistory[msgIndex].content = "Entschuldigung, es gab einen Fehler bei der Inferenz: " + err.message;
   } finally {
+    state.chatHistory[msgIndex].generating = false;
     state.loading = false;
     state.loadingStatus = '';
-  }
-};
-
-const vote = (index, winner) => {
-  const msg = state.chatHistory[index];
-  msg.winner = winner;
-  
-  // Update Elo/Score
-  const modelA = state.availableModels.find(m => m.id === msg.modelA.id);
-  const modelB = state.availableModels.find(m => m.id === msg.modelB.id);
-  
-  if (modelA && modelB) {
-    if (winner === 'A') {
-      modelA.score += 15;
-      modelB.score -= 10;
-    } else {
-      modelB.score += 15;
-      modelA.score -= 10;
-    }
+    scrollToBottom();
   }
 };
 </script>
@@ -179,205 +125,186 @@ const vote = (index, winner) => {
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px); /* Leave space for bottom nav */
+  height: calc(100vh - 70px);
+  background: var(--bg-color);
 }
 
 .chat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
-  border-radius: 0 0 16px 16px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 20px 20px;
   border-top: none;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.8);
   z-index: 10;
 }
 
-.model-select-compact {
+.model-selector {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  max-width: 45%;
+  gap: 0.2rem;
 }
 
-.model-select-compact label {
-  font-size: 0.65rem;
-  font-weight: bold;
-  margin-bottom: 0.2rem;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.model-select-compact select {
-  width: 100%;
-  padding: 0.4rem;
-  border-radius: 8px;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid var(--glass-border);
-  color: #fff;
-  font-size: 0.8rem;
-  appearance: none; /* remove default arrow for compact look */
-}
-
-.model-select-compact select:disabled {
-  opacity: 0.5;
-}
-
-.vs-badge-small {
-  font-weight: 900;
-  color: rgba(255,255,255,0.2);
-  font-style: italic;
-  font-size: 1rem;
-}
-
-.chat-history {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
-  padding-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.empty-state {
-  text-align: center;
-  color: var(--text-secondary);
-  padding: 4rem 1rem;
-  font-style: italic;
-}
-
-.user-message {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  justify-content: flex-end;
-}
-
-.avatar {
-  font-size: 1.5rem;
-  order: 2;
-}
-
-.bubble {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 0.8rem 1.2rem;
-  border-radius: 20px 20px 0 20px;
-  color: white;
-  font-size: 1rem;
-  line-height: 1.4;
-  max-width: 85%;
-  box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
-  order: 1;
-}
-
-.models-response-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* On slightly larger screens, show side by side */
-@media (min-width: 768px) {
-  .models-response-container {
-    flex-direction: row;
-  }
-  .model-card {
-    flex: 1;
-  }
-}
-
-.model-card {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  transition: all 0.3s ease;
-}
-
-.model-card.loser {
-  opacity: 0.6;
-}
-
-.model-card.winner {
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
-  border-color: #00f2fe;
-}
-
-.model-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.model-badge {
-  padding: 0.2rem 0.5rem;
-  border-radius: 12px;
+.model-selector label {
   font-size: 0.7rem;
-  font-weight: bold;
-}
-
-.model-a-header .model-badge {
-  background: rgba(79, 172, 254, 0.2);
+  font-weight: 700;
+  text-transform: uppercase;
   color: #4facfe;
 }
 
-.model-b-header .model-badge {
-  background: rgba(161, 140, 209, 0.2);
-  color: #a18cd1;
-}
-
-.model-name-display {
+.model-selector select {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
   font-size: 0.85rem;
-  font-weight: 600;
+  outline: none;
 }
 
-.model-content {
-  font-size: 0.95rem;
+.btn-clear {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  color: #ff4757;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-clear:hover:not(:disabled) {
+  background: rgba(255, 71, 87, 0.2);
+}
+
+.btn-clear:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.chat-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.welcome-state {
+  margin: auto;
+  text-align: center;
+  max-width: 300px;
+}
+
+.bot-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.welcome-state h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-state p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.message-row {
+  display: flex;
+  gap: 1rem;
+  max-width: 85%;
+}
+
+.message-row.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.avatar-cell {
+  font-size: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.message-content {
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  position: relative;
+}
+
+.message-row.user .message-content {
+  background: rgba(79, 172, 254, 0.15);
+  border-color: rgba(79, 172, 254, 0.3);
+  border-bottom-right-radius: 4px;
+}
+
+.message-row.assistant .message-content {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom-left-radius: 4px;
+}
+
+.role-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+  opacity: 0.5;
+}
+
+.text {
+  font-size: 1rem;
   line-height: 1.5;
-  color: var(--text-primary);
   white-space: pre-wrap;
 }
 
-.vote-actions {
-  margin-top: 1rem;
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  margin-top: 0.5rem;
 }
 
-.btn-vote {
-  width: 100%;
-  padding: 0.6rem;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+.typing-indicator span {
+  width: 6px;
+  height: 6px;
+  background: #4facfe;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out;
 }
 
-.input-area {
-  padding: 1rem;
-  border-radius: 20px 20px 0 0;
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.input-section {
+  padding: 1.25rem;
+  border-radius: 24px 24px 0 0;
+  background: rgba(15, 23, 42, 0.95);
   border-bottom: none;
-  border-left: none;
-  border-right: none;
-  background: rgba(15, 23, 42, 0.9);
 }
 
-.loading-status {
+.status-bar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  color: #00f2fe;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
   font-size: 0.8rem;
+  color: #4facfe;
+  font-weight: 600;
 }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(0, 242, 254, 0.3);
-  border-top-color: #00f2fe;
+.mini-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(79, 172, 254, 0.2);
+  border-top-color: #4facfe;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -386,40 +313,51 @@ const vote = (index, winner) => {
   to { transform: rotate(360deg); }
 }
 
-.input-wrapper {
+.input-container {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  gap: 0.75rem;
+  align-items: flex-end;
 }
 
 textarea {
   flex: 1;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 0.8rem 1rem;
-  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 0.75rem 1rem;
+  color: #fff;
   font-family: inherit;
   font-size: 1rem;
   resize: none;
-  max-height: 100px;
+  max-height: 150px;
+  outline: none;
+  transition: border-color 0.2s;
 }
 
 textarea:focus {
-  outline: none;
   border-color: #4facfe;
 }
 
-.btn-send {
-  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-  color: #000;
+.send-trigger {
+  width: 48px;
+  height: 48px;
+  background: var(--primary-gradient);
   border: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  border-radius: 14px;
+  color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.send-trigger:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.send-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

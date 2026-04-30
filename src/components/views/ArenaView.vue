@@ -26,7 +26,7 @@
         </select>
       </div>
 
-      <button class="btn btn-primary start-btn" @click="$router.push('/chat')">
+      <button class="btn btn-primary start-btn" @click="$router.push('/arena/battle')">
         ⚔️ In die Arena (Chat)
       </button>
     </div>

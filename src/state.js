@@ -7,6 +7,8 @@ export const state = reactive({
   availableModels: modelRegistry,
   selectedModelA: 'Qwen2-1.5B-Instruct-q4f16_1-MLC',
   selectedModelB: 'TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC',
+  selectedModelChat: 'Qwen2-1.5B-Instruct-q4f16_1-MLC',
+  arenaHistory: [],
   chatHistory: [],
   loading: false,
   loadingStatus: '',
