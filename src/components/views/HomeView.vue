@@ -41,7 +41,39 @@
       </div>
     </section>
 
-    <!-- Developer & Support Section -->
+    <!-- Manifest Section -->
+    <section class="manifest-section glass-panel">
+      <h3>Das Manifest</h3>
+      <div class="manifest-content">
+        <p class="highlight-text">
+          Ich bin seit über 20 Jahren Entwickler und habe die Entwicklung von KI intensiv mitverfolgt. 
+          Code ist für mich nicht nur Arbeit, sondern ein Werkzeug zur Selbstermächtigung.
+        </p>
+        <p>
+          Mit der OS Arena möchte ich freie und lokale KI-Modelle einfacher zugänglich machen. 
+          Nicht über zentrale Plattformen, nicht hinter Accounts, Abos oder Limits, sondern direkt im Browser, lokal auf deinem eigenen Gerät.
+        </p>
+        <p>
+          Die Modelle sollen auf möglichst normaler Hardware laufen: Laptop, Desktop, teilweise auch Handy. 
+          Genau darum geht es hier: herausfinden, welche kleinen Open-Source-Modelle im Alltag wirklich brauchbar sind und welche nicht.
+        </p>
+        <p>
+          Du kannst die OS Arena als PWA installieren, Modelle herunterladen und lokal benutzen. 
+          Wenn ein Modell geladen ist, kannst du das Internet trennen. Deine Eingaben bleiben auf deinem Gerät. 
+          Nichts wird an einen Server geschickt.
+        </p>
+        <p>
+          Optional kannst du Feedback für die Rangliste geben. Nur dafür wird Internet benötigt. 
+          Dieses Feedback hilft, gemeinsam sichtbar zu machen, welche Modelle wirklich funktionieren.
+        </p>
+        <div class="manifest-footer">
+          <p>OS Arena ist ein Experiment, ein Werkzeug und ein Spielplatz für freie KI.</p>
+          <p class="slogan">Freie Modelle gehören auf freie Geräte.</p>
+          <p class="slogan">KI muss nicht immer in der Cloud stattfinden.</p>
+          <p class="slogan">Gute Werkzeuge sollten Menschen unabhängiger machen.</p>
+        </div>
+      </div>
+    </section>
     <section class="support-section glass-panel">
       <h3>Über das Projekt</h3>
       <div class="dev-info">
@@ -251,6 +283,56 @@ const copyToClipboard = async (text) => {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+
+.manifest-section {
+  width: 100%;
+  max-width: 800px;
+  padding: 2.5rem;
+}
+
+.manifest-section h3 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.manifest-content {
+  color: var(--text-primary);
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.manifest-content p {
+  margin-bottom: 1.5rem;
+}
+
+.highlight-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  border-left: 3px solid #00f2fe;
+  padding-left: 1rem;
+}
+
+.manifest-footer {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+.manifest-footer .slogan {
+  font-weight: 800;
+  color: #00f2fe;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
 }
 
 .support-section {
