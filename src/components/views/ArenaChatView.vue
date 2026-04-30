@@ -1,22 +1,40 @@
 <template>
   <div class="chat-container">
     <div class="chat-header glass-panel">
-      <div class="model-select-compact">
-        <label>Modell A (Blau)</label>
-        <select v-model="state.selectedModelA" :disabled="state.loading">
-          <option v-for="m in state.availableModels" :key="'ca-'+m.id" :value="m.id">
-            {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
-          </option>
-        </select>
+      <div class="model-select-group">
+        <div class="model-select-compact">
+          <label>Modell A (Blau)</label>
+          <select v-model="state.selectedModelA" :disabled="state.loading">
+            <option v-for="m in state.availableModels" :key="'ca-'+m.id" :value="m.id">
+              {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
+            </option>
+          </select>
+        </div>
+        <div v-if="modelA" class="model-meta">
+          <span :class="['mini-badge', modelA.cached ? 'local' : 'cloud']">{{ modelA.cached ? 'LOKAL' : 'CLOUD' }}</span>
+          <button v-if="!modelA.cached" class="mini-dl-btn" @click="downloadModel(modelA)" :disabled="modelA.loading">
+            {{ modelA.loading ? '...' : 'Laden' }}
+          </button>
+        </div>
       </div>
+
       <div class="vs-badge-small">VS</div>
-      <div class="model-select-compact">
-        <label>Modell B (Lila)</label>
-        <select v-model="state.selectedModelB" :disabled="state.loading">
-          <option v-for="m in state.availableModels" :key="'cb-'+m.id" :value="m.id">
-            {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
-          </option>
-        </select>
+
+      <div class="model-select-group">
+        <div class="model-select-compact">
+          <label>Modell B (Lila)</label>
+          <select v-model="state.selectedModelB" :disabled="state.loading">
+            <option v-for="m in state.availableModels" :key="'cb-'+m.id" :value="m.id">
+              {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
+            </option>
+          </select>
+        </div>
+        <div v-if="modelB" class="model-meta">
+          <span :class="['mini-badge', modelB.cached ? 'local' : 'cloud']">{{ modelB.cached ? 'LOKAL' : 'CLOUD' }}</span>
+          <button v-if="!modelB.cached" class="mini-dl-btn" @click="downloadModel(modelB)" :disabled="modelB.loading">
+            {{ modelB.loading ? '...' : 'Laden' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -81,11 +99,14 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue';
-import { state, getOrInitEngine } from '../../state.js';
+import { ref, computed, nextTick } from 'vue';
+import { state, getOrInitEngine, downloadModel } from '../../state.js';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
+
+const modelA = computed(() => state.availableModels.find(m => m.id === state.selectedModelA));
+const modelB = computed(() => state.availableModels.find(m => m.id === state.selectedModelB));
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -178,6 +199,48 @@ const vote = (index, winner) => {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 80px);
+}
+
+.model-select-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.model-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 0.8rem;
+}
+
+.mini-badge {
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+}
+
+.mini-badge.local {
+  background: rgba(0, 242, 254, 0.1);
+  color: #00f2fe;
+}
+
+.mini-badge.cloud {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+.mini-dl-btn {
+  background: #00f2fe;
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 0.1rem 0.3rem;
+  cursor: pointer;
 }
 
 .chat-header {

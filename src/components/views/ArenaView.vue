@@ -6,24 +6,46 @@
     </header>
 
     <div class="arena-config glass-panel">
-      <div class="select-wrapper model-a-select">
-        <label>Modell A (Blau)</label>
-        <select v-model="state.selectedModelA">
-          <option v-for="m in state.availableModels" :key="'a-'+m.id" :value="m.id">
-            {{ m.name }} {{ m.cached ? '(Lokal)' : '' }}
-          </option>
-        </select>
+      <!-- Model A Selection -->
+      <div class="selection-box">
+        <div class="select-wrapper model-a-select">
+          <label>Modell A (Blau)</label>
+          <select v-model="state.selectedModelA">
+            <option v-for="m in state.availableModels" :key="'a-'+m.id" :value="m.id">
+              {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
+            </option>
+          </select>
+        </div>
+        <div v-if="modelA" class="status-row">
+          <span :class="['status-badge', modelA.cached ? 'local' : 'cloud']">
+            {{ modelA.cached ? 'Lokal' : 'Cloud' }}
+          </span>
+          <button v-if="!modelA.cached" class="mini-dl" @click="downloadModel(modelA)" :disabled="modelA.loading">
+            {{ modelA.loading ? '...' : 'Laden' }}
+          </button>
+        </div>
       </div>
       
       <div class="vs-badge">VS</div>
       
-      <div class="select-wrapper model-b-select">
-        <label>Modell B (Lila)</label>
-        <select v-model="state.selectedModelB">
-          <option v-for="m in state.availableModels" :key="'b-'+m.id" :value="m.id">
-            {{ m.name }} {{ m.cached ? '(Lokal)' : '' }}
-          </option>
-        </select>
+      <!-- Model B Selection -->
+      <div class="selection-box">
+        <div class="select-wrapper model-b-select">
+          <label>Modell B (Lila)</label>
+          <select v-model="state.selectedModelB">
+            <option v-for="m in state.availableModels" :key="'b-'+m.id" :value="m.id">
+              {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
+            </option>
+          </select>
+        </div>
+        <div v-if="modelB" class="status-row">
+          <span :class="['status-badge', modelB.cached ? 'local' : 'cloud']">
+            {{ modelB.cached ? 'Lokal' : 'Cloud' }}
+          </span>
+          <button v-if="!modelB.cached" class="mini-dl" @click="downloadModel(modelB)" :disabled="modelB.loading">
+            {{ modelB.loading ? '...' : 'Laden' }}
+          </button>
+        </div>
       </div>
 
       <button class="btn btn-primary start-btn" @click="$router.push('/arena/battle')">
@@ -34,7 +56,11 @@
 </template>
 
 <script setup>
-import { state } from '../../state.js';
+import { computed } from 'vue';
+import { state, downloadModel } from '../../state.js';
+
+const modelA = computed(() => state.availableModels.find(m => m.id === state.selectedModelA));
+const modelB = computed(() => state.availableModels.find(m => m.id === state.selectedModelB));
 </script>
 
 <style scoped>
@@ -65,6 +91,51 @@ import { state } from '../../state.js';
   align-items: center;
   gap: 1.5rem;
   padding: 2rem;
+}
+
+.selection-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 8px;
+}
+
+.status-badge.local {
+  background: rgba(0, 242, 254, 0.1);
+  color: #00f2fe;
+  border: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+.status-badge.cloud {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mini-dl {
+  background: #00f2fe;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .select-wrapper {

@@ -2,14 +2,25 @@
   <div class="chat-container">
     <!-- Header with Single Model Selection -->
     <header class="chat-header glass-panel">
-      <div class="model-selector">
-        <label>Aktives Modell</label>
-        <select v-model="state.selectedModelChat" :disabled="state.loading">
-          <option v-for="m in state.availableModels" :key="m.id" :value="m.id">
-            {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
-          </option>
-        </select>
+      <div class="model-selector-group">
+        <div class="model-selector">
+          <label>Aktives Modell</label>
+          <select v-model="state.selectedModelChat" :disabled="state.loading">
+            <option v-for="m in state.availableModels" :key="m.id" :value="m.id">
+              {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
+            </option>
+          </select>
+        </div>
+        
+        <div v-if="selectedModel" class="model-status-info">
+          <span v-if="selectedModel.cached" class="badge badge-local">Lokal</span>
+          <span v-else class="badge badge-cloud">Cloud</span>
+          <button v-if="!selectedModel.cached" class="btn-download-mini" @click="downloadModel(selectedModel)" :disabled="state.loading || selectedModel.loading">
+            {{ selectedModel.loading ? '...' : 'Laden' }}
+          </button>
+        </div>
       </div>
+
       <button class="btn-clear" @click="clearChat" :disabled="state.loading || state.chatHistory.length === 0">
         🗑️ Verlauf leeren
       </button>
@@ -61,11 +72,15 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue';
-import { state, getOrInitEngine } from '../../state.js';
+import { ref, computed, nextTick } from 'vue';
+import { state, getOrInitEngine, downloadModel } from '../../state.js';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
+
+const selectedModel = computed(() => {
+  return state.availableModels.find(m => m.id === state.selectedModelChat);
+});
 
 const scrollToBottom = () => {
   nextTick(() => {
@@ -140,10 +155,65 @@ const submitPrompt = async () => {
   z-index: 10;
 }
 
+.model-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .model-selector {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+}
+
+.model-status-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.badge-local {
+  background: rgba(0, 242, 254, 0.1);
+  color: #00f2fe;
+  border: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+.badge-cloud {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-download-mini {
+  background: #00f2fe;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-download-mini:hover {
+  transform: scale(1.05);
+}
+
+.btn-download-mini:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .model-selector label {
