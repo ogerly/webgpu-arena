@@ -2,10 +2,14 @@
   <div class="view-container home-view">
     <!-- Hero Section -->
     <header class="hero-section">
+      <div v-if="state.gpuInfo" class="status-indicator" :class="{ 'is-ready': state.gpuInfo.supported }">
+        <span class="dot"></span>
+        {{ state.gpuInfo.supported ? 'WebGPU bereit' : 'WebGPU nicht unterstützt' }}
+      </div>
       <h1 class="gradient-text">OS-Arena</h1>
       <h2>Dein lokales KI-Testlabor</h2>
       <p class="hero-subtext">
-        Erlebe Open-Source-Modelle direkt in deinem Browser. 100% lokal, absolut privat und offline-fähig.
+        Erlebe WebGPU-beschleunigte Open-Source-Modelle direkt in deinem Browser. 100% lokal, absolut privat und offline-fähig.
       </p>
       <div class="hero-actions">
         <button class="btn btn-primary" @click="$router.push('/arena')">⚔️ Zur Arena</button>
@@ -72,6 +76,7 @@
 </template>
 
 <script setup>
+import { state } from '../../state.js';
 const cryptoAddresses = {
   'BTC': 'bc1q7m8l4zvx0htxx35cq3ur5pr2khlx9j5srw8flu',
   'ETH': '0x457A7CEbf4021f9D21a70d5Af6AcF2eA842f141F',
@@ -103,6 +108,51 @@ const copyToClipboard = async (text) => {
   text-align: center;
   margin-top: 1rem;
   max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ff4757;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.status-indicator.is-ready {
+  background: rgba(0, 242, 254, 0.1);
+  border-color: rgba(0, 242, 254, 0.2);
+  color: #00f2fe;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #ff4757;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px #ff4757;
+}
+
+.is-ready .dot {
+  background: #00f2fe;
+  box-shadow: 0 0 8px #00f2fe;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .gradient-text {

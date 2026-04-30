@@ -1,7 +1,7 @@
 # Whitepaper WP-002: Frontend-Architektur, UI & Navigation
 
 **Projekt:** OS-Arena  
-**Stand:** 2026-04-29  
+**Stand:** 2026-04-30  
 **Status:** Implementiert & Aktiv  
 
 ---
@@ -37,3 +37,19 @@ Die App verfügt über eine Startseite, die als primäre Landing-Page dient. Sie
 - Keine Accounts, keine APIs, totale Privatsphäre.
 - Direkte Integration der Entwickler-Credits (@ogerly / DEVmatrose) und Spendenmöglichkeiten zur Finanzierung der Weiterentwicklung.
   - Die Spendenbox wurde extrem platzsparend und ressourcenschonend mittels des nativen HTML5 `<details>`-Elements als Accordion umgesetzt.
+
+## 3. System-Monitoring & Globales Feedback
+
+Um die technische Komplexität des lokalen KI-Betriebs für den Nutzer greifbar und transparent zu machen, wurde ein dediziertes Feedback-System implementiert:
+
+### 3.1 Loading Overlay (`LoadingOverlay.vue`)
+Ein globales, gläsernes Overlay, das bei ressourcenintensiven Operationen (wie dem Initialisieren einer Engine) erscheint. Es bietet einen zentralen Fortschrittsring und Statusmeldungen, ohne die Navigation vollständig zu blockieren (da es via Vue-State gesteuert wird).
+
+### 3.2 System Info Panel (`SystemInfoPanel.vue`)
+Dieses Modul in den Einstellungen dient der technischen Transparenz. Es nutzt die WebGPU-API und die Performance-API des Browsers, um:
+- Den Namen der aktiven Grafikkarte (GPU) anzuzeigen.
+- Den aktuellen RAM-Verbrauch des Browser-Tabs zu visualisieren.
+- Den Status des lokalen Modell-Caches zu prüfen.
+
+### 3.3 Download-Tracking (`LoadingStatusBar.vue`)
+Ermöglicht das Mitverfolgen von Hintergrund-Downloads. Während Modelle geladen werden, zeigt diese Komponente in der Einstellungs-Ansicht detaillierte Fortschrittsbalken für jedes einzelne Modell, was besonders bei Arena-Vergleichen (Zwei Modelle gleichzeitig) die Übersichtlichkeit erhöht.

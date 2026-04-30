@@ -1,4 +1,4 @@
-# WP-004 Refactor: Loading UI & System Info
+# WP-006 Refactor: Loading UI & System Info
 
 ## Zielsetzung
 
@@ -102,6 +102,6 @@ flowchart TD
 - [x] Styling‑Token in Design‑System aufnehmen.
 - [x] WebGPU Fix: Fallback für `requestAdapterInfo` (Brave/Chrome Kompatibilität).
 - [x] Refactor Download-Bereich (ModelsView).
-- [ ] Tests & Dokumentation ergänzen.
+- [x] Tests & Dokumentation ergänzen.
 
 > **Hinweis:** Alle UI‑Entscheidungen folgen dem bestehenden Premium‑Design‑System des Projekts (Glass‑Panel, dunkle Hintergründe, klare Typografie mit Google‑Font *Inter*).

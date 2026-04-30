@@ -8,6 +8,7 @@
 - **Offline fähig**: Einmal heruntergeladene Modelle werden lokal im Cache (IndexedDB) deines Browsers zwischengespeichert. So kannst du die Arena – solange der Cache nicht geleert wird – auch ohne Internetverbindung nutzen.
 - **Mobile-First Design**: Moderne, reaktionsschnelle Benutzeroberfläche (Glassmorphism), die auf jedem Endgerät optimal funktioniert.
 - **PWA-Ready**: Installiere die OS-Arena als eigenständige App direkt auf deinen Desktop oder dein Smartphone.
+- **System-Monitoring & Transparenz**: Echtzeit-Anzeige von WebGPU-Status, Browser-RAM-Verbrauch und detailliertem Download-Fortschritt in den Einstellungen.
 - **Privacy First & Sicher**: Deine Prompts, Daten und Chats verlassen niemals dein Endgerät. Strikte Sanitization schützt vor XSS-Angriffen.
 
 ## 🚀 Integrierte Modelle
