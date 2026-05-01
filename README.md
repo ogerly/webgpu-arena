@@ -1,16 +1,21 @@
 # 🏟️ OS-Arena
 
-**OS-Arena** ist ein reiner Browser-Client, um schmale, offene KI-Modelle (Open-Weight Models) direkt lokal gegeneinander antreten zu lassen. Alles passiert **100% lokal** auf deinem Gerät – ohne Cloud-Zwang, ohne API-Kosten und mit maximaler Privatsphäre.
+**OS-Arena** ist dein privates, WebGPU-beschleunigtes Testlabor für lokale LLMs direkt im Browser. Vergleiche zwei Modelle im Blind-Test oder nutze den Einzel-Chat als sicheren Daily-Driver für deine Fragen – 100% ohne API-Keys, ohne Accounts und ohne Cloud-Zwang.
 
-## ✨ Features
-- **Direkter Modell-Vergleich**: Wähle zwei KIs und lass sie dieselbe Frage beantworten. Stimme ab, wer besser ist!
-- **WebGPU-Powered**: Die KI läuft dank `@mlc-ai/web-llm` extrem performant direkt über deine lokale Grafikkarte. (Robuster Hardware-Check integriert).
-- **Offline fähig**: Einmal heruntergeladene Modelle werden lokal im Cache (IndexedDB) deines Browsers zwischengespeichert. So kannst du die Arena – solange der Cache nicht geleert wird – auch ohne Internetverbindung nutzen.
-- **Mobile-First Design**: Moderne, reaktionsschnelle Benutzeroberfläche (Glassmorphism), die auf jedem Endgerät optimal funktioniert.
-- **PWA-Ready**: Installiere die OS-Arena als eigenständige App direkt auf deinen Desktop oder dein Smartphone.
-- **Privacy First & "No-Key" Security**: Deine Prompts verlassen niemals dein Gerät. Unsere Architektur verzichtet auf API-Keys im Frontend. Kommunikation erfolgt sicher und anonym über gesicherte Gatekeeper.
-- **Globales Performance-Ranking**: Vergleiche deine WebGPU-Leistung optional und anonym mit der weltweiten Community.
-- **System-Monitoring & Transparenz**: Echtzeit-Anzeige von WebGPU-Status, Browser-RAM-Verbrauch und detailliertem Download-Fortschritt.
+## 🚀 Zwei Wege zum Ziel
+
+1. **🏟️ Arena Mode**: Teste zwei Modelle anonym gegeneinander. Wer liefert die bessere Antwort? Dein Voting beeinflusst das globale Leaderboard.
+2. **💬 Einzel-Chat**: Ein hochwertiger, privater Chat-Modus mit Modell-Vorschlägen, Markdown-Support und lokaler Historie.
+
+## ✨ Features v1.2.0
+
+- **3B Model Limit**: Unterstützung für Champions wie Llama 3.2 3B und Gemma 2 2B.
+- **Privacy First**: Deine Prompts verlassen niemals dein Gerät.
+- **WebGPU-Powered**: Die KI läuft dank `@mlc-ai/web-llm` extrem performant direkt über deine lokale Grafikkarte.
+- **Lokal & Persistent**: Deine Chat-Historien und ELO-Scores werden lokal gespeichert.
+- **PWA-Ready**: Installiere die OS-Arena als eigenständige App auf deinem Desktop oder Smartphone.
+- **No-Key Security**: Sicherer, anonymer Daten-Sync via Supabase Edge Functions.
+- **System-Monitoring**: Echtzeit-Anzeige von WebGPU-Status und Browser-RAM-Verbrauch.
 
 ## 🚀 Integrierte Modelle
 Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Wir setzen auf das **3B-Limit**, um den idealen Mix aus Qualität und Speed zu bieten:

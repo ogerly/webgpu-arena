@@ -11,9 +11,20 @@
       <p class="hero-subtext">
         Erlebe WebGPU-beschleunigte Open-Source-Modelle direkt in deinem Browser. 100% lokal, absolut privat und offline-fähig.
       </p>
-      <div class="hero-actions">
-        <button class="btn btn-primary" @click="$router.push('/arena')">⚔️ Zur Arena</button>
-        <button class="btn btn-secondary" @click="$router.push('/models')">💾 Modelle laden</button>
+      <div class="hero-actions-container">
+        <div class="action-card arena-card" @click="$router.push('/arena')">
+          <div class="action-icon">⚔️</div>
+          <h3>Arena Modus</h3>
+          <p>Vergleiche zwei Modelle im Blind-Test.</p>
+          <button class="btn btn-primary">Jetzt voten</button>
+        </div>
+
+        <div class="action-card chat-card" @click="$router.push('/chat')">
+          <div class="action-icon">💬</div>
+          <h3>Einzel-Chat</h3>
+          <p>Dein privater Daily-Driver für Fragen.</p>
+          <button class="btn btn-secondary">Chat starten</button>
+        </div>
       </div>
     </header>
 
@@ -248,43 +259,64 @@ const copyToClipboard = async (text) => {
   margin-bottom: 2rem;
 }
 
-.hero-actions {
+.hero-actions-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 700px;
+  margin-top: 2rem;
+}
+
+.action-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn-primary {
-  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-  color: #000;
-  padding: 0.8rem 1.5rem;
-  border-radius: 12px;
-  font-weight: bold;
-  font-size: 1.1rem;
-  border: none;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-align: center;
 }
 
-.btn-primary:hover {
-  transform: scale(1.05);
+.action-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-10px);
+  border-color: rgba(0, 242, 254, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
+.action-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.action-card h3 {
+  font-size: 1.4rem;
+  margin: 0;
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.8rem 1.5rem;
-  border-radius: 12px;
-  font-weight: bold;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s;
 }
 
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
+.action-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.action-card .btn {
+  margin-top: 0.5rem;
+  pointer-events: none; /* Click falls through to card */
+}
+
+@media (max-width: 600px) {
+  .hero-actions-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .features-grid {
