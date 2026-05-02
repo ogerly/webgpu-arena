@@ -1,7 +1,7 @@
+import './utils/diagnostics.js'
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import router from './router'
-import './utils/diagnostics.js'
 
 createApp(App).use(router).mount('#app')
