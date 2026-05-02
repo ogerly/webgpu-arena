@@ -16,9 +16,17 @@
 - `WORKING/WHITEPAPER/WP-002-ARCH-frontend-navigation.md`: Dokumentation der SPA Router-Architektur & UI Design-Prinzipien.
 - `WORKING/WORKPAPER/closed/`: Enthält abgeschlossene Aufgaben und Spezifikationen (z.B. Vue-Router, HomeView, Core-Review).
 
-## Recent Updates (2026-04-29)
-- AAMS Check: Closed old workpapers, consolidated knowledge into Whitepaper 002.
+## Recent Updates (2026-05)
+- AAMS Check: Executed LTM update, created May Diary, closed WP-007 and WP-011.
+- Supabase No-Key Architecture: Secured the Global Ranking by implementing an Edge Function proxy (`get-leaderboard`) for reading, removing any need for API keys in the frontend.
+- Single Chat Refactor: Elevated the single-model chat with a ChatGPT-like bubble UI, markdown rendering, and local storage persistence.
+- HomeView & AAMS Showcase: Integrated a section highlighting the "Single Source of Truth" and AAMS architecture on the landing page.
+
+## Previous Updates (2026-04-29)
 - Vue-Router Migration: App routes are now fully URL-driven with working Browser-History.
 - HomeView: Created an introductory landing page with project info, offline promises, and donation options (collapsible details box).
 - P0 Tasks completed: XSS fixed, Vote bug fixed, WebGPU check robust, Model Registry extracted.
-- Current Focus: Streaming implementation (P1).
+
+## Current Focus
+- Testing and monitoring the live Supabase No-Key architecture.
+- Streaming of token responses (P1).
