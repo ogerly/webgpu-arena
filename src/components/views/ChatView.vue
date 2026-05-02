@@ -43,6 +43,7 @@
         <div class="bubble-wrapper">
           <div class="bubble-header">
             <span class="bubble-role">{{ msg.role === 'user' ? 'Du' : selectedModel?.name }}</span>
+            <button class="btn-copy-bubble" @click="copyText(msg.content, $event)" title="Text kopieren" v-if="msg.content && !msg.generating">📋</button>
           </div>
           <div class="bubble-content" :class="{ 'generating': msg.generating }">
             <div class="message-text" v-html="formatMessage(msg.content)"></div>
@@ -109,6 +110,21 @@ const clearChat = () => {
   if (confirm("Möchtest du den aktuellen Chat-Verlauf wirklich löschen?")) {
     state.chatHistory = [];
     saveHistory();
+  }
+};
+
+const copyText = async (text, event) => {
+  try {
+    // Falls HTML im Text ist, entfernen wir es für die Zwischenablage nicht, 
+    // aber bei msg.content speichern wir rohen Text/Markdown, was perfekt ist!
+    await navigator.clipboard.writeText(text);
+    const btn = event.currentTarget;
+    btn.innerHTML = '✅';
+    setTimeout(() => {
+      btn.innerHTML = '📋';
+    }, 2000);
+  } catch (err) {
+    console.error("Kopieren fehlgeschlagen:", err);
   }
 };
 
@@ -333,12 +349,31 @@ onMounted(() => {
   text-transform: uppercase;
   color: var(--text-secondary);
   margin-left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .user .bubble-header {
   margin-left: 0;
   margin-right: 1rem;
   text-align: right;
+  justify-content: flex-end;
+}
+
+.btn-copy-bubble {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  opacity: 0.5;
+  transition: opacity 0.2s, transform 0.2s;
+  padding: 0;
+}
+
+.btn-copy-bubble:hover {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .bubble-content {

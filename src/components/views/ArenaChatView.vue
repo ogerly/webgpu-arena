@@ -51,6 +51,7 @@
       
       <div v-for="(msg, index) in state.arenaHistory" :key="index" class="message-group">
         <div class="user-message">
+          <button class="btn-copy-bubble user-copy" @click="copyText(msg.user, $event)" title="Text kopieren">📋</button>
           <div class="bubble">{{ msg.user }}</div>
           <span class="avatar">👤</span>
         </div>
@@ -64,8 +65,11 @@
                 <span class="model-name-display">{{ (!isBlind || msg.winner) ? msg.modelA.name : 'Modell A' }}</span>
                 <span v-if="(!isBlind || msg.winner) && msg.modelA.badge" class="type-badge-mini" :class="msg.modelA.badge.toLowerCase()">{{ msg.modelA.badge }}</span>
               </div>
-              <div v-if="msg.winner && msg.eloChange" class="reveal-info">
-                <span class="elo-delta">{{ msg.winner === 'A' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
+              <div class="model-header-right">
+                <button class="btn-copy-bubble" @click="copyText(msg.modelA.content, $event)" title="Text kopieren" v-if="msg.modelA.content && !msg.modelA.generating">📋</button>
+                <div v-if="msg.winner && msg.eloChange" class="reveal-info">
+                  <span class="elo-delta">{{ msg.winner === 'A' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
+                </div>
               </div>
             </div>
 
@@ -102,8 +106,11 @@
                 <span class="model-name-display">{{ (!isBlind || msg.winner) ? msg.modelB.name : 'Modell B' }}</span>
                 <span v-if="(!isBlind || msg.winner) && msg.modelB.badge" class="type-badge-mini" :class="msg.modelB.badge.toLowerCase()">{{ msg.modelB.badge }}</span>
               </div>
-              <div v-if="msg.winner && msg.eloChange" class="reveal-info">
-                <span class="elo-delta">{{ msg.winner === 'B' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
+              <div class="model-header-right">
+                <button class="btn-copy-bubble" @click="copyText(msg.modelB.content, $event)" title="Text kopieren" v-if="msg.modelB.content && !msg.modelB.generating">📋</button>
+                <div v-if="msg.winner && msg.eloChange" class="reveal-info">
+                  <span class="elo-delta">{{ msg.winner === 'B' ? '+' : '−' }}{{ msg.eloChange }} ELO</span>
+                </div>
               </div>
             </div>
 
@@ -176,6 +183,19 @@ const modelB = computed(() => state.availableModels.find(m => m.id === state.sel
 
 const onConsentAccept = () => {
   consentGranted.value = true;
+};
+
+const copyText = async (text, event) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    const btn = event.currentTarget;
+    btn.innerHTML = '✅';
+    setTimeout(() => {
+      btn.innerHTML = '📋';
+    }, 2000);
+  } catch (err) {
+    console.error("Kopieren fehlgeschlagen:", err);
+  }
 };
 
 const handleGlobalUpload = async (msg, modelType) => {
@@ -576,6 +596,31 @@ const vote = (index, winner) => {
   border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 800;
+}
+
+.model-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.btn-copy-bubble {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  transition: opacity 0.2s, transform 0.2s;
+  padding: 0;
+}
+
+.btn-copy-bubble:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.user-copy {
+  margin-top: 1rem;
 }
 
 .model-a-header .model-badge {
