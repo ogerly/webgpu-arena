@@ -37,8 +37,8 @@ export async function submitToGlobalRanking(result) {
   };
 
   try {
-    console.log(`Sende POST an: ${supabaseUrl}/functions/v1/os-arena-ranking-handler`);
-    const response = await fetch(`${supabaseUrl}/functions/v1/os-arena-ranking-handler`, {
+    console.log(`Sende POST an: ${supabaseUrl}/functions/v1/submit-ranking`);
+    const response = await fetch(`${supabaseUrl}/functions/v1/submit-ranking`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -67,15 +67,18 @@ export async function submitToGlobalRanking(result) {
  * Hinweis: Erfordert, dass die View ohne API-Key lesbar ist (Proxy oder Public Config).
  */
 export async function fetchGlobalLeaderboard() {
-  if (!supabaseUrl) return [];
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
+  if (!supabaseUrl) {
+    console.warn("Supabase URL nicht konfiguriert.");
+    return [];
+  }
 
   try {
-    const response = await fetch(`${supabaseUrl}/rest/v1/leaderboard_public?select=*&order=avg_tps.desc`, {
+    const response = await fetch(`${supabaseUrl}/functions/v1/get-leaderboard`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-        // Hinweis: Supabase REST API erfordert oft 'apikey', 
-        // wenn kein Key im Frontend sein darf, muss hier ein Proxy dazwischen.
       }
     });
 
