@@ -50,9 +50,9 @@ src/
 - [x] Implementierung des `benchmarkRunner.js` inkl. präzisem Timing (`performance.now()` & GPU Sync).
 
 ### Phase 2: Vue-Integration & UI
-- [ ] Neue View `BenchmarkView.vue` erstellen und im `vue-router` als `/benchmark` registrieren.
-- [ ] Erstellen der `ComputeControls.vue` (Start/Stop-Buttons, Fortschrittsanzeige).
-- [ ] Einbindung einer leichtgewichtigen Chart-Library (z. B. `vue-chartjs`) in `ResultChart.vue`.
+- [x] Neue View `BenchmarkView.vue` erstellen und im `vue-router` als `/benchmark` registrieren.
+- [x] Erstellen der `ComputeControls.vue` (Start/Stop-Buttons, Fortschrittsanzeige). (Teil von BenchmarkView)
+- [x] Einbindung einer leichtgewichtigen Chart-Library (z. B. `vue-chartjs`) in `ResultChart.vue`. (Vorübergehend als native HTML-Speedup-Card gelöst)
 
 ### Phase 3: Optimierung für LLM-Metriken
 - [ ] GEMM-Operationen hinzufügen.
