@@ -42,6 +42,22 @@ Zusätzlich zum Text-Vergleich bietet die WebGPU-Arena spezialisierte T2I-Modell
 
 ---
 
+## Audio & Vision (Neue Modalitäten)
+Die Arena wird neben Text und Bild um Speech und optische Zeichenerkennung (ONNX-WebGPU) erweitert:
+
+### 1. Audio (TTS & STT)
+| Modell | Typ | Fokus | Backend |
+| :--- | :--- | :--- | :--- |
+| **Kokoro-82M (German-Martin)** | TTS | Text-to-Speech (Deutsche Stimme) | ONNX-WebGPU |
+| **Whisper (Tiny/Base)** | STT | Speech-to-Text (Spracherkennung) | ONNX-WebGPU |
+
+### 2. Vision (OCR)
+| Modell | Typ | Fokus | Backend |
+| :--- | :--- | :--- | :--- |
+| **GLM-OCR** | Vision | Optische Zeichenerkennung | ONNX-WebGPU |
+
+---
+
 ## ELO-Initialisierung (Benchmark-Startwerte)
 * **Llama 3.2 3B**: 1300
 * **Gemma 2 2B**: 1280

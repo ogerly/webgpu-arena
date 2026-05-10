@@ -18,6 +18,7 @@
 - `WORKING/WORKPAPER/closed/`: Enthält abgeschlossene Aufgaben und Spezifikationen (z.B. Vue-Router, HomeView, Core-Review).
 - `WORKING/WORKPAPER/WP-015-FEAT-webgpu-benchmark.md`: Spezifikation für isolierte WebGPU Hardware-Benchmarks.
 - `WORKING/WORKPAPER/WP-016-FEAT-memory-management.md`: Spezifikation für VRAM-Management und das gezielte Entladen von Modellen.
+- `WORKING/WORKPAPER/WP-017-FEAT-multimodal-tts-ocr.md`: Erweiterung der Modalitäten um GLM-OCR, Kokoro-TTS und Whisper.
 
 ## Recent Updates (2026-05)
 - AAMS Check: Executed LTM update, created May Diary, closed WP-007 and WP-011.
