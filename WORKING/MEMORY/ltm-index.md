@@ -17,6 +17,7 @@
 - `WORKING/WHITEPAPER/WH-006-ARCH-dual-deployment.md`: Dokumentation des Dual-Deployments auf GitHub Pages und Hugging Face Spaces.
 - `WORKING/WORKPAPER/closed/`: Enthält abgeschlossene Aufgaben und Spezifikationen (z.B. Vue-Router, HomeView, Core-Review).
 - `WORKING/WORKPAPER/WP-015-FEAT-webgpu-benchmark.md`: Spezifikation für isolierte WebGPU Hardware-Benchmarks.
+- `WORKING/WORKPAPER/WP-016-FEAT-memory-management.md`: Spezifikation für VRAM-Management und das gezielte Entladen von Modellen.
 
 ## Recent Updates (2026-05)
 - AAMS Check: Executed LTM update, created May Diary, closed WP-007 and WP-011.
