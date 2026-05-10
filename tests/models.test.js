@@ -13,10 +13,21 @@ describe('Model Registry Validation', () => {
     expect(ids.length).toBe(uniqueIds.size);
   });
 
-  it('should follow MLC naming convention for all IDs', () => {
-    // MLC IDs end with the quantization/format suffix
+  it('should follow naming conventions', () => {
     modelRegistry.forEach(model => {
-      expect(model.id).toMatch(/-q[0-9]f[0-9]+(_[0-9])?-MLC$/);
+      if (model.type === 'text') {
+        // MLC IDs end with the quantization/format suffix
+        expect(model.id).toMatch(/-q[0-9]f[0-9]+(_[0-9])?-MLC$/);
+      } else {
+        // T2I models follow HF repo/model or webgpu pattern
+        expect(model.id).toMatch(/^[\w.-]+\/[\w.-]+|.*-webgpu.*$/);
+      }
+    });
+  });
+
+  it('should have a valid type', () => {
+    modelRegistry.forEach(model => {
+      expect(['text', 'image']).toContain(model.type);
     });
   });
 

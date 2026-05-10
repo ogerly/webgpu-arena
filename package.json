@@ -1,5 +1,5 @@
 {
-  "name": "os-arena",
+  "name": "webgpu-arena",
   "private": true,
   "version": "1.2.0",
   "type": "module",
@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "@mlc-ai/web-llm": "^0.2.82",
     "@supabase/supabase-js": "^2.105.1",
     "vite-plugin-pwa": "^1.2.0",

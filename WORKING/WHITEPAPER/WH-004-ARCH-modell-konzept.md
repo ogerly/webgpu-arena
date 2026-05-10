@@ -1,7 +1,7 @@
-# Whitepaper: WP-004 - Modell-Architektur & Auswahl (v1.1.0)
+# Whitepaper: WP-004 - Modell-Architektur & Auswahl (v1.2.0)
 
 ## Strategie (3B-Grenze)
-Die OS-Arena nutzt Modelle bis zu einer Größe von **3 Milliarden Parametern (3B)**. Dies stellt den idealen Kompromiss zwischen logischer Tiefe und Browser-Performance dar.
+Die WebGPU-Arena nutzt Modelle bis zu einer Größe von **3 Milliarden Parametern (3B)**. Dies stellt den idealen Kompromiss zwischen logischer Tiefe und Browser-Performance dar.
 
 ## Die Arena-Mischung (7 Kern-Modelle)
 
@@ -23,6 +23,22 @@ Die OS-Arena nutzt Modelle bis zu einer Größe von **3 Milliarden Parametern (3
 | :--- | :--- | :--- | :--- |
 | **Qwen 2.5 Tiny** | `Qwen2.5-0.5B-Instruct-q4f16_1-MLC` | 0.5B | Maximale Effizienz |
 | **TinyLlama** | `TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC` | 1.1B | **Negativ-Beispiel**: Speed ohne Qualität |
+
+---
+
+## Bildgenerierung (Text-to-Image Tier)
+Zusätzlich zum Text-Vergleich bietet die WebGPU-Arena spezialisierte T2I-Modelle an. Diese nutzen eine **ONNX-WebGPU-Pipeline** für maximale Performance.
+
+| Modell | Typ | Backend | Min. VRAM |
+| :--- | :--- | :--- | :--- |
+| **Stable Diffusion 1.5** | Classic | WebGPU | 4 GB |
+| **Sana 0.6B** | Speed | ONNX-WebGPU | 6 GB |
+| **Flux.1 [dev] Klein** | Premium | ONNX-WebGPU | 12 GB+ |
+
+### Multimodale Strategie
+1. **Text**: MLC-Engine (WebLLM) für optimierte LLM-Inferenz.
+2. **Bild**: Transformers.js / ONNX-Runtime für Diffusion-Pipelines.
+3. **Hardware-Check**: Vor jedem Start erfolgt ein VRAM-Limit-Check.
 
 ---
 

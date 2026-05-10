@@ -6,12 +6,19 @@
         <div class="active-label">Aktives Modell</div>
         <div class="selector-wrapper">
           <select v-model="state.selectedModelChat" :disabled="state.loading" class="modern-select">
-            <option v-for="m in state.availableModels" :key="m.id" :value="m.id">
-              {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
-            </option>
+            <optgroup label="Text-Modelle">
+              <option v-for="m in textModels" :key="m.id" :value="m.id">
+                {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
+              </option>
+            </optgroup>
+            <optgroup label="Bild-Modelle">
+              <option v-for="m in imageModels" :key="m.id" :value="m.id">
+                {{ m.cached ? '🖼️' : '☁️' }} {{ m.name }}
+              </option>
+            </optgroup>
           </select>
           <div v-if="selectedModel" class="status-badges">
-            <span v-if="selectedModel.cached" class="badge-dot" title="Lokal geladen"></span>
+            <span v-if="selectedModel.cached" class="badge-dot" :class="{ 'image-dot': selectedModel.type === 'image' }" title="Lokal geladen"></span>
             <button v-if="!selectedModel.cached" class="btn-download-action" @click="downloadModel(selectedModel)" :disabled="state.loading || selectedModel.loading">
               {{ selectedModel.loading ? 'Lädt...' : 'Modell laden' }}
             </button>
@@ -28,12 +35,17 @@
     <div class="chat-scroll-area" ref="chatHistoryRef">
       <div v-if="state.chatHistory.length === 0" class="welcome-container">
         <div class="welcome-hero">
-          <div class="welcome-icon">💬</div>
-          <h1>Einzel-Chat</h1>
-          <p>Nutze die volle Power von <strong>{{ selectedModel?.name }}</strong> für deine Fragen. 100% lokal und privat.</p>
+          <div class="welcome-icon">{{ selectedModel?.type === 'image' ? '🎨' : '💬' }}</div>
+          <h1>{{ selectedModel?.type === 'image' ? 'Bild-Generator' : 'Einzel-Chat' }}</h1>
+          <p v-if="selectedModel?.type === 'image'">
+            Beschreibe das Bild, das <strong>{{ selectedModel?.name }}</strong> für dich generieren soll.
+          </p>
+          <p v-else>
+            Nutze die volle Power von <strong>{{ selectedModel?.name }}</strong> für deine Fragen. 100% lokal und privat.
+          </p>
         </div>
         <div class="suggestions">
-          <div v-for="s in suggestions" :key="s" class="suggestion-chip" @click="applySuggestion(s)">
+          <div v-for="s in currentSuggestions" :key="s" class="suggestion-chip" @click="applySuggestion(s)">
             {{ s }}
           </div>
         </div>
@@ -43,10 +55,16 @@
         <div class="bubble-wrapper">
           <div class="bubble-header">
             <span class="bubble-role">{{ msg.role === 'user' ? 'Du' : selectedModel?.name }}</span>
-            <button class="btn-copy-bubble" @click="copyText(msg.content, $event)" title="Text kopieren" v-if="msg.content && !msg.generating">📋</button>
+            <button class="btn-copy-bubble" @click="copyText(msg.content, $event)" title="Text kopieren" v-if="msg.content && !msg.generating && msg.type !== 'image'">📋</button>
           </div>
-          <div class="bubble-content" :class="{ 'generating': msg.generating }">
-            <div class="message-text" v-html="formatMessage(msg.content)"></div>
+          <div class="bubble-content" :class="{ 'generating': msg.generating, 'image-bubble': msg.type === 'image' }">
+            <div v-if="msg.type === 'image'" class="image-message">
+              <img :src="msg.content" :alt="msg.prompt" class="generated-image" @load="scrollToBottom" />
+              <div class="image-actions">
+                <a :href="msg.content" download="generated-image.png" class="btn-download-img">Speichern</a>
+              </div>
+            </div>
+            <div v-else class="message-text" v-html="formatMessage(msg.content)"></div>
             <div v-if="msg.generating" class="typing-loader">
               <span></span><span></span><span></span>
             </div>
@@ -57,14 +75,14 @@
 
     <!-- Modern Input Section -->
     <footer class="input-container">
-      <div v-if="state.loading" class="loading-status-bar">
+      <div v-if="state.loading" class="loading-status-bar" :class="{ 'image-loading': selectedModel?.type === 'image' }">
         <span class="pulse-dot"></span>
         {{ state.loadingStatus }}
       </div>
-      <div class="input-wrapper glass-panel">
+      <div class="input-wrapper glass-panel" :class="{ 'image-input-border': selectedModel?.type === 'image' }">
         <ChatInput 
           v-model="prompt" 
-          placeholder="Frag mich etwas..." 
+          :placeholder="selectedModel?.type === 'image' ? 'Beschreibe dein Bild (z.B. Ein Cyberpunk-Astronaut)...' : 'Frag mich etwas...'" 
           :disabled="state.loading"
           @submit="submitPrompt"
         />
@@ -80,12 +98,27 @@ import ChatInput from '../chat/ChatInput.vue';
 
 const prompt = ref('');
 const chatHistoryRef = ref(null);
+
+const textModels = computed(() => state.availableModels.filter(m => m.type === 'text'));
+const imageModels = computed(() => state.availableModels.filter(m => m.type === 'image'));
+
 const suggestions = [
   "Erkläre mir Quantenphysik für Anfänger.",
   "Schreibe ein kurzes Gedicht über das Meer.",
   "Wie optimiere ich meinen JavaScript Code?",
   "Was sind die Vorteile von lokalem LLM?"
 ];
+
+const imageSuggestions = [
+  "Ein futuristisches Berlin im Jahr 2080, Cyberpunk-Stil",
+  "Ein süßer kleiner Roboter, der eine Blume gießt, 3D Render",
+  "Eine epische Berglandschaft bei Sonnenuntergang, Ölmalerei",
+  "Ein Porträt eines weisen alten Mannes in einer Bibliothek"
+];
+
+const currentSuggestions = computed(() => {
+  return selectedModel.value?.type === 'image' ? imageSuggestions : suggestions;
+});
 
 const selectedModel = computed(() => {
   return state.availableModels.find(m => m.id === state.selectedModelChat);
@@ -115,13 +148,18 @@ const clearChat = () => {
 
 const copyText = async (text, event) => {
   try {
-    // Falls HTML im Text ist, entfernen wir es für die Zwischenablage nicht, 
-    // aber bei msg.content speichern wir rohen Text/Markdown, was perfekt ist!
     await navigator.clipboard.writeText(text);
     const btn = event.currentTarget;
     btn.innerHTML = '✅';
+    
+    const hint = document.createElement('span');
+    hint.textContent = 'Kopiert!';
+    hint.className = 'copy-hint-float';
+    btn.parentNode.appendChild(hint);
+    
     setTimeout(() => {
       btn.innerHTML = '📋';
+      if (hint.parentNode) hint.remove();
     }, 2000);
   } catch (err) {
     console.error("Kopieren fehlgeschlagen:", err);
@@ -130,7 +168,6 @@ const copyText = async (text, event) => {
 
 const formatMessage = (text) => {
   if (!text) return "";
-  // Einfaches Markdown-ähnliches Parsing (Code-Blöcke & Zeilenumbrüche)
   let formatted = text
     .replace(/```([\s\S]*?)```/g, '<pre class="code-block"><code>$1</code></pre>')
     .replace(/\n/g, '<br>');
@@ -143,10 +180,18 @@ const submitPrompt = async () => {
   const userText = prompt.value;
   prompt.value = '';
   
+  const isImageMode = selectedModel.value?.type === 'image';
+  
   state.chatHistory.push({ role: 'user', content: userText });
   saveHistory();
   
-  state.chatHistory.push({ role: 'assistant', content: '', generating: true });
+  state.chatHistory.push({ 
+    role: 'assistant', 
+    content: '', 
+    generating: true, 
+    type: isImageMode ? 'image' : 'text',
+    prompt: isImageMode ? userText : null
+  });
   const msgIndex = state.chatHistory.length - 1;
   
   scrollToBottom();
@@ -154,16 +199,20 @@ const submitPrompt = async () => {
   
   try {
     const engine = await getOrInitEngine(state.selectedModelChat);
-    state.loadingStatus = "KI berechnet Antwort...";
+    state.loadingStatus = isImageMode ? "Generiere Bild..." : "KI berechnet Antwort...";
     
-    // API-konformer Context (nur Textnachrichten)
-    const messages = state.chatHistory
-      .filter(m => !m.generating)
-      .map(m => ({ role: m.role, content: m.content }));
+    if (isImageMode && engine.generate) {
+      const imageUrl = await engine.generate(userText);
+      state.chatHistory[msgIndex].content = imageUrl;
+    } else {
+      const messages = state.chatHistory
+        .filter(m => !m.generating && m.type !== 'image')
+        .map(m => ({ role: m.role, content: m.content }));
 
-    const reply = await engine.chat.completions.create({ messages });
+      const reply = await engine.chat.completions.create({ messages });
+      state.chatHistory[msgIndex].content = reply.choices[0].message.content;
+    }
     
-    state.chatHistory[msgIndex].content = reply.choices[0].message.content;
     saveHistory();
   } catch (err) {
     console.error("Chat Fehler:", err);
@@ -240,6 +289,64 @@ onMounted(() => {
   background: #00f2fe;
   border-radius: 50%;
   box-shadow: 0 0 10px #00f2fe;
+}
+
+.badge-dot.image-dot {
+  background: #a855f7;
+  box-shadow: 0 0 10px #a855f7;
+}
+
+.image-bubble {
+  padding: 0.5rem !important;
+  background: rgba(168, 85, 247, 0.05) !important;
+  border-color: rgba(168, 85, 247, 0.2) !important;
+}
+
+.image-message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.generated-image {
+  width: 100%;
+  max-width: 512px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: block;
+}
+
+.image-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-download-img {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #a855f7;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  background: rgba(168, 85, 247, 0.1);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.btn-download-img:hover {
+  background: rgba(168, 85, 247, 0.2);
+}
+
+.image-loading {
+  color: #a855f7;
+}
+
+.image-loading .pulse-dot {
+  background: #a855f7;
+  box-shadow: 0 0 10px #a855f7;
+}
+
+.image-input-border {
+  border-color: rgba(168, 85, 247, 0.3) !important;
 }
 
 .btn-download-action {
@@ -352,6 +459,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
 }
 
 .user .bubble-header {
@@ -374,6 +482,30 @@ onMounted(() => {
 .btn-copy-bubble:hover {
   opacity: 1;
   transform: scale(1.1);
+}
+
+/* Floating Tooltip für Copy */
+:deep(.copy-hint-float) {
+  position: absolute;
+  right: -10px;
+  top: -20px;
+  background: #00f2fe;
+  color: #000;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  pointer-events: none;
+  animation: floatUpFade 2s ease-out forwards;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0, 242, 254, 0.4);
+}
+
+@keyframes floatUpFade {
+  0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  80% { opacity: 1; transform: translateY(-15px) scale(1); }
+  100% { opacity: 0; transform: translateY(-25px) scale(0.9); }
 }
 
 .bubble-content {

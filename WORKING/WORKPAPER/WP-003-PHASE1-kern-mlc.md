@@ -1,6 +1,6 @@
 # Workpaper WP-003: Phase 1 – Kern stabilisieren (MLC-only)
 
-**Projekt:** OS-Arena  
+**Projekt:** WebGPU-Arena  
 **Stand:** 2026-04-29  
 **Status:** Aktiv – In Bearbeitung  
 **Bezug:** WP-002-MODELS-integration-arena-bewertung.md  
@@ -232,8 +232,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 VitePWA({
   registerType: 'autoUpdate',
   manifest: {
-    name: 'OS-Arena',
-    short_name: 'OS-Arena',
+    name: 'WebGPU-Arena',
+    short_name: 'WebGPU-Arena',
     theme_color: '#0f172a',
     background_color: '#0f172a',
     display: 'standalone',

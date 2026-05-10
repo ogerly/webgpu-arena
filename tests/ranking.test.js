@@ -3,6 +3,16 @@ import { calcEloWin, calcEloDraw } from '../src/elo.js';
 import { getOrCreateInstallId } from '../src/services/ranking/installId.js';
 import { saveLocalBenchmark, getLocalBenchmarks, clearLocalBenchmarks } from '../src/services/ranking/localRanking.js';
 
+// Mock state.js to avoid web-llm import issues in Node
+vi.mock('../src/state.js', () => ({
+  state: {
+    systemInfo: {
+      gpuVendor: 'test-vendor',
+      gpuAdapter: 'test-adapter'
+    }
+  }
+}));
+
 // Mock localStorage
 const localStorageMock = (() => {
   let store = {};
@@ -113,7 +123,7 @@ describe('Global Ranking Service (Integration)', () => {
     const res = await submitToGlobalRanking(mockResult);
 
     expect(fetch).toHaveBeenCalledWith(
-      'https://test-project.supabase.co/functions/v1/os-arena-ranking-handler',
+      'https://test-project.supabase.co/functions/v1/submit-ranking',
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({ 'Content-Type': 'application/json' })

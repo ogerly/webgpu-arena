@@ -1,5 +1,5 @@
 // elo.js
-// Logik für das Bewertungssystem der OS-Arena
+// Logik für das Bewertungssystem der WebGPU-Arena
 
 export const ELO_START = 1200;
 export const ELO_K     = 32;

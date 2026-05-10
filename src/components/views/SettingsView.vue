@@ -39,7 +39,7 @@
         <div class="setting-item">
           <div class="setting-info">
             <h4>App Information</h4>
-            <p class="description">OS-Arena Version: <span class="version-tag">v{{ appVersion }}</span></p>
+            <p class="description">WebGPU-Arena Version: <span class="version-tag">v{{ appVersion }}</span></p>
             <p class="description">Entwickelt von @ogerly</p>
           </div>
         </div>
@@ -56,7 +56,7 @@ import LoadingStatusBar from '../ui/LoadingStatusBar.vue';
 const appVersion = __APP_VERSION__;
 
 const openFolder = () => {
-  alert("Da OS-Arena im Browser läuft, werden die Modelle in der IndexedDB deines Browsers gespeichert.\n\nDu findest sie in den Entwicklertools (F12) unter:\nApplication -> Storage -> IndexedDB -> webllm");
+  alert("Da WebGPU-Arena im Browser läuft, werden die Modelle in der IndexedDB deines Browsers gespeichert.\n\nDu findest sie in den Entwicklertools (F12) unter:\nApplication -> Storage -> IndexedDB -> webllm");
 };
 </script>
 

@@ -1,13 +1,13 @@
 # Whitepaper WP-003: Release- & Versions-Management
 
-**Projekt:** OS-Arena  
+**Projekt:** WebGPU-Arena  
 **Status:** In Implementierung  
 **Source of Truth:** `package.json`
 
 ---
 
 ## 1. Philosophie der Versionierung
-Um Konsistenz über alle Plattformen (lokal, GitHub, PWA) zu gewährleisten, folgt OS-Arena dem Prinzip der **"Single Source of Truth"**. Die Versionsnummer wird ausschließlich in der `package.json` gepflegt und von dort in die Anwendung injiziert.
+Um Konsistenz über alle Plattformen (lokal, GitHub, PWA) zu gewährleisten, folgt WebGPU-Arena dem Prinzip der **"Single Source of Truth"**. Die Versionsnummer wird ausschließlich in der `package.json` gepflegt und von dort in die Anwendung injiziert.
 
 ## 2. Technischer Ablauf (Automation)
 
@@ -41,7 +41,7 @@ Um eine hohe Stabilität bei gleichzeitigem Fortschritt zu gewährleisten, defin
 ### 3.3 Major-Releases (X.0.0) - "Milestones"
 - **Inhalt**: Grundlegende Architekturänderungen (z.B. Wechsel des Frameworks), komplettes Re-Design der UI, Einführung bahnbrechender neuer Technologien (z.B. Multimodalität).
 - **Frequenz**: Selten (alle 3-6 Monate), markiert signifikante Meilensteine des Projekts.
-- **Ziel**: Evolutionäre Sprünge in der Vision der OS-Arena.
+- **Ziel**: Evolutionäre Sprünge in der Vision der WebGPU-Arena.
 
 ## 4. Changelog-Struktur
 Der Changelog orientiert sich an den Workpapern und bündelt die technischen Verbesserungen:
@@ -50,4 +50,4 @@ Der Changelog orientiert sich an den Workpapern und bündelt die technischen Ver
 - **Style**: UI/UX Verbesserungen (z.B. Glassmorphism Refactor).
 
 ---
-*Dokument gehört zur "Source of Truth" (Whitepapers) der OS-Arena.*
+*Dokument gehört zur "Source of Truth" (Whitepapers) der WebGPU-Arena.*

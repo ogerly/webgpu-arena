@@ -16,7 +16,7 @@
           
           <div class="select-field">
             <select v-model="state.selectedModelA">
-              <option v-for="m in state.availableModels" :key="'a-'+m.id" :value="m.id">
+              <option v-for="m in arenaModels" :key="'a-'+m.id" :value="m.id">
                 {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
               </option>
             </select>
@@ -45,7 +45,7 @@
           
           <div class="select-field">
             <select v-model="state.selectedModelB">
-              <option v-for="m in state.availableModels" :key="'b-'+m.id" :value="m.id">
+              <option v-for="m in arenaModels" :key="'b-'+m.id" :value="m.id">
                 {{ m.cached ? '💾' : '☁️' }} {{ m.name }}
               </option>
             </select>
@@ -77,6 +77,7 @@
 import { computed } from 'vue';
 import { state, downloadModel } from '../../state.js';
 
+const arenaModels = computed(() => state.availableModels.filter(m => m.arena));
 const modelA = computed(() => state.availableModels.find(m => m.id === state.selectedModelA));
 const modelB = computed(() => state.availableModels.find(m => m.id === state.selectedModelB));
 </script>

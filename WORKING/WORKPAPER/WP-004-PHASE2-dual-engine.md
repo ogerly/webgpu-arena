@@ -1,6 +1,6 @@
 # Workpaper WP-004: Phase 2 – Dual-Engine (MLC + transformers.js)
 
-**Projekt:** OS-Arena  
+**Projekt:** WebGPU-Arena  
 **Stand:** 2026-04-29  
 **Status:** Geplant – startet nach Abschluss WP-003  
 **Bezug:** WP-002-MODELS-integration-arena-bewertung.md  

@@ -6,7 +6,7 @@
         <span class="dot"></span>
         {{ state.gpuInfo.supported ? 'WebGPU bereit' : 'WebGPU nicht unterstützt' }}
       </div>
-      <h1 class="gradient-text">OS-Arena</h1>
+      <h1 class="gradient-text">WebGPU-Arena</h1>
       <h2>Dein lokales KI-Testlabor</h2>
       <p class="hero-subtext">
         Erlebe WebGPU-beschleunigte Open-Source-Modelle direkt in deinem Browser. 100% lokal, absolut privat und offline-fähig.
@@ -114,14 +114,14 @@
       <h3>Über das Projekt</h3>
       <div class="dev-info">
         <p><strong>Entwickler:</strong> <a href="https://github.com/ogerly" target="_blank">ogerly</a></p>
-        <p><strong>Quellcode:</strong> <a href="https://github.com/ogerly/os-arena" target="_blank">OS-Arena Repository</a></p>
+        <p><strong>Quellcode:</strong> <a href="https://github.com/ogerly/webgpu-arena" target="_blank">WebGPU-Arena Repository</a></p
       </div>
 
       <div class="project-disclaimer">
         <p>
           <strong>Wichtiger Hinweis:</strong> Dies ist ein privates Projekt. Es besteht kein Anspruch auf Funktionalität oder Support. 
           Die Nutzung erfolgt auf eigene Gefahr. Ich garantiere jedoch, dass bei Standardnutzung keine Daten dein Gerät verlassen – 
-          die OS-Arena ist konsequent auf Autonomie und Datenschutz ausgelegt.
+          die WebGPU-Arena ist konsequent auf Autonomie und Datenschutz ausgelegt.
         </p>
         <p>
           Ich freue mich über Austausch, Bug-Reports, Feature-Ideen und inspirierende Gespräche! 💬

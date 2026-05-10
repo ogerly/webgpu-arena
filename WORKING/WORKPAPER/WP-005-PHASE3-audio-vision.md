@@ -1,6 +1,6 @@
 # Workpaper WP-005: Phase 3 – Sonder-Fähigkeiten (Audio, Vision, Voice)
 
-**Projekt:** OS-Arena  
+**Projekt:** WebGPU-Arena  
 **Stand:** 2026-04-29  
 **Status:** Geplant – startet nach Abschluss WP-004  
 **Bezug:** WP-002-MODELS-integration-arena-bewertung.md  
@@ -11,7 +11,7 @@
 
 ## Ziel dieser Phase
 
-OS-Arena bekommt Fähigkeiten, die über reinen Text-Chat hinausgehen. Der User kann sprechen statt tippen, Antworten vorlesen lassen und Bilder in die Arena einbringen. Außerdem: echter WebCPU-Fallback für Geräte ohne WebGPU.
+WebGPU-Arena bekommt Fähigkeiten, die über reinen Text-Chat hinausgehen. Der User kann sprechen statt tippen, Antworten vorlesen lassen und Bilder in die Arena einbringen. Außerdem: echter WebCPU-Fallback für Geräte ohne WebGPU.
 
 Alle Erweiterungen sind modular – sie ergänzen die bestehende Arena, ersetzen nichts.
 

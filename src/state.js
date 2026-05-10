@@ -77,8 +77,62 @@ export async function checkCacheStatus() {
   }
 }
 
+async function loadTextModelInternal(model, progressCallback) {
+  return await CreateMLCEngine(model.id, { initProgressCallback: progressCallback });
+}
+
+async function loadImageModelInternal(model, progressCallback) {
+  // TODO: Hier die ONNX/Transformers.js Pipeline für Bildmodelle implementieren
+  // Ziel: 100% Offline-Fähigkeit via WebGPU
+  console.log(`🖼️ Initialisiere lokale Image-Pipeline für: ${model.name}`);
+  
+  // Simuliere Ladevorgang
+  for (let i = 0; i <= 100; i += 20) {
+    if (progressCallback) progressCallback({ progress: i / 100, text: `Lade Pipeline Gewichte... ${i}%` });
+    await new Promise(resolve => setTimeout(resolve, 200));
+  }
+  
+  // Mock Engine für T2I (Lokal)
+  return {
+    type: 'image',
+    generate: async (prompt) => {
+      console.log("Generiere Bild lokal (WebGPU Simulation) für:", prompt);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Lokale Generierung eines Platzhalters (Offline-beweis)
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      
+      // Noise Background
+      const imageData = ctx.createImageData(512, 512);
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const val = Math.random() * 255;
+        imageData.data[i] = val;
+        imageData.data[i+1] = val;
+        imageData.data[i+2] = val + 50; // Blau-Stich
+        imageData.data[i+3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      
+      // Overlay Info
+      ctx.fillStyle = "rgba(0,0,0,0.7)";
+      ctx.fillRect(0, 400, 512, 112);
+      ctx.fillStyle = "#00f2fe";
+      ctx.font = "bold 18px Inter, sans-serif";
+      ctx.fillText("LOKALE WEBGPU GENERIERUNG", 20, 440);
+      ctx.fillStyle = "white";
+      ctx.font = "14px Inter, sans-serif";
+      ctx.fillText(`Modell: ${model.name}`, 20, 465);
+      ctx.fillText(`Prompt: ${prompt.substring(0, 50)}...`, 20, 490);
+      
+      return canvas.toDataURL();
+    }
+  };
+}
+
 export async function downloadModel(model) {
-  // Nur blockieren, wenn WebGPU grundsätzlich nicht geht
   if (state.gpuInfo && !state.gpuInfo.supported) {
     console.error("Download abgebrochen: WebGPU nicht unterstützt.");
     return;
@@ -86,7 +140,7 @@ export async function downloadModel(model) {
 
   model.loading = true;
   model.progress = 0;
-  model.error = null; // Reset vorheriger Fehler
+  model.error = null;
   state.globalLoading = true;
   state.globalLoadingStatus = `Lade Modell: ${model.name}...`;
   
@@ -99,7 +153,13 @@ export async function downloadModel(model) {
   };
   
   try {
-    const engine = await CreateMLCEngine(model.id, { initProgressCallback });
+    let engine;
+    if (model.type === 'image') {
+      engine = await loadImageModelInternal(model, initProgressCallback);
+    } else {
+      engine = await loadTextModelInternal(model, initProgressCallback);
+    }
+    
     model.cached = true;
     model.progress = 100;
     loadedEngines[model.id] = engine;
@@ -107,7 +167,6 @@ export async function downloadModel(model) {
   } catch (err) {
     console.error(`❌ Download-Fehler für ${model.name}:`, err);
     model.error = err.message;
-    // NICHT state.gpuError setzen, da dies den gesamten State blockiert!
     alert(`Fehler beim Laden von ${model.name}: ${err.message}`);
   } finally {
     model.loading = false;
@@ -118,11 +177,13 @@ export async function downloadModel(model) {
 export async function getOrInitEngine(modelId) {
   if (loadedEngines[modelId]) return loadedEngines[modelId];
   
-  console.log(`🤖 Initialisiere MLC-Engine für: ${modelId}`);
-  state.loadingStatus = `Bereite ${modelId} vor...`;
+  const modelInfo = state.availableModels.find(m => m.id === modelId);
+  console.log(`🤖 Initialisiere Engine für: ${modelId} (Typ: ${modelInfo?.type})`);
+  
+  state.loadingStatus = `Bereite ${modelInfo?.name || modelId} vor...`;
   state.loadingProgress = 0;
   state.globalLoading = true;
-  state.globalLoadingStatus = `Lade in den Arbeitsspeicher: ${modelId}...`;
+  state.globalLoadingStatus = `Lade in den Arbeitsspeicher: ${modelInfo?.name || modelId}...`;
   
   const initProgressCallback = (progress) => {
     state.loadingStatus = progress.text;
@@ -134,10 +195,14 @@ export async function getOrInitEngine(modelId) {
   };
   
   try {
-    const engine = await CreateMLCEngine(modelId, { initProgressCallback });
-    loadedEngines[modelId] = engine;
+    let engine;
+    if (modelInfo?.type === 'image') {
+      engine = await loadImageModelInternal(modelInfo, initProgressCallback);
+    } else {
+      engine = await loadTextModelInternal(modelInfo || {id: modelId}, initProgressCallback);
+    }
     
-    const modelInfo = state.availableModels.find(m => m.id === modelId);
+    loadedEngines[modelId] = engine;
     if (modelInfo) modelInfo.cached = true;
     
     return engine;
@@ -149,7 +214,11 @@ export async function getOrInitEngine(modelId) {
 // Score Management
 export function loadScores() {
   try {
-    const saved = localStorage.getItem('os-arena-scores');
+    let saved = localStorage.getItem('webgpu-arena-scores');
+    if (!saved) {
+      saved = localStorage.getItem('os-arena-scores');
+      if (saved) localStorage.setItem('webgpu-arena-scores', saved);
+    }
     if (saved) {
       const scores = JSON.parse(saved);
       state.availableModels.forEach(m => {
@@ -169,7 +238,7 @@ export function saveScores() {
   state.availableModels.forEach(m => {
     scores[m.id] = m.score;
   });
-  localStorage.setItem('os-arena-scores', JSON.stringify(scores));
+  localStorage.setItem('webgpu-arena-scores', JSON.stringify(scores));
 }
 
 export function updateModelScore(modelId, newScore) {
@@ -185,16 +254,24 @@ export function updateModelScore(modelId, newScore) {
 
 // Chat Persistence
 export function saveHistory() {
-  localStorage.setItem('os-arena-chat-history', JSON.stringify(state.chatHistory));
-  localStorage.setItem('os-arena-arena-history', JSON.stringify(state.arenaHistory));
+  localStorage.setItem('webgpu-arena-chat-history', JSON.stringify(state.chatHistory));
+  localStorage.setItem('webgpu-arena-arena-history', JSON.stringify(state.arenaHistory));
 }
 
 export function loadHistory() {
   try {
-    const chat = localStorage.getItem('os-arena-chat-history');
+    let chat = localStorage.getItem('webgpu-arena-chat-history');
+    if (!chat) {
+      chat = localStorage.getItem('os-arena-chat-history');
+      if (chat) localStorage.setItem('webgpu-arena-chat-history', chat);
+    }
     if (chat) state.chatHistory = JSON.parse(chat);
     
-    const arena = localStorage.getItem('os-arena-arena-history');
+    let arena = localStorage.getItem('webgpu-arena-arena-history');
+    if (!arena) {
+      arena = localStorage.getItem('os-arena-arena-history');
+      if (arena) localStorage.setItem('webgpu-arena-arena-history', arena);
+    }
     if (arena) state.arenaHistory = JSON.parse(arena);
   } catch (e) {
     console.warn("Fehler beim Laden der Historie:", e);
@@ -203,7 +280,7 @@ export function loadHistory() {
 
 // Initialer Check & Score-Load
 export async function initAppState() {
-  console.log("🛠️ Initialisiere OS-Arena State...");
+  console.log("🛠️ Initialisiere WebGPU-Arena State...");
   try {
     loadScores();
     loadHistory();

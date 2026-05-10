@@ -39,7 +39,7 @@ if (typeof GPUDevice !== 'undefined') {
 }
 
 export async function runModelDiagnostics() {
-  console.log("🚀 Starte OS-Arena Modell-Diagnose...");
+  console.log("🚀 Starte WebGPU-Arena Modell-Diagnose...");
   console.log("------------------------------------");
   
   const results = [];

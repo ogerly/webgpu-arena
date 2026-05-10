@@ -2,6 +2,9 @@ export const modelRegistry = [
   { 
     id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC', 
     name: 'Llama 3.2 3B', 
+    type: 'text',
+    loader: 'mlc',
+    arena: true,
     size: '3B Param', 
     cached: false, 
     loading: false, 
@@ -18,6 +21,9 @@ export const modelRegistry = [
   { 
     id: 'gemma-2-2b-it-q4f16_1-MLC', 
     name: 'Gemma 2 2B', 
+    type: 'text',
+    loader: 'mlc',
+    arena: true,
     size: '2B Param', 
     cached: false, 
     loading: false, 
@@ -34,6 +40,9 @@ export const modelRegistry = [
   { 
     id: 'SmolLM2-1.7B-Instruct-q4f16_1-MLC', 
     name: 'SmolLM2', 
+    type: 'text',
+    loader: 'mlc',
+    arena: true,
     size: '1.7B Param', 
     cached: false, 
     loading: false, 
@@ -50,6 +59,9 @@ export const modelRegistry = [
   { 
     id: 'Llama-3.2-1B-Instruct-q4f16_1-MLC', 
     name: 'Llama 3.2 1B', 
+    type: 'text',
+    loader: 'mlc',
+    arena: true,
     size: '1B Param', 
     cached: false, 
     loading: false, 
@@ -66,6 +78,9 @@ export const modelRegistry = [
   { 
     id: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC', 
     name: 'Qwen 2.5 1.5B', 
+    type: 'text',
+    loader: 'mlc',
+    arena: true,
     size: '1.5B Param', 
     cached: false, 
     loading: false, 
@@ -82,6 +97,9 @@ export const modelRegistry = [
   { 
     id: 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC', 
     name: 'Qwen 2.5 Tiny', 
+    type: 'text',
+    loader: 'mlc',
+    arena: true,
     size: '0.5B Param', 
     cached: false, 
     loading: false, 
@@ -98,6 +116,9 @@ export const modelRegistry = [
   { 
     id: 'TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC', 
     name: 'TinyLlama', 
+    type: 'text',
+    loader: 'mlc',
+    arena: true,
     size: '1.1B Param', 
     cached: false, 
     loading: false, 
@@ -112,5 +133,61 @@ export const modelRegistry = [
     description: 'ACHTUNG: Negativ-Beispiel. Dient nur als Speed-Benchmark. Die Logik ist absolut unbrauchbar.',
     strengths: ['Extrem schnell', 'Läuft auf Toastern', 'Gute Baseline für Speed-Tests'],
     weaknesses: ['Absolut unbrauchbare Logik', 'Massive Halluzinationen', 'Versteht oft die Frage nicht']
+  },
+  // Text-to-Image Modelle (Keine Arena!)
+  {
+    id: 'MarkShark2/flux2-klein-4b-onnx-webgpu-q4',
+    name: 'Flux.1 [dev] Klein',
+    type: 'image',
+    loader: 'image-pipeline',
+    arena: false,
+    size: '4B Param',
+    cached: false,
+    loading: false,
+    progress: 0,
+    backend: 'onnx-webgpu',
+    category: 'Image-Generation',
+    badge: 'Premium',
+    status: 'experimental',
+    description: 'Hochwertige Bildgenerierung mit Flux Architektur, optimiert für WebGPU.',
+    strengths: ['Hohe Ästhetik', 'Gutes Prompt-Following'],
+    weaknesses: ['Hoher VRAM-Bedarf']
+  },
+  {
+    id: 'brad-agi/sana-0.6b-onnx-webgpu',
+    name: 'Sana 0.6B',
+    type: 'image',
+    loader: 'image-pipeline',
+    arena: false,
+    size: '0.6B Param',
+    cached: false,
+    loading: false,
+    progress: 0,
+    backend: 'onnx-webgpu',
+    category: 'Image-Generation',
+    badge: 'Fast',
+    status: 'experimental',
+    description: 'Extrem effizientes und schnelles T2I Modell für den Browser.',
+    strengths: ['Extrem schnell', 'Geringer VRAM-Bedarf'],
+    weaknesses: ['Geringere Details als Flux']
+  },
+  {
+    id: 'Zhare-AI/sd-1-5-webgpu',
+    name: 'Stable Diffusion 1.5',
+    type: 'image',
+    loader: 'image-pipeline',
+    arena: false,
+    size: '0.8B Param',
+    cached: false,
+    loading: false,
+    progress: 0,
+    backend: 'webgpu',
+    category: 'Image-Generation',
+    badge: 'Classic',
+    status: 'experimental',
+    description: 'Der bewährte Klassiker der Bildgenerierung, läuft lokal via WebGPU.',
+    strengths: ['Hohe Kompatibilität', 'Schnell'],
+    weaknesses: ['Geringere Auflösung als moderne Modelle']
   }
 ];
+

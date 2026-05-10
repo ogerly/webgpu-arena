@@ -8,7 +8,7 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   return {
-    base: mode === 'production' ? '/os-arena/' : '/',
+    base: mode === 'production' ? '/webgpu-arena/' : '/',
     define: {
       '__APP_VERSION__': JSON.stringify(pkg.version),
     },
@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => {
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
       },
       manifest: {
-        name: 'OS-Arena',
-        short_name: 'OS-Arena',
+        name: 'WebGPU-Arena',
+        short_name: 'WebGPU-Arena',
         description: 'Vergleiche rein lokale Open Source LLMs',
         theme_color: '#1a1a1a',
         background_color: '#1a1a1a',

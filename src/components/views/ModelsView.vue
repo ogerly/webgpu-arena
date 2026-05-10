@@ -5,81 +5,131 @@
       <p>Verwalte deine lokalen KIs für maximale Privatsphäre</p>
     </header>
 
-    <div class="model-grid">
-      <div 
-        v-for="model in state.availableModels" 
-        :key="model.id" 
-        class="model-card glass-panel" 
-        :class="{'is-cached': model.cached, 'is-loading': model.loading}"
-      >
-        <div class="card-glow"></div>
-        
-        <div class="card-header">
-          <div class="model-meta">
-            <span class="model-name">{{ model.name }}</span>
-            <div class="badge-group">
-              <span class="size-badge">{{ model.size }}</span>
-              <span v-if="model.badge" class="type-badge" :class="model.badge.toLowerCase()">{{ model.badge }}</span>
-              <span v-if="model.cached" class="status-pill cached">Lokal</span>
-              <span v-else class="status-pill cloud">Cloud</span>
+    <div class="model-sections">
+      <!-- Text Modelle -->
+      <section class="model-section">
+        <h3 class="section-title">Text-Modelle (LLMs)</h3>
+        <div class="model-grid">
+          <div 
+            v-for="model in textModels" 
+            :key="model.id" 
+            class="model-card glass-panel" 
+            :class="{'is-cached': model.cached, 'is-loading': model.loading}"
+          >
+            <div class="card-glow"></div>
+            
+            <div class="card-header">
+              <div class="model-meta">
+                <span class="model-name">{{ model.name }}</span>
+                <div class="badge-group">
+                  <span class="size-badge">{{ model.size }}</span>
+                  <span v-if="model.badge" class="type-badge" :class="model.badge.toLowerCase()">{{ model.badge }}</span>
+                  <span v-if="model.cached" class="status-pill cached">Lokal</span>
+                  <span v-else class="status-pill cloud">Cloud</span>
+                </div>
+              </div>
+              <div class="model-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              </div>
             </div>
-          </div>
-          <div class="model-icon">
-            <svg v-if="model.cached" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-success"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="7.5 10.5 10.5 13.5 16.5 7.5"></polyline></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-cloud"><path d="M17.5 19c3.037 0 5.5-2.463 5.5-5.5 0-2.77-2.053-5.06-4.73-5.44A6.002 6.002 0 0 0 7 6c-3.314 0-6 2.686-6 6a6 6 0 0 0 6 6h10.5Z"></path><path d="M12 12v6"></path><path d="M9 15l3 3 3-3"></path></svg>
-          </div>
-        </div>
 
-        <div class="card-body">
-          <p class="model-description">
-            {{ model.description || 'Ein leistungsstarkes Sprachmodell optimiert für lokale Ausführung.' }}
-          </p>
-          
-          <div class="model-traits" v-if="model.strengths || model.weaknesses">
-            <div class="trait-group strengths" v-if="model.strengths">
-              <span class="trait-label">Stärken:</span>
-              <ul>
-                <li v-for="s in model.strengths" :key="s">{{ s }}</li>
-              </ul>
+            <div class="card-body">
+              <p class="model-description">{{ model.description }}</p>
+              <div class="model-traits" v-if="model.strengths || model.weaknesses">
+                <div class="trait-group strengths" v-if="model.strengths">
+                  <span class="trait-label">Stärken:</span>
+                  <ul><li v-for="s in model.strengths" :key="s">{{ s }}</li></ul>
+                </div>
+              </div>
             </div>
-            <div class="trait-group weaknesses" v-if="model.weaknesses">
-              <span class="trait-label">Schwächen:</span>
-              <ul>
-                <li v-for="w in model.weaknesses" :key="w">{{ w }}</li>
-              </ul>
+            
+            <div class="card-actions">
+              <template v-if="!model.cached">
+                <button v-if="!model.loading" @click="downloadModel(model)" class="btn-download-action">
+                  <span>Modell laden</span>
+                </button>
+                <div v-else class="download-ui">
+                  <div class="progress-info"><span>{{ model.progress }}%</span></div>
+                  <div class="progress-track"><div class="progress-fill" :style="{width: model.progress + '%'}"></div></div>
+                </div>
+              </template>
+              <div v-else class="ready-display">
+                <button class="btn-chat-link" @click="$router.push('/arena')">Arena starten</button>
+              </div>
             </div>
           </div>
         </div>
-        
-        <div class="card-actions">
-          <template v-if="!model.cached">
-            <button v-if="!model.loading" @click="downloadModel(model)" class="btn-download-action">
-              <span>Jetzt Herunterladen</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            </button>
-            <div v-else class="download-ui">
-              <div class="progress-info">
-                <span>Herunterladen...</span>
-                <span>{{ model.progress }}%</span>
+      </section>
+
+      <!-- Bild Modelle -->
+      <section class="model-section">
+        <h3 class="section-title">Bild-Modelle (Text-to-Image)</h3>
+        <div class="model-grid">
+          <div 
+            v-for="model in imageModels" 
+            :key="model.id" 
+            class="model-card glass-panel" 
+            :class="{'is-cached': model.cached, 'is-loading': model.loading, 'image-model-card': true}"
+          >
+            <div class="card-glow"></div>
+            
+            <div class="card-header">
+              <div class="model-meta">
+                <span class="model-name">{{ model.name }}</span>
+                <div class="badge-group">
+                  <span class="size-badge">{{ model.size }}</span>
+                  <span v-if="model.badge" class="type-badge" :class="model.badge.toLowerCase()">{{ model.badge }}</span>
+                  <span v-if="model.status === 'experimental'" class="status-pill experimental">Experimental</span>
+                  <span v-if="model.cached" class="status-pill cached">Lokal</span>
+                  <span v-else class="status-pill cloud">Cloud</span>
+                </div>
               </div>
-              <div class="progress-track">
-                <div class="progress-fill" :style="{width: model.progress + '%'}"></div>
+              <div class="model-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
               </div>
             </div>
-          </template>
-          <div v-else class="ready-display">
-            <span class="ready-text">Einsatzbereit</span>
-            <button class="btn-chat-link" @click="$router.push('/arena')">Zweikampf starten</button>
+
+            <div class="card-body">
+              <p class="model-description">{{ model.description }}</p>
+            </div>
+            
+            <div class="card-actions">
+              <template v-if="!model.cached">
+                <button v-if="!model.loading" @click="downloadModel(model)" class="btn-download-action image-btn">
+                  <span>Modell laden</span>
+                </button>
+                <div v-else class="download-ui">
+                  <div class="progress-info"><span>{{ model.progress }}%</span></div>
+                  <div class="progress-track"><div class="progress-fill" :style="{width: model.progress + '%'}"></div></div>
+                </div>
+              </template>
+              <div v-else class="ready-display">
+                <button class="btn-chat-link image-chat-btn" @click="startImageChat(model.id)">Bild-Chat öffnen</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { state, downloadModel } from '../../state.js';
+
+const router = useRouter();
+
+const textModels = computed(() => state.availableModels.filter(m => m.type === 'text'));
+const imageModels = computed(() => state.availableModels.filter(m => m.type === 'image'));
+
+const startImageChat = (modelId) => {
+  state.selectedModelChat = modelId;
+  router.push('/chat');
+};
 </script>
+
 
 <style scoped>
 .view-container {
@@ -106,10 +156,53 @@ import { state, downloadModel } from '../../state.js';
   font-size: 1rem;
 }
 
+.model-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.model-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  padding-left: 0.5rem;
+  border-left: 4px solid var(--accent-color, #00f2fe);
+}
+
 .model-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
+}
+
+.image-model-card {
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+.image-model-card:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.image-btn:hover {
+  background: linear-gradient(135deg, #a855f7, #06b6d4) !important;
+}
+
+.image-chat-btn {
+  background: rgba(168, 85, 247, 0.1) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  color: #a855f7 !important;
+}
+
+.image-chat-btn:hover {
+  background: rgba(168, 85, 247, 0.2) !important;
+  border-color: #a855f7 !important;
 }
 
 .model-card {
@@ -189,6 +282,11 @@ import { state, downloadModel } from '../../state.js';
 .status-pill.cached {
   background: rgba(0, 242, 254, 0.15);
   color: #00f2fe;
+}
+
+.status-pill.experimental {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
 }
 
 .status-pill.cloud {

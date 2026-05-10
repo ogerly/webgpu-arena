@@ -8,7 +8,7 @@
 
 ## 1. Architektur-Übersicht
 
-Die OS-Arena nutzt Supabase als Backend für das optionale globale Leaderboard. Da die Anwendung als statische PWA (GitHub Pages) läuft, dient Supabase als serverlose Brücke für die persistente Datenspeicherung.
+Die WebGPU-Arena nutzt Supabase als Backend für das optionale globale Leaderboard. Da die Anwendung als statische PWA (GitHub Pages) läuft, dient Supabase als serverlose Brücke für die persistente Datenspeicherung.
 
 ### 1.1 Sicherheits-Prinzip
 Es gibt **keinen direkten Schreibzugriff** vom Frontend auf die Datenbank. Alle Daten fließen durch eine **Supabase Edge Function**, die den Payload validiert, filtert und normalisiert.

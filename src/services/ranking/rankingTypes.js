@@ -1,5 +1,5 @@
 // rankingTypes.js
-// Definition der Datenstrukturen für das OS-Arena Ranking
+// Definition der Datenstrukturen für das WebGPU-Arena Ranking
 
 /**
  * @typedef {Object} BenchmarkResult

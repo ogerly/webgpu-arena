@@ -1,13 +1,13 @@
 # Whitepaper WP-002: Frontend-Architektur, UI & Navigation
 
-**Projekt:** OS-Arena  
+**Projekt:** WebGPU-Arena  
 **Stand:** 2026-04-30  
 **Status:** Implementiert & Aktiv  
 
 ---
 
 ## 1. Die "Single Page Application" (SPA) Architektur
-OS-Arena ist eine reine Browser-Applikation ohne klassisches Backend. Um ein reibungsloses Nutzererlebnis (UX) zu gewährleisten, wurde das Frontend auf Basis von **Vue 3** mit dem offiziellen **Vue-Router** (`vue-router@4`) strukturiert.
+WebGPU-Arena ist eine reine Browser-Applikation ohne klassisches Backend. Um ein reibungsloses Nutzererlebnis (UX) zu gewährleisten, wurde das Frontend auf Basis von **Vue 3** mit dem offiziellen **Vue-Router** (`vue-router@4`) strukturiert.
 
 ### 1.1 Warum Vue-Router?
 - **Spezifische URLs:** Jeder Bereich (Startseite, Modelle, Chat, Einstellungen) hat eine eigene URL (Deep-Links).

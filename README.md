@@ -1,6 +1,6 @@
-# 🏟️ OS-Arena
+# 🏟️ WebGPU-Arena
 
-**OS-Arena** ist dein privates, WebGPU-beschleunigtes Testlabor für lokale LLMs direkt im Browser. Vergleiche zwei Modelle im Blind-Test oder nutze den Einzel-Chat als sicheren Daily-Driver für deine Fragen – 100% ohne API-Keys, ohne Accounts und ohne Cloud-Zwang.
+**WebGPU-Arena** ist dein privates, WebGPU-beschleunigtes Testlabor für lokale LLMs direkt im Browser. Vergleiche zwei Modelle im Blind-Test oder nutze den Einzel-Chat als sicheren Daily-Driver für deine Fragen – 100% ohne API-Keys, ohne Accounts und ohne Cloud-Zwang.
 
 ## 🚀 Zwei Wege zum Ziel
 
@@ -13,7 +13,7 @@
 - **Privacy First**: Deine Prompts verlassen niemals dein Gerät.
 - **WebGPU-Powered**: Die KI läuft dank `@mlc-ai/web-llm` extrem performant direkt über deine lokale Grafikkarte.
 - **Lokal & Persistent**: Deine Chat-Historien und ELO-Scores werden lokal gespeichert.
-- **PWA-Ready**: Installiere die OS-Arena als eigenständige App auf deinem Desktop oder Smartphone.
+- **PWA-Ready**: Installiere die WebGPU-Arena als eigenständige App auf deinem Desktop oder Smartphone.
 - **No-Key Security**: Sicherer, anonymer Daten-Sync via Supabase Edge Functions.
 - **System-Monitoring**: Echtzeit-Anzeige von WebGPU-Status und Browser-RAM-Verbrauch.
 
@@ -37,8 +37,8 @@ Da die App als reine Frontend-Applikation läuft, benötigst du kein Backend:
 
 ```bash
 # 1. Repository klonen
-git clone https://github.com/ogerly/os-arena.git
-cd os-arena
+git clone https://github.com/ogerly/webgpu-arena.git
+cd webgpu-arena
 
 # 2. Abhängigkeiten installieren
 npm install
@@ -61,7 +61,7 @@ Damit die KI im Browser läuft, wird Folgendes benötigt:
 Dieses Projekt ist Open Source. Fühle dich frei, die Arena zu forken, Pull Requests zu erstellen oder eigene Modelle (`q4f16_1-MLC`) hinzuzufügen!
 
 ## 🧠 AAMS - Agent Artifact Management System
-Die Entwicklung der OS-Arena folgt dem **[AAMS-Prinzip](https://github.com/ogerly/AAMS)**. Dies stellt sicher, dass die Zusammenarbeit zwischen Mensch und KI strukturiert, dokumentiert und jederzeit nachvollziehbar bleibt.
+Die Entwicklung der WebGPU-Arena folgt dem **[AAMS-Prinzip](https://github.com/ogerly/AAMS)**. Dies stellt sicher, dass die Zusammenarbeit zwischen Mensch und KI strukturiert, dokumentiert und jederzeit nachvollziehbar bleibt.
 
 ![AAMS Workflow](./docs/img/aams-workflow.png)
 
@@ -70,7 +70,7 @@ Die Entwicklung der OS-Arena folgt dem **[AAMS-Prinzip](https://github.com/ogerl
 - **Archive**: Dokumentation abgeschlossener Meilensteine.
 
 ## ⚖️ Disclaimer & Haftungsausschluss
-Dies ist ein **privates Projekt**. Die Nutzung der OS-Arena erfolgt auf eigene Gefahr und Verantwortung. 
+Dies ist ein **privates Projekt**. Die Nutzung der WebGPU-Arena erfolgt auf eigene Gefahr und Verantwortung. 
 - **Keine Gewähr**: Es wird kein Anspruch auf Funktionalität, Support oder Datensicherheit erhoben.
 - **Datenschutz-Garantie**: Ich garantiere, dass bei Standardnutzung keine Daten dein Gerät verlassen. Die Anwendung ist konsequent auf lokale Autonomie ausgelegt.
 - **Verantwortung**: Jeder Nutzer ist für die Einhaltung lokaler Gesetze und die Verwendung der generierten Inhalte selbst verantwortlich.

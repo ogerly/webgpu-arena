@@ -190,8 +190,17 @@ const copyText = async (text, event) => {
     await navigator.clipboard.writeText(text);
     const btn = event.currentTarget;
     btn.innerHTML = '✅';
+    
+    // Floating Tooltip erstellen
+    const hint = document.createElement('span');
+    hint.textContent = 'Kopiert!';
+    hint.className = 'copy-hint-float';
+    
+    btn.parentNode.appendChild(hint);
+    
     setTimeout(() => {
       btn.innerHTML = '📋';
+      if (hint.parentNode) hint.remove();
     }, 2000);
   } catch (err) {
     console.error("Kopieren fehlgeschlagen:", err);
@@ -520,6 +529,7 @@ const vote = (index, winner) => {
   align-items: flex-start;
   gap: 1rem;
   justify-content: flex-end;
+  position: relative;
 }
 
 .avatar {
@@ -602,6 +612,7 @@ const vote = (index, winner) => {
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  position: relative;
 }
 
 .btn-copy-bubble {
@@ -621,6 +632,31 @@ const vote = (index, winner) => {
 
 .user-copy {
   margin-top: 1rem;
+}
+
+/* Floating Tooltip für Copy */
+:deep(.copy-hint-float) {
+  position: absolute;
+  right: -10px;
+  top: -20px;
+  background: #00f2fe;
+  color: #000;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  pointer-events: none;
+  animation: floatUpFade 2s ease-out forwards;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0, 242, 254, 0.4);
+  z-index: 100;
+}
+
+@keyframes floatUpFade {
+  0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  80% { opacity: 1; transform: translateY(-15px) scale(1); }
+  100% { opacity: 0; transform: translateY(-25px) scale(0.9); }
 }
 
 .model-a-header .model-badge {
