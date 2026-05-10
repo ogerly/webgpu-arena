@@ -44,10 +44,10 @@ src/
 ## 4. Technische Meilensteine (Todos)
 
 ### Phase 1: Engine & Shader Basis (Reine Logik)
-- [ ] Erstellen der `wgsl` Shader für MatMul und SAXPY.
-- [ ] Implementierung der `gpuBenchmark.js` zur Kommunikation mit der WebGPU-API.
-- [ ] Erstellen des `cpuWorker.js` für die blockierungsfreie Referenzberechnung.
-- [ ] Implementierung des `benchmarkRunner.js` inkl. präzisem Timing (`performance.now()` & GPU Sync).
+- [x] Erstellen der `wgsl` Shader für MatMul und SAXPY.
+- [x] Implementierung der `gpuBenchmark.js` zur Kommunikation mit der WebGPU-API.
+- [x] Erstellen des `cpuWorker.js` für die blockierungsfreie Referenzberechnung.
+- [x] Implementierung des `benchmarkRunner.js` inkl. präzisem Timing (`performance.now()` & GPU Sync).
 
 ### Phase 2: Vue-Integration & UI
 - [ ] Neue View `BenchmarkView.vue` erstellen und im `vue-router` als `/benchmark` registrieren.

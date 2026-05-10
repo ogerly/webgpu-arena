@@ -20,6 +20,10 @@
       <span class="icon">💾</span>
       <span class="label">Bibliothek</span>
     </router-link>
+    <router-link to="/benchmark" class="nav-item" active-class="active">
+      <span class="icon">⚡</span>
+      <span class="label">TFLOPS</span>
+    </router-link>
     <router-link to="/settings" class="nav-item" active-class="active">
       <span class="icon">⚙️</span>
       <span class="label">Setup</span>

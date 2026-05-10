@@ -8,6 +8,7 @@ import LeaderboardView from '../components/views/LeaderboardView.vue';
 import ProfileView from '../components/views/ProfileView.vue';
 import SettingsView from '../components/views/SettingsView.vue';
 import ArenaChatView from '../components/views/ArenaChatView.vue';
+import BenchmarkView from '../components/views/BenchmarkView.vue';
 
 const routes = [
   { path: '/', component: HomeView },
@@ -17,6 +18,7 @@ const routes = [
   { path: '/chat', component: ChatView },
   { path: '/leaderboard', component: LeaderboardView },
   { path: '/profile', component: ProfileView },
+  { path: '/benchmark', component: BenchmarkView },
   { path: '/settings', component: SettingsView }
 ];
 
