@@ -13,7 +13,8 @@
 - `src/router/index.js`: Definiert URLs und Views.
 - `src/modelRegistry.js`: Zentrale Definition aller LLMs und ihrer Metadaten.
 - `WORKING/WHITEPAPER/WH-001-ARCH-webgpu-arena-konzept.md`: Grundlegendes Architekturkonzept.
-- `WORKING/WHITEPAPER/WP-002-ARCH-frontend-navigation.md`: Dokumentation der SPA Router-Architektur & UI Design-Prinzipien.
+- `WORKING/WHITEPAPER/WH-002-ARCH-frontend-navigation.md`: Dokumentation der SPA Router-Architektur & UI Design-Prinzipien.
+- `WORKING/WHITEPAPER/WH-006-ARCH-dual-deployment.md`: Dokumentation des Dual-Deployments auf GitHub Pages und Hugging Face Spaces.
 - `WORKING/WORKPAPER/closed/`: Enthält abgeschlossene Aufgaben und Spezifikationen (z.B. Vue-Router, HomeView, Core-Review).
 
 ## Recent Updates (2026-05)
@@ -21,7 +22,7 @@
 - Supabase No-Key Architecture: Secured the Global Ranking by implementing an Edge Function proxy (`get-leaderboard`) for reading, removing any need for API keys in the frontend.
 - Single Chat Refactor: Elevated the single-model chat with a ChatGPT-like bubble UI, markdown rendering, and local storage persistence.
 - HomeView & AAMS Showcase: Integrated a section highlighting the "Single Source of Truth" and AAMS architecture on the landing page.
-- Project Renamed: Changed project name from OS-Arena to WebGPU-Arena. Renamed codebase texts, PWA manifests, package.json, and documentation. Created migration path for localStorage state. Fixed HF Space config error.
+- Project Renamed & Dual-Deployment Configured: Changed project name from OS-Arena to WebGPU-Arena. Created migration path for localStorage state. Fixed HF Space config error via VITE_BASE_URL env override and wrote WH-006.
 
 ## Previous Updates (2026-04-29)
 - Vue-Router Migration: App routes are now fully URL-driven with working Browser-History.
