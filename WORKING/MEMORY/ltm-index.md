@@ -16,6 +16,7 @@
 - `WORKING/WHITEPAPER/WH-002-ARCH-frontend-navigation.md`: Dokumentation der SPA Router-Architektur & UI Design-Prinzipien.
 - `WORKING/WHITEPAPER/WH-006-ARCH-dual-deployment.md`: Dokumentation des Dual-Deployments auf GitHub Pages und Hugging Face Spaces.
 - `WORKING/WORKPAPER/closed/`: Enthält abgeschlossene Aufgaben und Spezifikationen (z.B. Vue-Router, HomeView, Core-Review).
+- `WORKING/WORKPAPER/WP-015-FEAT-webgpu-benchmark.md`: Spezifikation für isolierte WebGPU Hardware-Benchmarks.
 
 ## Recent Updates (2026-05)
 - AAMS Check: Executed LTM update, created May Diary, closed WP-007 and WP-011.
