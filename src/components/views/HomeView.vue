@@ -114,7 +114,7 @@
       <h3>Über das Projekt</h3>
       <div class="dev-info">
         <p><strong>Entwickler:</strong> <a href="https://github.com/ogerly" target="_blank">ogerly</a></p>
-        <p><strong>Quellcode:</strong> <a href="https://github.com/ogerly/webgpu-arena" target="_blank">WebGPU-Arena Repository</a></p
+        <p><strong>Quellcode:</strong> <a href="https://github.com/ogerly/webgpu-arena" target="_blank">WebGPU-Arena Repository</a></p>
       </div>
 
       <div class="project-disclaimer">
