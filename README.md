@@ -7,9 +7,11 @@
 1. **🏟️ Arena Mode**: Teste zwei Modelle anonym gegeneinander. Wer liefert die bessere Antwort? Dein Voting beeinflusst das globale Leaderboard.
 2. **💬 Einzel-Chat**: Ein hochwertiger, privater Chat-Modus mit Modell-Vorschlägen, Markdown-Support und lokaler Historie.
 
-## ✨ Features v1.2.0
+## ✨ Features v1.3.0
 
-- **3B Model Limit**: Unterstützung für Champions wie Llama 3.2 3B und Gemma 2 2B.
+- **Neue Modell-Generation (2025/2026)**: Qwen3.5 (Vision), Phi-4 mini, Ministral 3 (inkl. Reasoning), Hermes 3, Qwen3 (Thinking-Modus) – die 2024er-Modellreihe wurde archiviert.
+- **WebGPU Benchmark**: Isolierte Hardware-Messung (MatMul, SAXPY, GEMM) unter `/benchmark` – GPU vs. CPU im direkten Vergleich.
+- **3B Model Limit**: Unterstützung für Champions wie Qwen3.5 4B, Phi-4 mini und Ministral 3 3B.
 - **Privacy First**: Deine Prompts verlassen niemals dein Gerät.
 - **WebGPU-Powered**: Die KI läuft dank `@mlc-ai/web-llm` extrem performant direkt über deine lokale Grafikkarte.
 - **Lokal & Persistent**: Deine Chat-Historien und ELO-Scores werden lokal gespeichert.
@@ -18,14 +20,18 @@
 - **System-Monitoring**: Echtzeit-Anzeige von WebGPU-Status und Browser-RAM-Verbrauch.
 
 ## 🚀 Integrierte Modelle
-Die Arena nutzt für den Browser kompilierte Modelle (WebML-Community). Wir setzen auf das **3B-Limit**, um den idealen Mix aus Qualität und Speed zu bieten:
+Die Arena nutzt für den Browser kompilierte Modelle (WebLLM-Zoo von `mlc-ai`). Wir setzen auf das **3B-Limit** (Flaggschiffe bis 4B), um den idealen Mix aus Qualität und Speed zu bieten:
 
-- **Llama 3.2 3B**: Der Champion. Erstaunliche Intelligenz für ein lokales Browser-Modell.
-- **Gemma 2 2B**: Googles Präzisions-König. Überlegene Reasoning-Fähigkeit und Textqualität.
-- **SmolLM2 (1.7B)**: Der Logik-Spezialist. Extrem stark in Mathe, Code und STEM-Aufgaben.
-- **Llama 3.2 1B**: Der vielseitige Allrounder für schnellere Chats.
-- **Qwen 2.5 (0.5B - 1.5B)**: Das Effizienz-Wunder von Alibaba. Exzellente Mehrsprachigkeit.
-- **TinyLlama (1.1B)**: Unser "Negativ-Beispiel" für Speed-Tests (schnell, aber schwache Logik).
+- **Qwen3.5 4B**: Das neue Flaggschiff (2026). Vision-fähig, 262k Kontext, schlägt viele 20B-Modelle im Benchmark.
+- **Phi-4 mini (3.8B)**: Microsofts Reasoning-Spezialist. Extrem starke Logik und Mathematik.
+- **Ministral 3 3B**: Mistral aktueller Champion (12/2025) inkl. **Reasoning-Variante** mit Chain-of-Thought.
+- **Hermes 3 3B**: Nous-Research-Finetune – der Nachfolger des Llama-3.2-Champions.
+- **Qwen3.5 2B**: 2026er-Generation im kompakten Format, Vision & Text.
+- **Qwen3 1.7B**: Mit schaltbarem **Thinking-Modus** – stark in Mathe, Code und Logik.
+- **Qwen 2.5 3B**: Solider Allrounder, exzellente Mehrsprachigkeit.
+- **Gemma 3 1B**: Googles neue 1B-Generation für maximale Speed.
+
+*Archiv:* Die 2023/2024er-Modellreihe (Llama 3.2, Gemma 2, SmolLM2, Qwen 2.5 0.5B/1.5B, TinyLlama) ist ausgemustert und wird nur noch in der ELO-Historie geführt.
 
 
 <img width="1190" height="805" alt="image" src="https://github.com/user-attachments/assets/a0dedcb0-cfe0-4284-b6c8-8af8edd0983c" />
