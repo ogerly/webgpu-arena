@@ -37,7 +37,10 @@
           <span v-else>{{ index + 1 }}</span>
         </div>
         <div class="model-info flex-1">
-          <div class="model-name">{{ model.name }}</div>
+          <div class="model-name">
+            {{ model.name }}
+            <span v-if="model.status === 'retired'" class="retired-tag">Retired</span>
+          </div>
           <div class="model-size">{{ model.size }} Parameter</div>
         </div>
         <div class="score">
@@ -97,7 +100,9 @@ const globalData = ref([]);
 const loadingGlobal = ref(false);
 
 const sortedLocalModels = computed(() => {
-  return [...state.availableModels].sort((a, b) => b.score - a.score);
+  return state.availableModels
+    .filter(m => m.type === 'text' && m.score != null)
+    .sort((a, b) => b.score - a.score);
 });
 
 const loadGlobal = async () => {
@@ -213,6 +218,19 @@ watch(activeTab, (newTab) => {
   font-weight: 600;
   font-size: 1rem;
   color: #fff;
+}
+
+.retired-tag {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 8px;
+  border-radius: 10px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
 }
 
 .model-size, .model-meta {

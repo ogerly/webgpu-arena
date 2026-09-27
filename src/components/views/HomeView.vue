@@ -57,24 +57,24 @@
       <h3>Unterstützte Modelle</h3>
       <div class="models-mini-grid">
         <div class="model-mini-card">
-          <span class="m-icon">🦙</span>
-          <h4>Llama 3.2</h4>
-          <p>Der Allrounder</p>
+          <span class="m-icon">🐉</span>
+          <h4>Qwen3.5</h4>
+          <p>Das 2026er-Flaggschiff mit Vision</p>
         </div>
         <div class="model-mini-card">
           <span class="m-icon">💎</span>
-          <h4>Gemma</h4>
-          <p>Logik-Profi</p>
+          <h4>Phi-4 mini</h4>
+          <p>Reasoning-König</p>
         </div>
         <div class="model-mini-card">
-          <span class="m-icon">🐉</span>
-          <h4>Qwen 2.5</h4>
-          <p>Effizienz-Wunder</p>
+          <span class="m-icon">🦙</span>
+          <h4>Ministral 3</h4>
+          <p>Mistral-Champion mit Thinking</p>
         </div>
         <div class="model-mini-card">
           <span class="m-icon">🔬</span>
-          <h4>SmolLM2</h4>
-          <p>STEM-Experte</p>
+          <h4>Qwen3</h4>
+          <p>Thinking-Modus für Mathe & Code</p>
         </div>
       </div>
     </section>

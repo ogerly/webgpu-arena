@@ -7,7 +7,7 @@
             <div class="model-select-wrapper a">
               <span class="label">A</span>
               <select v-model="state.selectedModelA">
-                <option v-for="m in state.availableModels" :key="'a-'+m.id" :value="m.id">
+                <option v-for="m in arenaModels" :key="'a-'+m.id" :value="m.id">
                   {{ m.name }}
                 </option>
               </select>
@@ -16,7 +16,7 @@
             <div class="model-select-wrapper b">
               <span class="label">B</span>
               <select v-model="state.selectedModelB">
-                <option v-for="m in state.availableModels" :key="'b-'+m.id" :value="m.id">
+                <option v-for="m in arenaModels" :key="'b-'+m.id" :value="m.id">
                   {{ m.name }}
                 </option>
               </select>
@@ -178,6 +178,7 @@ const chatHistoryRef = ref(null);
 const isBlind = ref(true); // Namen standardmäßig ausblenden
 const consentGranted = ref(localStorage.getItem('os_arena_ranking_consent') === 'granted');
 
+const arenaModels = computed(() => state.availableModels.filter(m => m.type === 'text' && m.status !== 'retired'));
 const modelA = computed(() => state.availableModels.find(m => m.id === state.selectedModelA));
 const modelB = computed(() => state.availableModels.find(m => m.id === state.selectedModelB));
 

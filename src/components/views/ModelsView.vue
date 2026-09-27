@@ -61,6 +61,32 @@
         </div>
       </section>
 
+      <!-- Archiv (ausgemusterte Modelle) -->
+      <section class="model-section" v-if="archivedModels.length > 0">
+        <h3 class="section-title">Archiv (ausgemustert)</h3>
+        <p class="archive-hint">Diese Modelle (2023/2024 Generation) sind aus der Arena genommen worden. Ihre ELO-Historie bleibt in der Rangliste erhalten.</p>
+        <div class="model-grid">
+          <div 
+            v-for="model in archivedModels" 
+            :key="model.id" 
+            class="model-card glass-panel archived"
+          >
+            <div class="card-header">
+              <div class="model-meta">
+                <span class="model-name">{{ model.name }}</span>
+                <div class="badge-group">
+                  <span class="size-badge">{{ model.size }}</span>
+                  <span class="status-pill retired">Retired</span>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <p class="model-description">{{ model.description }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Bild Modelle -->
       <section class="model-section">
         <h3 class="section-title">Bild-Modelle (Text-to-Image)</h3>
@@ -121,7 +147,8 @@ import { state, downloadModel } from '../../state.js';
 
 const router = useRouter();
 
-const textModels = computed(() => state.availableModels.filter(m => m.type === 'text'));
+const textModels = computed(() => state.availableModels.filter(m => m.type === 'text' && m.status !== 'retired'));
+const archivedModels = computed(() => state.availableModels.filter(m => m.type === 'text' && m.status === 'retired'));
 const imageModels = computed(() => state.availableModels.filter(m => m.type === 'image'));
 
 const startImageChat = (modelId) => {
@@ -326,6 +353,43 @@ const startImageChat = (modelId) => {
   background: rgba(239, 68, 68, 0.2);
   color: #ef4444;
   border-color: rgba(239, 68, 68, 0.3);
+}
+
+.type-badge.flagship {
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.35);
+}
+
+.type-badge.champion {
+  background: rgba(0, 242, 254, 0.15);
+  color: #00f2fe;
+  border-color: rgba(0, 242, 254, 0.3);
+}
+
+.type-badge.thinking {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.status-pill.retired {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.model-card.archived {
+  opacity: 0.65;
+}
+
+.model-card.archived:hover .model-icon {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.archive-hint {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin: -0.5rem 0 1rem;
 }
 
 .model-icon {

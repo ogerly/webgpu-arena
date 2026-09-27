@@ -99,7 +99,7 @@ import ChatInput from '../chat/ChatInput.vue';
 const prompt = ref('');
 const chatHistoryRef = ref(null);
 
-const textModels = computed(() => state.availableModels.filter(m => m.type === 'text'));
+const textModels = computed(() => state.availableModels.filter(m => m.type === 'text' && m.status !== 'retired'));
 const imageModels = computed(() => state.availableModels.filter(m => m.type === 'image'));
 
 const suggestions = [

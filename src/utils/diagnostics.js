@@ -45,6 +45,7 @@ export async function runModelDiagnostics() {
   const results = [];
   
   for (const model of state.availableModels) {
+    if (model.status === 'retired') continue;
     console.log(`Prüfe ${model.name} (${model.id})...`);
     try {
       const cached = await hasModelInCache(model.id);
@@ -67,6 +68,7 @@ export async function checkModelConnectivity() {
   const results = [];
   
   for (const model of state.availableModels) {
+    if (model.status === 'retired') continue;
     // MLC Standard Pfad auf HuggingFace
     const baseUrl = `https://huggingface.co/mlc-ai/${model.id}/resolve/main/config.json`;
     

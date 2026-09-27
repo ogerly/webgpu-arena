@@ -27,7 +27,7 @@ export async function submitToGlobalRanking(result) {
     tokens_per_second: result.tokensPerSecond,
     total_time_ms: result.totalTimeMs,
     benchmark_version: '1.0.0',
-    app_version: '1.1.0',
+    app_version: '1.3.0',
     device_class: 'desktop',
     browser: navigator.userAgent.split(' ').pop(),
     os: navigator.platform,
