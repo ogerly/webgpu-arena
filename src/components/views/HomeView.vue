@@ -128,20 +128,9 @@
         </p>
       </div>
       
-      <div class="aams-showcase">
-        <h4>Powered by AAMS</h4>
-        <a href="https://devmatrose.github.io/AAMS/" target="_blank">
-          <img src="/img/aams-das-kochbuch-fuer-dein-repro.jpg" alt="AAMS Workflow" class="aams-img" />
-        </a>
-        <p class="aams-description">
-          Dieses Projekt wurde konsequent mit dem <strong>AAMS</strong> (Advanced Autonomous Management System) entwickelt. 
-          AAMS stellt eine <em>Single Source of Truth</em> sicher, die es jedem KI-Agenten ermöglicht, nahtlos an diesem Projekt weiterzuarbeiten.
-        </p>
-        <div class="aams-links">
-          <a href="https://devmatrose.github.io/AAMS/" target="_blank" class="action-btn outline">AAMS Dokumentation</a>
-          <a href="https://github.com/DEVmatrose/AAMS" target="_blank" class="action-btn outline">AAMS auf GitHub</a>
-        </div>
-      </div>
+      <p class="aams-credit">
+        Entwickelt mit <a href="https://github.com/DEVmatrose/AAMS" target="_blank" rel="noopener">AAMS</a> (Agent-Assisted Management System) – Single Source of Truth für die Zusammenarbeit von Mensch &amp; KI.
+      </p>
 
       <details class="donation-box">
         <summary class="donation-summary">
@@ -619,48 +608,20 @@ details[open] .chevron {
   color: #fff;
 }
 
-.aams-showcase {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.aams-showcase h4 {
-  font-size: 1.2rem;
-  color: #a18cd1;
-  margin-bottom: 1rem;
-  margin-top: 0;
-}
-
-.aams-img {
-  max-width: 100%;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
-}
-
-.aams-img:hover {
-  transform: scale(1.02);
-}
-
-.aams-description {
-  font-size: 0.9rem;
+.aams-credit {
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 1.5rem 0;
+  margin-bottom: 2rem;
 }
 
-.aams-description strong {
-  color: #fff;
+.aams-credit a {
+  color: #00f2fe;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-.aams-links {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
+.aams-credit a:hover {
+  text-decoration: underline;
 }
 
 .action-btn.outline {

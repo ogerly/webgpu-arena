@@ -66,10 +66,8 @@ Damit die KI im Browser läuft, wird Folgendes benötigt:
 ## 📄 Lizenz & Beitrag
 Dieses Projekt ist Open Source. Fühle dich frei, die Arena zu forken, Pull Requests zu erstellen oder eigene Modelle (`q4f16_1-MLC`) hinzuzufügen!
 
-## 🧠 AAMS - Agent Artifact Management System
-Die Entwicklung der WebGPU-Arena folgt dem **[AAMS-Prinzip](https://github.com/ogerly/AAMS)**. Dies stellt sicher, dass die Zusammenarbeit zwischen Mensch und KI strukturiert, dokumentiert und jederzeit nachvollziehbar bleibt.
-
-![AAMS Workflow](./docs/img/aams-workflow.png)
+## 🧠 AAMS - Agent-Assisted Management System
+Die Entwicklung der WebGPU-Arena folgt dem [**AAMS-Prinzip**](https://github.com/DEVmatrose/AAMS). Dies stellt sicher, dass die Zusammenarbeit zwischen Mensch und KI strukturiert, dokumentiert und jederzeit nachvollziehbar bleibt.
 
 - **Whitepapers**: Architektur-Entscheidungen und "Source of Truth".
 - **Workpapers**: Aktuelle Aufgaben und Implementierungsschritte.
