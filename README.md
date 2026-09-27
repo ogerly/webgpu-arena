@@ -53,9 +53,21 @@ npm install
 npm run dev
 ```
 
-## 🌐 GitHub Pages Deployment
-Dieses Projekt ist "Serverless" und dafür ausgelegt, direkt via GitHub Pages gehostet zu werden.
-Es gibt eine fertige GitHub Action (`.github/workflows/deploy.yml`). Sobald du diese in deinem Repo aktivierst, wird bei jedem Push auf den `main` Branch automatisch die App gebaut und auf GitHub Pages bereitgestellt.
+## 🌐 Deployment (Hugging Face Space)
+Dieses Projekt ist "Serverless" und wird auf einem **Hugging Face Space** (Docker/nginx) gehostet:
+**https://huggingface.co/spaces/ogerl/webgpu-arena**
+
+Deploy-Prozess:
+```bash
+# 1. Build mit relativen Pfaden (für den Space)
+VITE_BASE_URL=./ npm run build
+
+# 2. Inhalt von dist/ in den Space-Repository-Workspace kopieren (inkl. Dockerfile + Space-README)
+# 3. Commit + Push an den Space
+git push hf main
+```
+
+**Sicherheit:** API-Tokens (HuggingFace, Supabase) leben nur in `.env` bzw. im Betriebssystem-Credential-Store — niemals im Code, in Commits oder im Space.
 
 ## ⚠️ Systemanforderungen für Nutzer
 Damit die KI im Browser läuft, wird Folgendes benötigt:

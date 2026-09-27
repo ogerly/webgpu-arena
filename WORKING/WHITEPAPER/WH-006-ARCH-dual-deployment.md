@@ -4,6 +4,8 @@
 **Stand:** 2026-05-10  
 **Status:** Implementiert & Aktiv  
 
+> **⚠️ Status-Addendum (2026-09-27):** Die Dual-Deployment-Strategie wurde aufgegeben. **Hugging Face Space ist jetzt das einzige Live-Deployment** (https://huggingface.co/spaces/ogerl/webgpu-arena). GitHub dient ausschließlich als Source of Truth (Code, AAMS-Doku, Releases) — GitHub Pages wird nicht mehr betrieben (Actions durch Account-Billing gesperrt, Entscheidung: nicht reaktivieren). Deploy-Workflow und Base-Path-Strategie (Abschnitt 3) bleiben für den Space-Deploy gültig; die `/webgpu-arena/`-Base wird nicht mehr benötigt.
+
 ---
 
 ## 1. Architektur des Dual-Deployments
@@ -116,5 +118,5 @@ Hugging Face lädt nicht den Quellcode, sondern den **fertig kompilierten Build*
 - **`Unrecognized feature: 'ambient-light-sensor', 'battery'` etc.:**
   Stammt oft von Iframe-Restriktionen oder Berechtigungs-Richtlinien des Browsers. Hat keinen Einfluss auf die Funktionalität der LLMs.
   
-- **Push zu HF schlägt fehl (LFS Error):**
-  Wenn Hugging Face den Push ablehnt ("pre-receive hook declined"), liegt das meistens an Binärdateien im Ordner. Die Lösung ist, `git lfs track "*.xyz"` für den betroffenen Dateityp auszuführen.
+- **Push zu HF schlägt fehl (Binärdateien):**
+  Wenn Hugging Face den Push ablehnt ("pre-receive hook declined ... contains binary files"), werden Binärdateien über **Xet** erwartet (LFS wird für neue Pushes nicht mehr akzeptiert). Lösungen: (a) Binärdateien aus dem Space-Deploy entfernen (empfohlen — der Space braucht nur statische Assets), (b) Datei per `huggingface_hub`-Python-API hochladen (`upload_file`, nutzt die Xet-Brücke), (c) Git-Xet-Extension installieren.
