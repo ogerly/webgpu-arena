@@ -129,7 +129,7 @@
       </div>
       
       <p class="aams-credit">
-        Entwickelt mit <a href="https://github.com/DEVmatrose/AAMS" target="_blank" rel="noopener">AAMS</a> (Agent-Assisted Management System) – Single Source of Truth für die Zusammenarbeit von Mensch &amp; KI.
+        Entwickelt mit <a href="https://ogerly.github.io/AAMS/" target="_blank" rel="noopener">AAMS</a> (Agent-Assisted Management System) – Single Source of Truth für die Zusammenarbeit von Mensch &amp; KI.
       </p>
 
       <details class="donation-box">
